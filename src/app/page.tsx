@@ -10,6 +10,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
+import { Calendar } from '@/components/ui/calendar';
 
 export default function Home() {
   const assessmentObjectives = [
@@ -96,16 +97,21 @@ export default function Home() {
                   </Button>
                 </div>
               </div>
-                <div className="flex items-center justify-center">
-                    <Image
-                        src="https://storage.googleapis.com/pancake-static/p/22564-5ca4f5eb03e591154d8038c41a040159c9e6a11e88853344d32232a0e5b7e736.jpg?v=1737239873877530"
-                        width={450}
-                        height={550}
-                        alt="Dra. Fabiana Carvalhal"
-                        data-ai-hint="professional woman psychologist smiling"
-                        className="rounded-lg object-cover w-full h-auto max-w-sm"
-                    />
-                </div>
+              <div className="flex items-center justify-center">
+                <Card className="bg-background/50 border-2">
+                    <CardContent className="p-2">
+                        <Calendar
+                            mode="single"
+                            className="p-3"
+                            classNames={{
+                                head_cell: 'w-full',
+                                cell: 'w-full',
+                                day: 'w-full h-12',
+                            }}
+                         />
+                    </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </section>
@@ -209,6 +215,33 @@ export default function Home() {
                  Clique no ícone no canto da tela para falar com a assistente de IA 24/7.
                </p>
              </div>
+          </div>
+        </section>
+         <section className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-10 sm:px-10 md:gap-16 md:grid-cols-2">
+              <div className="space-y-4">
+                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-body">Sobre Mim</div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline">Fabiana Carvalhal</h2>
+                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body">
+                    Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL
+                </p>
+                 <Card>
+                    <CardContent className="p-6 text-muted-foreground font-body">
+                      Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos. Sou coautora do livro “PNL Humanizada” e minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
+                    </CardContent>
+                </Card>
+              </div>
+              <div className="flex items-center justify-center">
+                 <Image
+                    src="https://storage.googleapis.com/pancake-static/p/22564-5ca4f5eb03e591154d8038c41a040159c9e6a11e88853344d32232a0e5b7e736.jpg?v=1737239873877530"
+                    width={450}
+                    height={550}
+                    alt="Dra. Fabiana Carvalhal"
+                    className="rounded-lg object-cover w-full h-auto max-w-sm"
+                />
+              </div>
+            </div>
           </div>
         </section>
       </main>
