@@ -10,7 +10,6 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
-import { Calendar } from '@/components/ui/calendar';
 
 export default function Home() {
   const assessmentObjectives = [
@@ -76,8 +75,8 @@ export default function Home() {
       <main className="flex-1">
         <section className="w-full pt-6 pb-12 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20">
           <div className="container px-4 md:px-6">
-            <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-              <div className="flex flex-col justify-center space-y-6">
+            <div className="grid gap-6 lg:grid-cols-1 lg:gap-12 xl:grid-cols-1">
+              <div className="flex flex-col justify-center space-y-4 text-center">
                  <div className="space-y-4">
                    <p className="text-primary font-semibold tracking-wide uppercase font-body">
                         Psicóloga Clínica | Neuropsicóloga USP
@@ -85,32 +84,17 @@ export default function Home() {
                   <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Cuidado e Expertise para sua Saúde Mental
                   </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl font-body">
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl mx-auto font-body">
                     Com 24 anos de experiência, integro neuropsicologia, psicodrama e PNL para oferecer um atendimento completo e humanizado.
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
                   <Button asChild size="lg">
                     <a href="#contact">
                       Agende uma Conversa
                     </a>
                   </Button>
                 </div>
-              </div>
-              <div className="flex items-center justify-center">
-                <Card className="bg-background/50 border-2">
-                    <CardContent className="p-2">
-                        <Calendar
-                            mode="single"
-                            className="p-3"
-                            classNames={{
-                                head_cell: 'w-full',
-                                cell: 'w-full',
-                                day: 'w-full h-12',
-                            }}
-                         />
-                    </CardContent>
-                </Card>
               </div>
             </div>
           </div>
