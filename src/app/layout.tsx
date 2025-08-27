@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'Fabiana Carvalhal - Psicologia & Neuropsicologia',
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body className={cn("font-body antialiased min-h-screen", fontHeadline.variable, fontBody.variable)}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster />
       </body>
     </html>

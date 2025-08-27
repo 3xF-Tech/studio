@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   Calendar,
@@ -13,6 +13,7 @@ import {
   MessageSquare,
   Users,
   Newspaper,
+  LoaderCircle,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -36,36 +37,41 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Icons } from '@/components/icons';
-import { AuthProvider, useAuth } from '@/lib/firebase/auth.tsx';
-import { logout } from '@/lib/firebase/auth.ts';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
+
+// TODO: Mapear roles para menus visíveis
 const menuItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'secretary', 'finance', 'marketing', 'readonly', 'professional'] },
-  { href: '/calendar', label: 'Agenda', icon: Calendar, roles: ['admin', 'secretary', 'professional'] },
-  { href: '/crm', label: 'Pacientes', icon: Users, roles: ['admin', 'secretary', 'professional'] },
-  { href: '/campaigns', label: 'Campanhas', icon: MessageSquare, roles: ['admin', 'marketing'] },
-  { href: '/reports', label: 'Relatórios', icon: FileText, roles: ['admin', 'finance'] },
-  { href: '/blog', label: 'Publicações', icon: Newspaper, roles: ['admin', 'marketing'] },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/calendar', label: 'Agenda', icon: Calendar },
+  { href: '/crm', label: 'Pacientes', icon: Users },
+  { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
+  { href: '/reports', label: 'Relatórios', icon: FileText },
+  { href: '/blog', label: 'Publicações', icon: Newspaper },
 ];
 
-function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { user, userRole, auth } = useAuth(); // Get auth instance from context
   const router = useRouter();
-
-  const handleLogout = async () => {
-    if (auth) {
-      await logout(auth); // Pass auth instance to logout
-      router.push('/login');
-    }
-  };
+  const { user, loading, authReady, logout } = useAuth();
   
-  if (!user) {
-    return null; // Or a loading spinner
+  if (loading || !authReady) {
+    return (
+        <div className="flex items-center justify-center min-h-screen">
+            <LoaderCircle className="w-8 h-8 animate-spin" />
+        </div>
+    )
   }
 
-  const allowedMenuItems = menuItems.filter(item => item.roles.includes(userRole || ''));
+  if (!user) {
+    router.replace('/login');
+    return null;
+  }
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+  };
 
   return (
     <SidebarProvider>
@@ -81,7 +87,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
-              {allowedMenuItems.map((item) => (
+              {menuItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <Link href={item.href} legacyBehavior passHref>
                     <SidebarMenuButton
@@ -131,7 +137,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Minha Conta ({userRole})</DropdownMenuLabel>
+                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/settings">Configurações</Link>
@@ -150,18 +156,5 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         </SidebarInset>
       </div>
     </SidebarProvider>
-  );
-}
-
-
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <AuthProvider>
-      <DashboardLayoutContent>{children}</DashboardLayoutContent>
-    </AuthProvider>
   );
 }
