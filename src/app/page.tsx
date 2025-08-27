@@ -54,7 +54,7 @@ export default function Home() {
           </Link>
           <Link
             href="#about"
-            className="text-base font-medium hoverunderline underline-offset-4 hidden sm:block font-body"
+            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
             prefetch={false}
           >
             Sobre
