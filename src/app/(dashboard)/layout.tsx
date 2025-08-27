@@ -46,7 +46,7 @@ const menuItems = [
   { href: '/crm', label: 'Pacientes', icon: Users, roles: ['admin', 'secretary', 'professional'] },
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare, roles: ['admin', 'marketing'] },
   { href: '/reports', label: 'Relatórios', icon: FileText, roles: ['admin', 'finance'] },
-  { href: '/blog', label: 'Blog', icon: Newspaper, roles: ['admin', 'marketing'] },
+  { href: '/blog', label: 'Publicações', icon: Newspaper, roles: ['admin', 'marketing'] },
 ];
 
 function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
