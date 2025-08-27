@@ -33,17 +33,19 @@ const withAuth = <P extends object>(
     }, [user, userRole, loading, router]);
 
     // Show a loading state while we verify authentication
-    if (loading || !user || (allowedRoles && !userRole)) {
-      return (
-         <div className="p-4 space-y-4">
-            <Skeleton className="h-12 w-1/4" />
+    if (loading || !user || (allowedRoles && userRole && !allowedRoles.includes(userRole as Role))) {
+       return (
+         <div className="flex flex-col gap-4 py-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Skeleton className="h-28" />
-              <Skeleton className="h-28" />
-              <Skeleton className="h-28" />
-              <Skeleton className="h-28" />
+                <Skeleton className="h-28" />
+                <Skeleton className="h-28" />
+                <Skeleton className="h-28" />
+                <Skeleton className="h-28" />
             </div>
-             <Skeleton className="h-96" />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <Skeleton className="lg:col-span-4 h-80" />
+                <Skeleton className="lg:col-span-3 h-80" />
+            </div>
         </div>
       );
     }
