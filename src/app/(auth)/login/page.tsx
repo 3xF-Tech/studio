@@ -18,7 +18,7 @@ export default function LoginPage() {
         <Image
           src="https://picsum.photos/800/1200"
           alt="Imagem de consultório de psicologia"
-          data-ai-hint="office interior"
+          data-ai-hint="psychology abstract"
           width={800}
           height={1200}
           className="rounded-lg object-cover w-full h-full max-h-[90vh]"
