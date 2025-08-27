@@ -21,6 +21,12 @@ export const onAuthStateChanged = (callback: (user: User | null, userRole: strin
         if (user) {
             // User is signed in, get their role from Firestore.
             try {
+                // This is a special case for the demo user, which may not exist in Firestore.
+                // The UID 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2' corresponds to 'admin@example.com'.
+                if (user.uid === 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2') {
+                    callback(user, 'admin');
+                    return;
+                }
                 const userProfile = await getUser(user.uid);
                 const userRole = userProfile?.role || null;
                 callback(user, userRole);

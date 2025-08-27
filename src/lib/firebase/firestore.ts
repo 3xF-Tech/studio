@@ -17,16 +17,6 @@ export const getUser = async (uid: string): Promise<UserProfile | null> => {
     // Return the user data from firestore
     return docSnap.data() as UserProfile;
   } else {
-    // This is a special case for the demo user, which may not exist in Firestore.
-    // The UID 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2' corresponds to 'admin@example.com'.
-    if (uid === 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2') { 
-        return {
-            name: 'Admin User',
-            email: 'admin@example.com',
-            role: 'admin',
-        };
-    }
-    
     console.log("No such user profile!");
     return null;
   }
