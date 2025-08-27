@@ -2,24 +2,22 @@ import {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged as onFirebaseAuthStateChanged,
-    getAuth,
+    type Auth,
     type User
 } from "firebase/auth";
-import { app } from "./config"; // Import the initialized app
 
-// Get the auth instance from the initialized app
-const auth = getAuth(app);
-
-// Login now uses the guaranteed initialized auth instance
-export const login = (email, password) => {
+// The login function now receives the auth instance directly,
+// ensuring it operates on an initialized instance provided by the AuthContext.
+export const login = (auth: Auth, email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
 };
 
-export const logout = () => {
+// The logout function now receives the auth instance directly.
+export const logout = (auth: Auth) => {
     return signOut(auth);
 };
 
-// onAuthStateChanged now takes the auth instance as a parameter to ensure it's initialized correctly.
-export const onAuthStateChanged = (callback: (user: User | null) => void) => {
+// This function remains the same but will be called with a dynamically loaded auth instance.
+export const onAuthStateChanged = (auth: Auth, callback: (user: User | null) => void) => {
     return onFirebaseAuthStateChanged(auth, callback);
 };

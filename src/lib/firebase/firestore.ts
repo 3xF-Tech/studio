@@ -1,8 +1,5 @@
 
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { app } from "./config"; // Import centralized app instance
-
-const db = getFirestore(app);
+import { doc, getDoc, type Firestore } from "firebase/firestore";
 
 type UserProfile = {
   name: string;
@@ -11,7 +8,8 @@ type UserProfile = {
 };
 
 // Function to get a user profile from Firestore
-export const getUser = async (uid: string): Promise<UserProfile | null> => {
+// It now accepts the db instance as an argument to ensure it's initialized.
+export const getUser = async (db: Firestore, uid: string): Promise<UserProfile | null> => {
   const docRef = doc(db, "users", uid);
   const docSnap = await getDoc(docRef);
 

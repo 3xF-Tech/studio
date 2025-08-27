@@ -36,8 +36,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Icons } from '@/components/icons';
-import { AuthProvider, useAuth } from '@/lib/firebase/auth';
-import { logout } from '@/lib/firebase/auth.ts';
+import { AuthProvider, useAuth } from '@/lib/firebase/auth.tsx';
+import { logout } from '@/lib/firebase/auth';
 import { useRouter } from 'next/navigation';
 
 const menuItems = [
@@ -51,12 +51,14 @@ const menuItems = [
 
 function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { user, userRole } = useAuth();
+  const { user, userRole, auth } = useAuth(); // Get auth instance from context
   const router = useRouter();
 
   const handleLogout = async () => {
-    await logout();
-    router.push('/login');
+    if (auth) {
+      await logout(auth); // Pass auth instance to logout
+      router.push('/login');
+    }
   };
   
   if (!user) {
