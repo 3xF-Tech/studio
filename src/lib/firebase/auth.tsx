@@ -4,7 +4,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { type User } from 'firebase/auth';
 import { onAuthStateChanged } from './auth.ts';
-import { getUser } from './firestore'; // Import getUser here
+import { getUser } from './firestore.ts'; // Import getUser here
 
 type AuthContextType = {
   user: User | null;
@@ -26,8 +26,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(async (user) => {
       setUser(user);
+      // Logic for user role is now handled in the second useEffect
+      if (!user) {
+        setUserRole(null);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
       if (user) {
-        // If user is logged in, fetch their role
         try {
           // Special case for demo admin user
           if (user.uid === 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2') {
@@ -42,15 +53,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } finally {
            setLoading(false);
         }
-      } else {
-        // If user is logged out, clear role and stop loading
-        setUserRole(null);
-        setLoading(false);
       }
-    });
-
-    return () => unsubscribe();
-  }, []);
+    };
+    
+    fetchUserRole();
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, userRole, loading }}>
