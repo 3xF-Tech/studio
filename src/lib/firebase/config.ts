@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth } from "firebase/auth";
@@ -11,8 +12,8 @@ const firebaseConfig = {
   "storageBucket": "carvalhal.firebasestorage.app",
   "apiKey": "AIzaSyD_dqVE6DHnQ04Mak5m4FTdf38ueAipI3U",
   "authDomain": "carvalhal.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "615800990371"
+  "messagingSenderId": "615800990371",
+  "measurementId": "G-5512H5E612"
 };
 
 // Initialize Firebase for SSR and ensure it's a singleton

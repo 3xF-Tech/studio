@@ -24,30 +24,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // This effect handles fetching the user role AFTER the user object is available.
-    const fetchUserRole = async (user: User) => {
-      // Special case for demo user
-      if (user.uid === 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2') {
-        setUserRole('admin');
-        setLoading(false);
-        return;
-      }
-      try {
-        const userProfile = await getUser(user.uid);
-        setUserRole(userProfile?.role || null);
-      } catch (error) {
-        console.error("Error fetching user role:", error);
-        setUserRole(null); // Proceed without a role if fetching fails
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const unsubscribe = onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(async (user) => {
       setUser(user);
       if (user) {
         // If user is logged in, fetch their role
-        fetchUserRole(user);
+        try {
+          // Special case for demo admin user
+          if (user.uid === 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2') {
+            setUserRole('admin');
+          } else {
+             const userProfile = await getUser(user.uid);
+             setUserRole(userProfile?.role || null);
+          }
+        } catch (error) {
+           console.error("Error fetching user role:", error);
+           setUserRole(null);
+        } finally {
+           setLoading(false);
+        }
       } else {
         // If user is logged out, clear role and stop loading
         setUserRole(null);
