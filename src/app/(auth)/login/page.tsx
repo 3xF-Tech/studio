@@ -41,10 +41,12 @@ export default function LoginPage() {
       await login(email, password);
       router.replace("/dashboard");
     } catch (error: any) {
-      console.error(error);
+      console.error("Login error:", error?.code, error?.message);
       let friendlyMessage = "Falha no login. Verifique suas credenciais.";
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
         friendlyMessage = "Email ou senha incorretos."
+      } else if (error.code === 'auth/configuration-not-found') {
+        friendlyMessage = "Erro de configuração. Verifique as configurações do Firebase."
       }
       setErr(friendlyMessage);
     }

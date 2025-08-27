@@ -8,6 +8,14 @@ let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let db: Firestore | null = null;
 
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return value;
+}
+
 export function getFirebase() {
   if (typeof window === "undefined") {
     // Em SSR nunca inicialize Firebase
@@ -16,13 +24,22 @@ export function getFirebase() {
 
   if (!app) {
     const config = {
-      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
+      apiKey: requireEnv("NEXT_PUBLIC_FIREBASE_API_KEY"),
+      authDomain: requireEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN"),
+      projectId: requireEnv("NEXT_PUBLIC_FIREBASE_PROJECT_ID"),
+      storageBucket: requireEnv("NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET"),
+      messagingSenderId: requireEnv("NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID"),
+      appId: requireEnv("NEXT_PUBLIC_FIREBASE_APP_ID"),
     };
+
+    // Log para depuração em ambiente de desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Firebase Config Loaded:", {
+        apiKey: config.apiKey?.slice(0,6)+"…",
+        authDomain: config.authDomain,
+        projectId: config.projectId,
+      });
+    }
 
     app = getApps().length ? getApp() : initializeApp(config);
     auth = getAuth(app);
