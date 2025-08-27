@@ -2,7 +2,8 @@ import {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged as onFirebaseAuthStateChanged,
-    type User
+    type User,
+    type Auth
 } from "firebase/auth";
 import { auth } from "./config"; // Import centralized auth instance
 
@@ -14,7 +15,7 @@ export const logout = () => {
     return signOut(auth);
 };
 
-// This onAuthStateChanged now only deals with the auth state, not the user profile.
-export const onAuthStateChanged = (callback: (user: User | null) => void) => {
-    return onFirebaseAuthStateChanged(auth, callback);
+// This onAuthStateChanged now takes the auth instance as a parameter to ensure it's initialized.
+export const onAuthStateChanged = (authInstance: Auth, callback: (user: User | null) => void) => {
+    return onFirebaseAuthStateChanged(authInstance, callback);
 };
