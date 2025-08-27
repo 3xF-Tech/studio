@@ -3,13 +3,13 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { login } from "@/lib/firebase/auth.ts";
+import { login } from "@/lib/firebase/auth";
 import { LoaderCircle } from "lucide-react";
+import Link from 'next/link';
 
 export function LoginForm() {
   const router = useRouter();
@@ -37,41 +37,37 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <Card>
-        <CardContent className="space-y-4 pt-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="admin@example.com" 
-              required 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
+    <form onSubmit={handleLogin} className="grid gap-4">
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <Input 
+          id="email" 
+          type="email" 
+          placeholder="seu@email.com" 
+          required 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div className="grid gap-2">
+        <div className="flex items-center">
+            <Label htmlFor="password">Senha</Label>
+             <Link href="#" className="ml-auto inline-block text-sm underline">
+                Esqueceu sua senha?
+            </Link>
+        </div>
+        <Input 
+          id="password" 
+          type="password" 
+          required 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+       <Button type="submit" className="w-full mt-2" disabled={isLoading}>
             {isLoading && <LoaderCircle className="animate-spin mr-2" />}
-            Login
-          </Button>
-          <Button variant="link" size="sm" className="text-muted-foreground">
-              Forgot password?
-          </Button>
-        </CardFooter>
-      </Card>
+            Acessar Painel
+        </Button>
     </form>
   );
 }
