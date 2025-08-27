@@ -152,7 +152,7 @@ export default function Home() {
             <div className="relative max-w-3xl mx-auto">
                 <Quote className="absolute -top-6 -left-6 w-12 h-12 text-secondary/50 hidden md:block" />
                  <Card>
-                    <CardContent className="p-8 text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body">
+                    <CardContent className="p-8 text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body text-justify">
                       Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos. Sou coautora do livro “PNL Humanizada” e minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
                     </CardContent>
                 </Card>
