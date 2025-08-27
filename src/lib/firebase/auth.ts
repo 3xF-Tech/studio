@@ -1,15 +1,12 @@
 
 import { 
-    getAuth, 
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged as onFirebaseAuthStateChanged,
     type User
 } from "firebase/auth";
-import { app } from "./config";
+import { auth } from "./config"; // Import centralized auth instance
 import { getUser } from "./firestore";
-
-export const auth = getAuth(app);
 
 export const login = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
