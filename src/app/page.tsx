@@ -90,7 +90,7 @@ export default function Home() {
               </div>
                 <div className="relative w-full max-w-md mx-auto lg:mx-0 flex items-center justify-center">
                     <Image
-                        src="https://firebasestudio-hosting.web.app/images/fabiana-carvalhal.png"
+                        src="https://storage.googleapis.com/pancake-static/p/22564-5ca4f5eb03e591154d8038c41a040159c9e6a11e88853344d32232a0e5b7e736.jpg?v=1737239873877530"
                         width={500}
                         height={600}
                         alt="Dra. Fabiana Carvalhal"
