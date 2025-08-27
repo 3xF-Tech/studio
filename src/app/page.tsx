@@ -44,7 +44,7 @@ export default function Home() {
             Fabiana Carvalhal
           </span>
         </Link>
-        <nav className="ml-auto flex items-center gap-6 sm:gap-8">
+        <nav className="ml-auto flex items-center gap-6 sm:gap-8 font-body">
           <Link
             href="#services"
             className="text-base font-medium hover:underline underline-offset-4 hidden sm:block"
@@ -73,7 +73,7 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section className="w-full py-12 md:py-20 lg:py-28 bg-secondary/30">
+        <section className="w-full py-12 md:py-20 lg:py-28">
           <div className="container px-4 md:px-6">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
               <div className="flex flex-col justify-center space-y-6">
@@ -110,11 +110,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="services" className="w-full py-12 md:py-24 lg:py-32">
+        <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">Nossa Especialidade Principal</div>
+                 <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Nossa Especialidade Principal</div>
                 <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">
                   Avaliação Neuropsicológica
                 </h2>
@@ -141,17 +141,17 @@ export default function Home() {
           </div>
         </section>
         
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 lg:gap-12">
             <div className="space-y-4">
-               <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Sobre Mim</div>
+               <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">Sobre Mim</div>
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
                 Fabiana Carvalhal
               </h2>
-                 <p className="max-w-xl mx-auto text-muted-foreground">Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL</p>
+                 <p className="max-w-xl mx-auto text-muted-foreground font-headline">Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL</p>
             </div>
             <div className="relative max-w-3xl mx-auto">
-                <Quote className="absolute -top-6 -left-6 w-12 h-12 text-secondary hidden md:block" />
+                <Quote className="absolute -top-6 -left-6 w-12 h-12 text-secondary/50 hidden md:block" />
                  <Card>
                     <CardContent className="p-8 text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                       Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos. Sou coautora do livro “PNL Humanizada” e minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
@@ -168,7 +168,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32">
+        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
             <div className="container px-4 md:px-6">
                  <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
                     <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">O que os Pacientes Dizem</h2>
@@ -176,7 +176,7 @@ export default function Home() {
                 </div>
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {testimonials.map((testimonial, index) => (
-                        <Card key={index} className="flex flex-col">
+                        <Card key={index} className="flex flex-col bg-background/50">
                             <CardContent className="pt-6 flex flex-col flex-grow">
                                 <Quote className="w-8 h-8 text-primary mb-4" />
                                 <p className="text-muted-foreground mb-4 flex-grow">{testimonial.quote}</p>
@@ -188,7 +188,7 @@ export default function Home() {
             </div>
         </section>
 
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t bg-secondary/30">
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t">
           <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl">
