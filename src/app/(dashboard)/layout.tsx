@@ -12,6 +12,7 @@ import {
   FileText,
   MessageSquare,
   Users,
+  Newspaper,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -41,6 +42,7 @@ const menuItems = [
   { href: '/crm', label: 'Pacientes', icon: Users },
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
   { href: '/reports', label: 'Relatórios', icon: FileText },
+  { href: '/publications', label: 'Publicações', icon: Newspaper },
 ];
 
 export default function DashboardLayout({
