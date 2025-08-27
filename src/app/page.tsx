@@ -44,24 +44,24 @@ export default function Home() {
             Fabiana Carvalhal
           </span>
         </Link>
-        <nav className="ml-auto flex items-center gap-6 sm:gap-8 font-body">
+        <nav className="ml-auto flex items-center gap-6 sm:gap-8">
           <Link
             href="#services"
-            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block"
+            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
             prefetch={false}
           >
             Serviços
           </Link>
           <Link
             href="#about"
-            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block"
+            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
             prefetch={false}
           >
             Sobre
           </Link>
            <Link
             href="/blog"
-            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block"
+            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
             prefetch={false}
           >
             Blog

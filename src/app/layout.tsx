@@ -1,11 +1,24 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'Fabiana Carvalhal - Psicologia & Neuropsicologia',
   description: 'Psicóloga Clínica e Neuropsicóloga. Especialista em Psicodrama e PNL Sistêmica.',
 };
+
+const fontHeadline = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-headline',
+});
+
+const fontBody = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-body',
+});
+
 
 export default function RootLayout({
   children,
@@ -14,15 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="light">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="font-body antialiased min-h-screen">
+      <body className={cn("font-body antialiased min-h-screen", fontHeadline.variable, fontBody.variable)}>
         {children}
         <Toaster />
       </body>
