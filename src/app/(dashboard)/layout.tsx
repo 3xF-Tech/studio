@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Calendar,
   Settings,
-  PanelLeft,
   LogOut,
   UserCircle,
   FileText,
@@ -23,6 +22,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarTrigger,
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';

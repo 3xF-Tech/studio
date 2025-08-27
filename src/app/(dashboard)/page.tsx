@@ -14,7 +14,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import {
   Users,
   Calendar,
@@ -41,7 +40,7 @@ const chartData = [
 const chartConfig = {
   revenue: {
     label: 'Revenue',
-    color: 'hsl(var(--accent))',
+    color: 'hsl(var(--primary))',
   },
 } satisfies ChartConfig;
 

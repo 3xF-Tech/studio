@@ -6,10 +6,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
-  BarChart,
-  LineChart,
   MessageSquare,
-  Phone,
   CalendarCheck,
   CalendarX,
   Bot,
@@ -20,7 +17,7 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from '@/components/ui/chart';
-import { Bar, CartesianGrid, XAxis, YAxis, Line, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart } from 'recharts';
 
 const agentActionsData = [
     { action: "Conversations", total: 1250 },
