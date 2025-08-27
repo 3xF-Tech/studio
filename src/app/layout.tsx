@@ -1,9 +1,10 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import { AuthProvider } from '@/context/AuthContext';
+import AuthProviderLoader from '@/components/auth/auth-provider-loader';
 
 export const metadata: Metadata = {
   title: 'Fabiana Carvalhal - Psicologia & Neuropsicologia',
@@ -29,9 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body className={cn("font-body antialiased min-h-screen", fontHeadline.variable, fontBody.variable)}>
-        <AuthProvider>
+        <AuthProviderLoader>
           {children}
-        </AuthProvider>
+        </AuthProviderLoader>
         <Toaster />
       </body>
     </html>
