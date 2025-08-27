@@ -9,6 +9,9 @@ import {
   PanelLeft,
   LogOut,
   UserCircle,
+  FileText,
+  MessageSquare,
+  Users,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -34,8 +37,11 @@ import { Icons } from '@/components/icons';
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/calendar', label: 'Calendar', icon: Calendar },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+  { href: '/calendar', label: 'Agenda', icon: Calendar },
+  { href: '/crm', label: 'Pacientes', icon: Users },
+  { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
+  { href: '/reports', label: 'Relatórios', icon: FileText },
+  { href: '/settings', label: 'Configurações', icon: Settings },
 ];
 
 export default function DashboardLayout({
@@ -50,7 +56,7 @@ export default function DashboardLayout({
       <div className="flex min-h-screen">
         <Sidebar>
           <SidebarHeader className="p-4">
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <Icons.Logo className="w-8 h-8 text-sidebar-primary" />
               <span className="text-lg font-headline font-bold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
                 Carvalhal
@@ -78,9 +84,9 @@ export default function DashboardLayout({
             <SidebarMenu>
                 <SidebarMenuItem>
                      <Link href="/" legacyBehavior passHref>
-                        <SidebarMenuButton tooltip={{ children: 'Logout', side: 'right' }}>
+                        <SidebarMenuButton tooltip={{ children: 'Sair', side: 'right' }}>
                             <LogOut />
-                            <span>Logout</span>
+                            <span>Sair</span>
                         </SidebarMenuButton>
                     </Link>
                 </SidebarMenuItem>
@@ -100,18 +106,18 @@ export default function DashboardLayout({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
+                <DropdownMenuItem>Configurações</DropdownMenuItem>
+                <DropdownMenuItem>Suporte</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/">Logout</Link>
+                  <Link href="/">Sair</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </header>
-          <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8 bg-muted/20">
+          <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8 bg-muted/40">
             {children}
           </main>
         </SidebarInset>

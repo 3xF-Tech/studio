@@ -7,6 +7,7 @@ import {
   Users,
   NotebookText,
   ChevronRight,
+  Quote,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
 
@@ -63,21 +64,26 @@ export default function Home() {
           >
             Contato
           </Link>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/login">Área do Cliente</Link>
-          </Button>
         </nav>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-primary/5">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+               <Image
+                src="https://firebasestudio-hosting.web.app/images/i2.png"
+                width="600"
+                height="600"
+                alt="Dra. Fabiana Carvalhal"
+                data-ai-hint="professional woman psychologist smiling"
+                className="mx-auto aspect-square overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
+              />
               <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
+                <div className="space-y-4">
                    <p className="max-w-[600px] text-primary md:text-xl font-semibold">
                      Psicóloga Clínica & Neuropsicóloga
                   </p>
-                  <h1 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-6xl xl:text-7xl/none">
                     Cuidado e Desenvolvimento Humano
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
@@ -92,25 +98,14 @@ export default function Home() {
                   </Button>
                 </div>
               </div>
-              <Image
-                src="https://picsum.photos/600/600"
-                width="600"
-                height="600"
-                alt="Fabiana Carvalhal"
-                data-ai-hint="professional woman psychologist"
-                className="mx-auto aspect-square overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
-              />
             </div>
           </div>
         </section>
 
-        <section id="services" className="w-full py-12 md:py-24 lg:py-32">
+        <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-accent/10 px-3 py-1 text-sm text-accent-foreground">
-                  Áreas de Atuação
-                </div>
                 <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">
                   Cuidado, sob medida para você
                 </h2>
@@ -121,7 +116,7 @@ export default function Home() {
             </div>
             <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 mt-12">
               {services.map((service, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card key={index} className="bg-background hover:shadow-lg transition-shadow border-0">
                   <CardHeader className="flex flex-row items-center gap-4">
                     {service.icon}
                     <CardTitle className="font-headline">{service.title}</CardTitle>
@@ -137,15 +132,18 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-primary/5">
-          <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6 lg:gap-10">
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 lg:gap-12">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
                 Sobre Fabiana Carvalhal
               </h2>
-              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Psicóloga e neuropsicóloga com sólida formação acadêmica (PUC-SP e USP), e coautora do livro “PNL Humanizada”. Minha paixão é integrar técnica e um profundo entendimento da individualidade de cada paciente.
-              </p>
+            </div>
+            <div className="relative max-w-3xl mx-auto">
+                <Quote className="absolute -top-4 -left-4 w-10 h-10 text-secondary" />
+                <p className="text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Psicóloga e neuropsicóloga com sólida formação acadêmica (PUC-SP e USP), e coautora do livro “PNL Humanizada”. Minha paixão é integrar técnica e um profundo entendimento da individualidade de cada paciente.
+                </p>
             </div>
             <div className="flex justify-center">
               <Button asChild variant="link">
@@ -157,7 +155,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t">
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t bg-secondary">
           <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl">
