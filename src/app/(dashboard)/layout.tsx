@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -35,22 +36,34 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Icons } from '@/components/icons';
+import { AuthProvider, useAuth } from '@/lib/firebase/auth';
+import { logout } from '@/lib/firebase/auth.ts';
+import { useRouter } from 'next/navigation';
 
 const menuItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/calendar', label: 'Agenda', icon: Calendar },
-  { href: '/crm', label: 'Pacientes', icon: Users },
-  { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
-  { href: '/reports', label: 'Relatórios', icon: FileText },
-  { href: '/blog', label: 'Blog', icon: Newspaper },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'secretary', 'finance', 'marketing', 'readonly', 'professional'] },
+  { href: '/calendar', label: 'Agenda', icon: Calendar, roles: ['admin', 'secretary', 'professional'] },
+  { href: '/crm', label: 'Pacientes', icon: Users, roles: ['admin', 'secretary', 'professional'] },
+  { href: '/campaigns', label: 'Campanhas', icon: MessageSquare, roles: ['admin', 'marketing'] },
+  { href: '/reports', label: 'Relatórios', icon: FileText, roles: ['admin', 'finance'] },
+  { href: '/blog', label: 'Blog', icon: Newspaper, roles: ['admin', 'marketing'] },
 ];
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user, userRole } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+  };
+  
+  if (!user) {
+    return null; // Or a loading spinner
+  }
+
+  const allowedMenuItems = menuItems.filter(item => item.roles.includes(userRole || ''));
 
   return (
     <SidebarProvider>
@@ -66,7 +79,7 @@ export default function DashboardLayout({
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {allowedMenuItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <Link href={item.href} legacyBehavior passHref>
                     <SidebarMenuButton
@@ -94,12 +107,10 @@ export default function DashboardLayout({
                     </Link>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                     <Link href="/" legacyBehavior passHref>
-                        <SidebarMenuButton tooltip={{ children: 'Sair', side: 'right' }}>
-                            <LogOut />
-                            <span>Sair</span>
-                        </SidebarMenuButton>
-                    </Link>
+                    <SidebarMenuButton tooltip={{ children: 'Sair', side: 'right' }} onClick={handleLogout}>
+                        <LogOut />
+                        <span>Sair</span>
+                    </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>
           </SidebarFooter>
@@ -118,15 +129,15 @@ export default function DashboardLayout({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                <DropdownMenuLabel>Minha Conta ({userRole})</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/settings">Configurações</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>Suporte</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/">Sair</Link>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Sair
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -137,5 +148,18 @@ export default function DashboardLayout({
         </SidebarInset>
       </div>
     </SidebarProvider>
+  );
+}
+
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <AuthProvider>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </AuthProvider>
   );
 }

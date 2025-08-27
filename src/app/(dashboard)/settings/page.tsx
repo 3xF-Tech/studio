@@ -1,3 +1,6 @@
+
+'use client';
+
 import {
   Card,
   CardContent,
@@ -10,8 +13,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import withAuth from '@/components/auth/withAuth';
 
-export default function SettingsPage() {
+function SettingsPage() {
   return (
     <div className="py-4 space-y-4">
       <h1 className="text-2xl font-headline font-bold">Settings</h1>
@@ -59,3 +63,7 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+
+// Protect this page, only allow 'admin' role
+export default withAuth(SettingsPage, ['admin']);
