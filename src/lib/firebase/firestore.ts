@@ -1,6 +1,6 @@
 
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "./config";
+import { db } from "./config"; // Import centralized db instance
 
 type UserProfile = {
   name: string;
@@ -17,7 +17,7 @@ export const getUser = async (uid: string): Promise<UserProfile | null> => {
     // Return the user data from firestore
     return docSnap.data() as UserProfile;
   } else {
-    console.log("No such user profile!");
+    console.log("No such user profile for UID:", uid);
     return null;
   }
 };

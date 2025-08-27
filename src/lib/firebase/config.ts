@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
+import { getAuth, type Auth } from "firebase/auth";
+import { getFirestore, type Firestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration that you got from the tool
 // IMPORTANT: DO NOT MODIFY THIS OBJECT
@@ -15,9 +15,9 @@ const firebaseConfig = {
   "messagingSenderId": "615800990371"
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(app);
-const auth = getAuth(app);
+// Initialize Firebase for SSR
+const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const auth: Auth = getAuth(app);
+const db: Firestore = getFirestore(app);
 
 export { app, db, auth };
