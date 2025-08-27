@@ -1,6 +1,8 @@
 
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "./config"; // Import centralized db instance
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { app } from "./config"; // Import centralized app instance
+
+const db = getFirestore(app);
 
 type UserProfile = {
   name: string;
