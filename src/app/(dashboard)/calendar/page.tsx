@@ -1,3 +1,7 @@
+
+'use client';
+
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -10,10 +14,75 @@ import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { mockAppointments } from '@/lib/data';
-import { PlusCircle, Blocks } from 'lucide-react';
+import { PlusCircle, Blocks, LoaderCircle } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
 
 export default function CalendarPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [patientName, setPatientName] = useState('');
+  const [procedure, setProcedure] = useState('');
+  const [availability, setAvailability] = useState('');
+  const { toast } = useToast();
+
+  const handleSchedule = async () => {
+    if (!patientName || !procedure || !availability) {
+      toast({
+        variant: 'destructive',
+        title: 'Campos obrigatórios',
+        description: 'Por favor, preencha todos os campos.',
+      });
+      return;
+    }
+
+    setIsScheduling(true);
+    try {
+      const result = await scheduleAppointment({
+        patientName,
+        procedure,
+        availability,
+      });
+      toast({
+        title: 'Agendamento Sugerido pela IA',
+        description: (
+          <div className="text-sm">
+            <p className="mb-2">{result.confirmationMessage}</p>
+            <ul className="list-disc pl-5">
+              {result.suggestedAppointmentTimes.map((time) => (
+                <li key={time}>{time}</li>
+              ))}
+            </ul>
+          </div>
+        ),
+      });
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Scheduling error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao Agendar',
+        description: 'Não foi possível obter sugestões de agendamento da IA.',
+      });
+    } finally {
+      setIsScheduling(false);
+    }
+  };
+
+
   return (
+    <>
     <div className="py-4">
     <Tabs defaultValue="month" className="w-full">
       <div className="flex items-center mb-4">
@@ -30,7 +99,7 @@ export default function CalendarPage() {
               Clear Period
             </span>
           </Button>
-          <Button size="sm" className="h-8 gap-1">
+          <Button size="sm" className="h-8 gap-1" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               New Appointment
@@ -113,5 +182,60 @@ export default function CalendarPage() {
       </div>
     </Tabs>
     </div>
+     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>New AI-Assisted Appointment</DialogTitle>
+            <DialogDescription>
+              Provide patient details and let the AI suggest the best times.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="patient-name" className="text-right">
+                Patient Name
+              </Label>
+              <Input
+                id="patient-name"
+                value={patientName}
+                onChange={(e) => setPatientName(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="procedure" className="text-right">
+                Procedure
+              </Label>
+              <Input
+                id="procedure"
+                value={procedure}
+                onChange={(e) => setProcedure(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="availability" className="text-right">
+                Availability
+              </Label>
+              <Textarea
+                id="availability"
+                placeholder="e.g., 'Tuesdays after 3 PM', 'Any weekday morning'"
+                value={availability}
+                onChange={(e) => setAvailability(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSchedule} disabled={isScheduling}>
+              {isScheduling ? (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Get AI Suggestions
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
