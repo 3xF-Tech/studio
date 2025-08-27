@@ -78,13 +78,13 @@ export default function Home() {
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
               <div className="flex flex-col justify-center space-y-6">
                  <div className="space-y-4">
-                   <p className="text-primary font-semibold tracking-wide uppercase">
+                   <p className="text-primary font-semibold tracking-wide uppercase font-body">
                         Psicóloga Clínica | Neuropsicóloga USP
                    </p>
                   <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Cuidado e Expertise para sua Saúde Mental
                   </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl font-body">
                     Com 24 anos de experiência, integro neuropsicologia, psicodrama e PNL para oferecer um atendimento completo e humanizado.
                   </p>
                 </div>
@@ -114,11 +114,11 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                 <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Nossa Especialidade Principal</div>
+                 <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary font-body">Nossa Especialidade Principal</div>
                 <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">
                   Avaliação Neuropsicológica
                 </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body">
                   Um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idosos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
                 </p>
               </div>
@@ -128,7 +128,7 @@ export default function Home() {
                     <CardHeader>
                         <CardTitle className="font-headline text-2xl">Principais Objetivos da Avaliação</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 font-body">
                         {assessmentObjectives.map((objective, index) => (
                             <div key={index} className="flex items-start gap-3">
                                 <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
@@ -144,16 +144,16 @@ export default function Home() {
         <section id="about" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 lg:gap-12">
             <div className="space-y-4">
-               <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">Sobre Mim</div>
+               <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary font-body">Sobre Mim</div>
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
                 Fabiana Carvalhal
               </h2>
-                 <p className="max-w-xl mx-auto text-muted-foreground font-headline">Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL</p>
+                 <p className="max-w-xl mx-auto text-muted-foreground font-body">Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL</p>
             </div>
             <div className="relative max-w-3xl mx-auto">
                 <Quote className="absolute -top-6 -left-6 w-12 h-12 text-secondary/50 hidden md:block" />
                  <Card>
-                    <CardContent className="p-8 text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                    <CardContent className="p-8 text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body">
                       Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos. Sou coautora do livro “PNL Humanizada” e minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
                     </CardContent>
                 </Card>
@@ -172,12 +172,12 @@ export default function Home() {
             <div className="container px-4 md:px-6">
                  <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
                     <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">O que os Pacientes Dizem</h2>
-                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">Depoimentos de quem já trilhou essa jornada conosco.</p>
+                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed font-body">Depoimentos de quem já trilhou essa jornada conosco.</p>
                 </div>
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {testimonials.map((testimonial, index) => (
                         <Card key={index} className="flex flex-col bg-background/50">
-                            <CardContent className="pt-6 flex flex-col flex-grow">
+                            <CardContent className="pt-6 flex flex-col flex-grow font-body">
                                 <Quote className="w-8 h-8 text-primary mb-4" />
                                 <p className="text-muted-foreground mb-4 flex-grow">{testimonial.quote}</p>
                                 <p className="font-semibold mt-auto">{testimonial.author}</p>
@@ -194,7 +194,7 @@ export default function Home() {
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl">
                 Inicie a sua jornada
               </h2>
-              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body">
                 Pronto para explorar as possibilidades? Fale com minha assistente de IA para tirar dúvidas ou agende sua primeira consulta. Você também pode me contatar diretamente pelo WhatsApp.
               </p>
             </div>
@@ -205,7 +205,7 @@ export default function Home() {
                         Conversar no WhatsApp
                     </a>
                  </Button>
-               <p className="text-xs text-muted-foreground">
+               <p className="text-xs text-muted-foreground font-body">
                  Clique no ícone no canto da tela para falar com a assistente de IA 24/7.
                </p>
              </div>
@@ -213,7 +213,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t font-body">
         <p className="text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} Fabiana Carvalhal. Todos os direitos reservados.
         </p>
