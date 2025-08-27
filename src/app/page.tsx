@@ -1,18 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
   BrainCircuit,
-  Users,
-  NotebookText,
   ChevronRight,
   Quote,
   CheckCircle,
   MessageCircle,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
-import ChatTriggerButton from '@/components/chat-trigger-button';
 
 export default function Home() {
   const assessmentObjectives = [
@@ -40,64 +37,55 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="px-4 lg:px-6 h-16 flex items-center bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b">
+      <header className="px-4 lg:px-6 h-16 flex items-center bg-background/90 backdrop-blur-sm sticky top-0 z-50 border-b">
         <Link href="/" className="flex items-center justify-center" prefetch={false}>
            <BrainCircuit className="h-6 w-6 text-primary" />
-          <span className="ml-2 text-xl font-headline font-bold">
+          <span className="ml-3 text-xl font-headline font-bold">
             Fabiana Carvalhal
           </span>
         </Link>
-        <nav className="ml-auto hidden md:flex gap-4 sm:gap-6">
+        <nav className="ml-auto flex items-center gap-4 sm:gap-6">
           <Link
             href="#services"
-            className="text-sm font-medium hover:underline underline-offset-4"
+            className="text-sm font-medium hover:underline underline-offset-4 hidden sm:block"
             prefetch={false}
           >
             Serviços
           </Link>
           <Link
             href="#about"
-            className="text-sm font-medium hover:underline underline-offset-4"
+            className="text-sm font-medium hover:underline underline-offset-4 hidden sm:block"
             prefetch={false}
           >
             Sobre
           </Link>
            <Link
             href="/blog"
-            className="text-sm font-medium hover:underline underline-offset-4"
+            className="text-sm font-medium hover:underline underline-offset-4 hidden sm:block"
             prefetch={false}
           >
             Blog
           </Link>
-          <Link
-            href="#contact"
-            className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            Contato
-          </Link>
+          <Button asChild>
+            <Link href="/login">Área do Cliente</Link>
+          </Button>
         </nav>
-         <div className="ml-auto md:hidden">
-            <Button asChild variant="outline">
-                <Link href="/login">Área do Cliente</Link>
-            </Button>
-        </div>
       </header>
+
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-secondary/30">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-40 bg-secondary/30">
           <div className="container px-4 md:px-6">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-4">
-                   <div className="text-primary font-semibold tracking-wide">
-                        <p>Psicóloga Clínica | Neuropsicóloga USP</p>
-                        <p>Psicodramatista PUC | Trainer PNL</p>
-                   </div>
-                  <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-6xl xl:text-7xl/none">
+              <div className="flex flex-col justify-center space-y-6">
+                 <div className="space-y-4">
+                   <p className="text-primary font-semibold tracking-wide uppercase">
+                        Psicóloga Clínica | Neuropsicóloga USP
+                   </p>
+                  <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Cuidado e Expertise para sua Saúde Mental
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos.
+                    Com 24 anos de experiência, integro neuropsicologia, psicodrama e PNL para oferecer um atendimento completo e humanizado.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -106,19 +94,16 @@ export default function Home() {
                       Agende uma Conversa
                     </a>
                   </Button>
-                  <Button asChild size="lg" variant="outline">
-                     <Link href="/login">Área do Cliente</Link>
-                  </Button>
                 </div>
               </div>
-                <div className="relative w-full max-w-md mx-auto lg:mx-0 flex items-center justify-center">
+                <div className="flex items-center justify-center">
                     <Image
                         src="https://storage.googleapis.com/pancake-static/p/22564-5ca4f5eb03e591154d8038c41a040159c9e6a11e88853344d32232a0e5b7e736.jpg?v=1737239873877530"
-                        width={500}
-                        height={600}
+                        width={450}
+                        height={550}
                         alt="Dra. Fabiana Carvalhal"
                         data-ai-hint="professional woman psychologist smiling"
-                        className="relative mx-auto overflow-hidden object-contain"
+                        className="rounded-lg object-cover w-full h-auto max-w-sm"
                     />
                 </div>
             </div>
@@ -129,17 +114,17 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Nossa Especialidade Principal</div>
+                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary">Nossa Especialidade Principal</div>
                 <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">
                   Avaliação Neuropsicológica
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idodos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
+                  Um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idosos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
                 </p>
               </div>
             </div>
-             <div className="mx-auto grid max-w-5xl items-start gap-8 mt-12">
-                <Card className="bg-background/50">
+             <div className="mx-auto grid max-w-5xl gap-8 mt-12">
+                <Card className="bg-background/50 border-2">
                     <CardHeader>
                         <CardTitle className="font-headline text-2xl">Principais Objetivos da Avaliação</CardTitle>
                     </CardHeader>
@@ -156,38 +141,22 @@ export default function Home() {
           </div>
         </section>
         
-        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
-            <div className="container px-4 md:px-6">
-                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-                    <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">O que os Pacientes Dizem</h2>
-                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">Depoimentos de quem já trilhou essa jornada conosco.</p>
-                </div>
-                <div className="grid gap-8 md:grid-cols-3">
-                    {testimonials.map((testimonial, index) => (
-                        <Card key={index}>
-                            <CardContent className="pt-6">
-                                <Quote className="w-8 h-8 text-primary mb-4" />
-                                <p className="text-muted-foreground mb-4">{testimonial.quote}</p>
-                                <p className="font-semibold">{testimonial.author}</p>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-        </section>
-
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
           <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 lg:gap-12">
-            <div className="space-y-3">
+            <div className="space-y-4">
+               <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm font-semibold text-primary">Sobre Mim</div>
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
-                Sobre Fabiana Carvalhal
+                Fabiana Carvalhal
               </h2>
+                 <p className="max-w-xl mx-auto text-muted-foreground">Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL</p>
             </div>
             <div className="relative max-w-3xl mx-auto">
-                <Quote className="absolute -top-4 -left-4 w-12 h-12 text-secondary" />
-                <p className="text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Psicóloga e neuropsicóloga com sólida formação acadêmica (PUC-SP e USP), e coautora do livro “PNL Humanizada”. Minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
-                </p>
+                <Quote className="absolute -top-6 -left-6 w-12 h-12 text-secondary hidden md:block" />
+                 <Card>
+                    <CardContent className="p-8 text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                      Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos. Sou coautora do livro “PNL Humanizada” e minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
+                    </CardContent>
+                </Card>
             </div>
             <div className="flex justify-center">
               <Button asChild variant="link" size="lg">
@@ -197,6 +166,26 @@ export default function Home() {
               </Button>
             </div>
           </div>
+        </section>
+
+        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32">
+            <div className="container px-4 md:px-6">
+                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+                    <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">O que os Pacientes Dizem</h2>
+                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">Depoimentos de quem já trilhou essa jornada conosco.</p>
+                </div>
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {testimonials.map((testimonial, index) => (
+                        <Card key={index} className="flex flex-col">
+                            <CardContent className="pt-6 flex flex-col flex-grow">
+                                <Quote className="w-8 h-8 text-primary mb-4" />
+                                <p className="text-muted-foreground mb-4 flex-grow">{testimonial.quote}</p>
+                                <p className="font-semibold mt-auto">{testimonial.author}</p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </div>
         </section>
 
         <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t bg-secondary/30">
@@ -209,8 +198,7 @@ export default function Home() {
                 Pronto para explorar as possibilidades? Fale com minha assistente de IA para tirar dúvidas ou agende sua primeira consulta. Você também pode me contatar diretamente pelo WhatsApp.
               </p>
             </div>
-             <div className="mx-auto w-full max-w-sm space-y-4">
-                <ChatTriggerButton />
+             <div className="mx-auto w-full max-w-sm space-y-2">
                  <Button variant="outline" size="lg" className="w-full" asChild>
                     <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">
                         <MessageCircle className="w-5 h-5 mr-2" />
@@ -218,12 +206,13 @@ export default function Home() {
                     </a>
                  </Button>
                <p className="text-xs text-muted-foreground">
-                 A assistente virtual de IA está disponível 24/7 para te ajudar.
+                 Clique no ícone no canto da tela para falar com a assistente de IA 24/7.
                </p>
              </div>
           </div>
         </section>
       </main>
+
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} Fabiana Carvalhal. Todos os direitos reservados.
