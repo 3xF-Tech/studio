@@ -3,8 +3,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { type User } from 'firebase/auth';
-import { onAuthStateChanged } from './auth.ts'; // Corrected import
-import { auth } from './config'; // Import the initialized auth instance
+import { onAuthStateChanged } from './auth.ts'; // Corrected import to the .ts file
 import { getUser } from './firestore'; // Import getUser here
 
 type AuthContextType = {
@@ -25,8 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Pass the initialized auth instance directly to the listener
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    // Pass the callback directly to the listener
+    const unsubscribe = onAuthStateChanged(async (user) => {
       setUser(user);
       if (user) {
         // Special case for demo admin user
