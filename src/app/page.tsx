@@ -73,10 +73,10 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section className="w-full pt-6 pb-12 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-1 lg:gap-12 xl:grid-cols-1">
-              <div className="flex flex-col justify-center space-y-4 text-center">
+        <section className="w-full pt-12 pb-12 md:pt-16 md:pb-20 lg:pt-20 lg:pb-28">
+           <div className="container px-4 md:px-6">
+            <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+              <div className="flex flex-col justify-center space-y-6">
                  <div className="space-y-4">
                    <p className="text-primary font-semibold tracking-wide uppercase font-body">
                         Psicóloga Clínica | Neuropsicóloga USP
@@ -84,17 +84,26 @@ export default function Home() {
                   <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Cuidado e Expertise para sua Saúde Mental
                   </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl mx-auto font-body">
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl font-body">
                     Com 24 anos de experiência, integro neuropsicologia, psicodrama e PNL para oferecer um atendimento completo e humanizado.
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
+                <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg">
                     <a href="#contact">
                       Agende uma Conversa
                     </a>
                   </Button>
                 </div>
+              </div>
+                <div className="flex items-center justify-center">
+                 <Image
+                    src="https://storage.googleapis.com/pancake-static/p/22564-5ca4f5eb03e591154d8038c41a040159c9e6a11e88853344d32232a0e5b7e736.jpg?v=1737239873877530"
+                    width={450}
+                    height={550}
+                    alt="Dra. Fabiana Carvalhal"
+                    className="rounded-lg object-cover w-full h-auto max-w-sm shadow-2xl"
+                />
               </div>
             </div>
           </div>
@@ -199,33 +208,6 @@ export default function Home() {
                  Clique no ícone no canto da tela para falar com a assistente de IA 24/7.
                </p>
              </div>
-          </div>
-        </section>
-         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-10 sm:px-10 md:gap-16 md:grid-cols-2">
-              <div className="space-y-4">
-                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-body">Sobre Mim</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline">Fabiana Carvalhal</h2>
-                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body">
-                    Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL
-                </p>
-                 <Card>
-                    <CardContent className="p-6 text-muted-foreground font-body">
-                      Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos. Sou coautora do livro “PNL Humanizada” e minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
-                    </CardContent>
-                </Card>
-              </div>
-              <div className="flex items-center justify-center">
-                 <Image
-                    src="https://storage.googleapis.com/pancake-static/p/22564-5ca4f5eb03e591154d8038c41a040159c9e6a11e88853344d32232a0e5b7e736.jpg?v=1737239873877530"
-                    width={450}
-                    height={550}
-                    alt="Dra. Fabiana Carvalhal"
-                    className="rounded-lg object-cover w-full h-auto max-w-sm"
-                />
-              </div>
-            </div>
           </div>
         </section>
       </main>
