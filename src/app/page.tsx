@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Quote,
   CheckCircle,
+  MessageCircle,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
 import ChatTriggerButton from '@/components/chat-trigger-button';
@@ -21,6 +22,21 @@ export default function Home() {
       "Acompanhar a evolução do quadro em relação a tratamentos cirúrgicos, medicamentos ou de reabilitação cognitiva;",
       "Colaborar com o planejamento do tratamento multidisciplinar.",
   ];
+
+  const testimonials = [
+    {
+        quote: "A Dra. Fabiana foi fundamental no meu processo de autoconhecimento. Sua abordagem humana e técnica fez toda a diferença.",
+        author: "J.S., Paciente de Terapia"
+    },
+    {
+        quote: "A avaliação neuropsicológica do meu filho foi um divisor de águas. Finalmente entendemos suas dificuldades e como ajudá-lo.",
+        author: "M.P., Mãe de Paciente"
+    },
+     {
+        quote: "O profissionalismo e a empatia da Fabiana são admiráveis. Me senti acolhida e compreendida desde a primeira consulta.",
+        author: "A.L., Paciente de Psicodrama"
+    }
+  ]
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -45,6 +61,13 @@ export default function Home() {
             prefetch={false}
           >
             Sobre
+          </Link>
+           <Link
+            href="/blog"
+            className="text-sm font-medium hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Blog
           </Link>
           <Link
             href="#contact"
@@ -111,7 +134,7 @@ export default function Home() {
                   Avaliação Neuropsicológica
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idosos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
+                  Um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idodos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
                 </p>
               </div>
             </div>
@@ -132,8 +155,28 @@ export default function Home() {
             </div>
           </div>
         </section>
+        
+        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
+            <div className="container px-4 md:px-6">
+                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+                    <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">O que os Pacientes Dizem</h2>
+                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">Depoimentos de quem já trilhou essa jornada conosco.</p>
+                </div>
+                <div className="grid gap-8 md:grid-cols-3">
+                    {testimonials.map((testimonial, index) => (
+                        <Card key={index}>
+                            <CardContent className="pt-6">
+                                <Quote className="w-8 h-8 text-primary mb-4" />
+                                <p className="text-muted-foreground mb-4">{testimonial.quote}</p>
+                                <p className="font-semibold">{testimonial.author}</p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </section>
 
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 lg:gap-12">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
@@ -156,20 +199,26 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t">
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t bg-secondary/30">
           <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl">
                 Inicie a sua jornada
               </h2>
               <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Pronto para explorar as possibilidades? Fale com minha assistente de IA para tirar dúvidas ou agendar sua primeira consulta.
+                Pronto para explorar as possibilidades? Fale com minha assistente de IA para tirar dúvidas ou agende sua primeira consulta. Você também pode me contatar diretamente pelo WhatsApp.
               </p>
             </div>
-             <div className="mx-auto w-full max-w-sm space-y-2">
+             <div className="mx-auto w-full max-w-sm space-y-4">
                 <ChatTriggerButton />
+                 <Button variant="outline" size="lg" className="w-full" asChild>
+                    <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="w-5 h-5 mr-2" />
+                        Conversar no WhatsApp
+                    </a>
+                 </Button>
                <p className="text-xs text-muted-foreground">
-                 Minha IA está disponível 24/7 para te ajudar.
+                 A assistente virtual de IA está disponível 24/7 para te ajudar.
                </p>
              </div>
           </div>

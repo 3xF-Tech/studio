@@ -6,10 +6,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-export default function PublicationsPage() {
+export default function BlogPage() {
   return (
     <div className="py-4 space-y-4">
-      <h1 className="text-2xl font-headline font-bold">Publicações</h1>
+      <h1 className="text-2xl font-headline font-bold">Blog</h1>
       <Card>
         <CardHeader>
           <CardTitle>Artigos no Portal Sinapsys</CardTitle>

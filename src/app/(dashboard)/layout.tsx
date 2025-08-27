@@ -42,7 +42,7 @@ const menuItems = [
   { href: '/crm', label: 'Pacientes', icon: Users },
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
   { href: '/reports', label: 'Relatórios', icon: FileText },
-  { href: '/publications', label: 'Publicações', icon: Newspaper },
+  { href: '/blog', label: 'Blog', icon: Newspaper },
 ];
 
 export default function DashboardLayout({
