@@ -8,30 +8,18 @@ import {
   NotebookText,
   ChevronRight,
   Quote,
+  CheckCircle,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
 import ChatTriggerButton from '@/components/chat-trigger-button';
 
 export default function Home() {
-  const services = [
-    {
-      icon: <BrainCircuit className="w-8 h-8 text-primary" />,
-      title: 'Neuropsicologia',
-      description:
-        'Avaliação e reabilitação cognitiva em contextos clínicos, hospitalares e forenses.',
-    },
-    {
-      icon: <Users className="w-8 h-8 text-primary" />,
-      title: 'Psicodrama',
-      description:
-        'Abordagem terapêutica em grupo ou individual para explorar e resolver conflitos.',
-    },
-    {
-      icon: <NotebookText className="w-8 h-8 text-primary" />,
-      title: 'PNL Sistêmica',
-      description:
-        'Trainer em Programação Neurolinguística para desenvolvimento pessoal e profissional.',
-    },
+  const assessmentObjectives = [
+      "Estabelecer se há presença ou não de algum transtorno cognitivo ou alterações comportamentais;",
+      "Avaliar o nível de funcionamento cognitivo atual;",
+      "Auxiliar no diagnóstico diferencial a fim de evidenciar informações sobre o funcionamento cognitivo e comportamental;",
+      "Acompanhar a evolução do quadro em relação a tratamentos cirúrgicos, medicamentos ou de reabilitação cognitiva;",
+      "Colaborar com o planejamento do tratamento multidisciplinar.",
   ];
 
   return (
@@ -78,14 +66,15 @@ export default function Home() {
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-4">
-                   <p className="text-primary md:text-xl font-semibold">
-                     Psicóloga Clínica & Neuropsicóloga
-                  </p>
+                   <div className="text-primary font-semibold tracking-wide">
+                        <p>Psicóloga Clínica | Neuropsicóloga USP</p>
+                        <p>Psicodramatista PUC | Trainer PNL</p>
+                   </div>
                   <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-6xl xl:text-7xl/none">
-                    Cuidado, Desenvolvimento e Saúde Mental
+                    Cuidado e Expertise para sua Saúde Mental
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Com uma abordagem que integra Psicodrama e PNL Sistêmica, ofereço suporte para seu bem-estar e crescimento.
+                    Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -117,31 +106,29 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Nossas Especialidades</div>
+                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Nossa Especialidade Principal</div>
                 <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">
-                  Cuidado sob medida para você
+                  Avaliação Neuropsicológica
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                 Atuação diversificada em contextos clínicos, hospitalares, escolares e organizacionais, com foco na sua necessidade.
+                  Um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idosos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 mt-12">
-              {services.map((service, index) => (
-                <Card key={index} className="bg-background hover:shadow-lg transition-shadow border-0 hover:-translate-y-2 duration-300">
-                  <CardHeader className="flex flex-col items-center text-center gap-4">
-                    <div className="p-4 bg-secondary rounded-full">
-                        {service.icon}
-                    </div>
-                    <CardTitle className="font-headline">{service.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-sm text-muted-foreground">
-                      {service.description}
-                    </p>
-                  </CardContent>
+             <div className="mx-auto grid max-w-5xl items-start gap-8 mt-12">
+                <Card className="bg-background/50">
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl">Principais Objetivos da Avaliação</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {assessmentObjectives.map((objective, index) => (
+                            <div key={index} className="flex items-start gap-3">
+                                <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                                <p className="text-muted-foreground">{objective}</p>
+                            </div>
+                        ))}
+                    </CardContent>
                 </Card>
-              ))}
             </div>
           </div>
         </section>
