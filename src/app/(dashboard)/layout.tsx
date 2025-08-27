@@ -37,7 +37,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Icons } from '@/components/icons';
 import { AuthProvider, useAuth } from '@/lib/firebase/auth.tsx';
-import { logout } from '@/lib/firebase/auth';
+import { logout } from '@/lib/firebase/auth.ts';
 import { useRouter } from 'next/navigation';
 
 const menuItems = [
