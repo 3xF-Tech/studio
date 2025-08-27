@@ -4,11 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  Users,
   Calendar,
-  Megaphone,
-  CircleDollarSign,
-  BarChart,
   Settings,
   PanelLeft,
   LogOut,
@@ -38,11 +34,7 @@ import { Icons } from '@/components/icons';
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/crm', label: 'Patient CRM', icon: Users },
   { href: '/dashboard/calendar', label: 'Calendar', icon: Calendar },
-  { href: '/dashboard/campaigns', label: 'Campaigns', icon: Megaphone },
-  { href: '/dashboard/finance', label: 'Finance', icon: CircleDollarSign },
-  { href: '/dashboard/reports', label: 'Reports', icon: BarChart },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
 

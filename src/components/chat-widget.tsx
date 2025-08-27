@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, User, X, LoaderCircle, Sparkles } from 'lucide-react';
+import { Bot, Send, User, X, LoaderCircle, Sparkles, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -27,9 +27,9 @@ type Message = {
 
 type FlowState = 
   | 'idle'
-  | 'qualifying_procedure'
+  | 'qualifying_interest'
   | 'qualifying_info'
-  | 'scheduling_procedure'
+  | 'scheduling_reason'
   | 'scheduling_availability';
 
 export default function ChatWidget() {
@@ -70,15 +70,15 @@ export default function ChatWidget() {
     setFlowData({});
     addMessage(
       <div>
-        <p>Hello! I'm the virtual assistant for Carvalhal Aesthetics.</p>
-        <p>How can I help you today?</p>
+        <p>Olá! Sou a assistente virtual de Fabiana Carvalhal.</p>
+        <p>Como posso te ajudar hoje?</p>
         <div className="flex flex-col gap-2 mt-4">
           <Button variant="outline" size="sm" onClick={() => startQualificationFlow()}>
             <Sparkles className="w-4 h-4 mr-2" />
-            Check if I qualify for a procedure
+            Saber mais sobre as abordagens
           </Button>
           <Button variant="outline" size="sm" onClick={() => startSchedulingFlow()}>
-             Schedule an appointment
+             Agendar uma consulta
           </Button>
         </div>
       </div>,
@@ -87,15 +87,15 @@ export default function ChatWidget() {
   };
 
   const startQualificationFlow = () => {
-    addMessage("Check if I qualify for a procedure", true);
-    addMessage("Of course! What procedure are you interested in?", false);
-    setFlowState('qualifying_procedure');
+    addMessage("Saber mais sobre as abordagens", true);
+    addMessage("Com certeza! Sobre qual área você gostaria de saber mais: Neuropsicologia, Psicodrama ou PNL Sistêmica?", false);
+    setFlowState('qualifying_interest');
   };
 
   const startSchedulingFlow = () => {
-    addMessage("Schedule an appointment", true);
-    addMessage("I can help with that. What is the desired procedure?", false);
-    setFlowState('scheduling_procedure');
+    addMessage("Agendar uma consulta", true);
+    addMessage("Posso ajudar com isso. Qual é o motivo da consulta?", false);
+    setFlowState('scheduling_reason');
   };
 
   const handleUserInput = async () => {
@@ -107,35 +107,35 @@ export default function ChatWidget() {
     setIsLoading(true);
 
     try {
-      if (flowState === 'qualifying_procedure') {
+      if (flowState === 'qualifying_interest') {
         setFlowData({ procedureOfInterest: userInput });
         setFlowState('qualifying_info');
-        addMessage("Thank you. Please tell me a bit about your concerns, relevant medical history, and desired outcomes.", false);
+        addMessage("Obrigada. Por favor, me diga um pouco mais sobre o seu interesse ou o que você gostaria de entender sobre essa abordagem.", false);
       } else if (flowState === 'qualifying_info') {
         const fullData: LeadQualificationInput = {
           procedureOfInterest: flowData.procedureOfInterest!,
           patientInformation: userInput,
-          knowledgeBase: "General knowledge base: patients should be over 18, not pregnant, and in good health. Specific contraindications apply per procedure.",
+          knowledgeBase: "Fabiana Carvalhal é psicóloga clínica e neuropsicóloga, com pós-graduação em Psicodrama e especialização em Neuropsicologia e Reabilitação Cognitiva. É também trainer em PNL Sistêmica. Atua em contextos clínicos, hospitalares, escolares e organizacionais.",
         };
         const result = await leadQualification(fullData);
         addMessage(
           <div className="space-y-2">
-            <p><strong>Qualification Assessment:</strong> {result.isQualified ? "You are a potential candidate!" : "May not be suitable"}</p>
-            <p><strong>Reason:</strong> {result.reason}</p>
-            <p><strong>Next Steps:</strong> {result.nextSteps}</p>
-            <p className="text-xs text-muted-foreground mt-2">Note: This is a pre-qualification and not a medical diagnosis. A full consultation is required.</p>
+            <p><strong>Análise:</strong> {result.isQualified ? "É uma abordagem adequada!" : "Talvez outra abordagem seja melhor"}</p>
+            <p><strong>Recomendação:</strong> {result.reason}</p>
+            <p><strong>Próximos Passos:</strong> {result.nextSteps}</p>
+            <p className="text-xs text-muted-foreground mt-2">Nota: Esta é uma pré-análise e não um diagnóstico. Uma consulta completa é necessária para um direcionamento adequado.</p>
           </div>,
           false
         );
         setFlowState('idle');
         addMessage(
-            <Button variant="link" size="sm" onClick={startConversation} className="p-0 h-auto">Start Over</Button>,
+            <Button variant="link" size="sm" onClick={startConversation} className="p-0 h-auto">Começar de Novo</Button>,
             false
         );
-      } else if (flowState === 'scheduling_procedure') {
-         setFlowData({ patientName: 'Patient', procedure: userInput });
+      } else if (flowState === 'scheduling_reason') {
+         setFlowData({ patientName: 'Cliente', procedure: userInput });
          setFlowState('scheduling_availability');
-         addMessage("Great. What is your general availability? (e.g., 'weekday afternoons')", false);
+         addMessage("Entendido. Qual é a sua disponibilidade geral? (ex: 'tardes durante a semana')", false);
       } else if (flowState === 'scheduling_availability') {
         const scheduleData: ScheduleAppointmentInput = {
             patientName: flowData.patientName!,
@@ -146,7 +146,7 @@ export default function ChatWidget() {
         addMessage(
             <div>
                 <p>{result.confirmationMessage}</p>
-                <p>Here are some suggested times:</p>
+                <p>Aqui estão alguns horários sugeridos:</p>
                 <ul className="list-disc pl-5 mt-2">
                     {result.suggestedAppointmentTimes.map((time, i) => <li key={i}>{time}</li>)}
                 </ul>
@@ -155,20 +155,20 @@ export default function ChatWidget() {
         );
         setFlowState('idle');
         addMessage(
-            <Button variant="link" size="sm" onClick={startConversation} className="p-0 h-auto">Start Over</Button>,
+            <Button variant="link" size="sm" onClick={startConversation} className="p-0 h-auto">Começar de Novo</Button>,
             false
         );
       } else {
-        addMessage("I'm not sure how to handle that. Please choose an option to start.", false);
+        addMessage("Não tenho certeza de como lidar com isso. Por favor, escolha uma opção para começar.", false);
         startConversation();
       }
     } catch (error) {
       console.error('AI Flow Error:', error);
-      addMessage("I'm sorry, an error occurred. Please try again later.", false);
+      addMessage("Desculpe, ocorreu um erro. Por favor, tente novamente mais tarde.", false);
       toast({
         variant: "destructive",
-        title: "AI Error",
-        description: "Could not process the request with the AI agent.",
+        title: "Erro de IA",
+        description: "Não foi possível processar a solicitação com o agente de IA.",
       })
     } finally {
       setIsLoading(false);
@@ -185,12 +185,12 @@ export default function ChatWidget() {
       <SheetContent className="w-full sm:max-w-md flex flex-col p-0">
         <SheetHeader className="p-4 border-b">
           <SheetTitle className="flex items-center gap-2 font-headline">
-            <Bot className="w-6 h-6 text-primary" />
-            Virtual Assistant
+            <BrainCircuit className="w-6 h-6 text-primary" />
+            Assistente Virtual
           </SheetTitle>
            <SheetClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
               <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
+              <span className="sr-only">Fechar</span>
             </SheetClose>
         </SheetHeader>
         <div className="flex-1 flex flex-col bg-muted/20">
@@ -236,7 +236,7 @@ export default function ChatWidget() {
                     <Input
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    placeholder="Type your message..."
+                    placeholder="Digite sua mensagem..."
                     disabled={isLoading}
                     />
                     <Button type="submit" size="icon" disabled={isLoading}>

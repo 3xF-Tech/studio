@@ -3,10 +3,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Stethoscope,
-  Bot,
-  HeartHandshake,
-  Sparkles,
+  BrainCircuit,
+  Users,
+  NotebookText,
   ChevronRight,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
@@ -14,22 +13,22 @@ import ChatWidget from '@/components/chat-widget';
 export default function Home() {
   const services = [
     {
-      icon: <Stethoscope className="w-8 h-8 text-primary" />,
-      title: 'Personalized Consultation',
+      icon: <BrainCircuit className="w-8 h-8 text-primary" />,
+      title: 'Neuropsicologia',
       description:
-        'Detailed analysis of your needs to create a unique treatment plan.',
+        'Avaliação e reabilitação cognitiva em contextos clínicos, hospitalares e forenses.',
     },
     {
-      icon: <Sparkles className="w-8 h-8 text-primary" />,
-      title: 'Advanced Aesthetics',
+      icon: <Users className="w-8 h-8 text-primary" />,
+      title: 'Psicodrama',
       description:
-        'Using the latest technologies for facial and body rejuvenation.',
+        'Abordagem terapêutica em grupo ou individual para explorar e resolver conflitos.',
     },
     {
-      icon: <HeartHandshake className="w-8 h-8 text-primary" />,
-      title: 'Holistic Care',
+      icon: <NotebookText className="w-8 h-8 text-primary" />,
+      title: 'PNL Sistêmica',
       description:
-        'A comprehensive approach that considers your well-being as a whole.',
+        'Trainer em Programação Neurolinguística para desenvolvimento pessoal e profissional.',
     },
   ];
 
@@ -37,9 +36,9 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="px-4 lg:px-6 h-14 flex items-center bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b">
         <Link href="#" className="flex items-center justify-center" prefetch={false}>
-          <Bot className="h-6 w-6 text-primary" />
+           <BrainCircuit className="h-6 w-6 text-primary" />
           <span className="ml-2 text-xl font-headline font-bold">
-            Carvalhal Aesthetics
+            Fabiana Carvalhal
           </span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
@@ -48,24 +47,24 @@ export default function Home() {
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
-            Services
+            Serviços
           </Link>
           <Link
             href="#about"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
-            About
+            Sobre
           </Link>
           <Link
             href="#contact"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
-            Contact
+            Contato
           </Link>
           <Button asChild variant="outline" size="sm">
-            <Link href="/login">Admin Login</Link>
+            <Link href="/login">Área do Cliente</Link>
           </Button>
         </nav>
       </header>
@@ -75,19 +74,20 @@ export default function Home() {
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
+                   <p className="max-w-[600px] text-primary md:text-xl font-semibold">
+                     Psicóloga Clínica & Neuropsicóloga
+                  </p>
                   <h1 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Discover Your Natural Beauty
+                    Cuidado e Desenvolvimento Humano
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Welcome to Carvalhal Aesthetics, where we combine art and
-                    science to offer personalized treatments that enhance your
-                    uniqueness.
+                    Com uma abordagem que integra Psicodrama e PNL Sistêmica, ofereço suporte para seu bem-estar e crescimento.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg">
                     <a href="#contact">
-                      Schedule a Consultation
+                      Agende uma Conversa
                     </a>
                   </Button>
                 </div>
@@ -97,7 +97,7 @@ export default function Home() {
                 width="600"
                 height="600"
                 alt="Fabiana Carvalhal"
-                data-ai-hint="professional woman portrait"
+                data-ai-hint="professional woman psychologist"
                 className="mx-auto aspect-square overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
               />
             </div>
@@ -109,14 +109,13 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-accent/10 px-3 py-1 text-sm text-accent-foreground">
-                  Our Services
+                  Áreas de Atuação
                 </div>
                 <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">
-                  Beauty, Tailored for You
+                  Cuidado, sob medida para você
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  We offer a range of advanced aesthetic treatments, all
-                  personalized to meet your specific goals and needs.
+                 Atuação diversificada em contextos clínicos, hospitalares, escolares e organizacionais, com foco na sua necessidade.
                 </p>
               </div>
             </div>
@@ -142,19 +141,16 @@ export default function Home() {
           <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6 lg:gap-10">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
-                About Fabiana Carvalhal
+                Sobre Fabiana Carvalhal
               </h2>
               <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                With a passion for aesthetics and a commitment to excellence,
-                Fabiana Carvalhal provides care that integrates technique,
-                technology, and a deep understanding of each patient's
-                individuality.
+                Psicóloga e neuropsicóloga com sólida formação acadêmica (PUC-SP e USP), e coautora do livro “PNL Humanizada”. Minha paixão é integrar técnica e um profundo entendimento da individualidade de cada paciente.
               </p>
             </div>
             <div className="flex justify-center">
               <Button asChild variant="link">
                 <a href="https://www.instagram.com/fabiana_carvalhal/" target="_blank" rel="noopener noreferrer">
-                  Follow on Instagram <ChevronRight className="w-4 h-4 ml-1" />
+                  Siga no Instagram <ChevronRight className="w-4 h-4 ml-1" />
                 </a>
               </Button>
             </div>
@@ -165,24 +161,23 @@ export default function Home() {
           <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl">
-                Start Your Journey
+                Inicie a sua jornada
               </h2>
               <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Ready to explore the possibilities? Talk to our AI assistant to
-                ask questions or schedule your first consultation.
+                Pronto para explorar as possibilidades? Fale com minha assistente de IA para tirar dúvidas ou agendar sua primeira consulta.
               </p>
             </div>
-            <div className="mx-auto w-full max-w-sm space-y-2">
-              <p className="text-xs text-muted-foreground">
-                Our AI is available 24/7 to assist you.
-              </p>
-            </div>
+             <div className="mx-auto w-full max-w-sm space-y-2">
+               <p className="text-xs text-muted-foreground">
+                 Minha IA está disponível 24/7 para te ajudar.
+               </p>
+             </div>
           </div>
         </section>
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} Carvalhal Aesthetics. All rights reserved.
+          &copy; {new Date().getFullYear()} Fabiana Carvalhal. Todos os direitos reservados.
         </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link
@@ -190,14 +185,14 @@ export default function Home() {
             className="text-xs hover:underline underline-offset-4"
             prefetch={false}
           >
-            Terms of Service
+            Termos de Serviço
           </Link>
           <Link
             href="#"
             className="text-xs hover:underline underline-offset-4"
             prefetch={false}
           >
-            Privacy
+            Privacidade
           </Link>
         </nav>
       </footer>

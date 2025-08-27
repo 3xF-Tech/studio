@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Carvalhal Aesthetics',
-  description: 'Personalized aesthetic procedures by Fabiana Carvalhal.',
+  title: 'Fabiana Carvalhal - Psicologia & Neuropsicologia',
+  description: 'Psicóloga Clínica e Neuropsicóloga. Especialista em Psicodrama e PNL Sistêmica.',
 };
 
 export default function RootLayout({
