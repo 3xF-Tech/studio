@@ -72,8 +72,8 @@ export default function Home() {
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
                <Image
                 src="https://firebasestudio-hosting.web.app/images/i2.png"
-                width="600"
-                height="600"
+                width={600}
+                height={600}
                 alt="Dra. Fabiana Carvalhal"
                 data-ai-hint="professional woman psychologist smiling"
                 className="mx-auto aspect-square overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
