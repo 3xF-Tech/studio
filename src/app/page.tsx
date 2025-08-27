@@ -101,12 +101,12 @@ export default function Home() {
               </div>
                 <div className="relative w-full max-w-md mx-auto lg:mx-0 flex items-center justify-center">
                     <Image
-                        src="https://storage.googleapis.com/pancake-static/p/22564-8ab3286f54832c3f8f175a228f411516f0d014c27806a693c3938478479344c4.png?v=1737243293817106"
+                        src="https://firebasestudio-hosting.web.app/images/fabiana-carvalhal.png"
                         width={500}
                         height={600}
                         alt="Dra. Fabiana Carvalhal"
                         data-ai-hint="professional woman psychologist smiling"
-                        className="relative mx-auto overflow-hidden object-cover"
+                        className="relative mx-auto overflow-hidden object-contain"
                     />
                 </div>
             </div>
