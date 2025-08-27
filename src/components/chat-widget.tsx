@@ -45,7 +45,7 @@ export default function ChatWidget() {
   const addMessage = (text: string | React.ReactNode, isUser: boolean) => {
     setMessages(prev => [
       ...prev,
-      { id: Date.now().toString(), text, isUser },
+      { id: `${Date.now()}-${Math.random()}`, text, isUser },
     ]);
   };
 
@@ -249,3 +249,5 @@ export default function ChatWidget() {
     </Sheet>
   );
 }
+
+    
