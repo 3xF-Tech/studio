@@ -3,7 +3,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { type User, type Auth } from 'firebase/auth';
-import { onAuthStateChanged } from './auth';
+import { onAuthStateChanged } from './auth.ts';
 import { getUser } from './firestore';
 import { type Firestore } from 'firebase/firestore';
 
