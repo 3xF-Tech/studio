@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { leadQualification, LeadQualificationInput } from '@/ai/flows/lead-qualification';
 import { scheduleAppointment, ScheduleAppointmentInput } from '@/ai/flows/appointment-scheduling';
@@ -50,10 +50,10 @@ export default function ChatWidget() {
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && messages.length === 0) {
       startConversation();
     }
-  }, [isOpen]);
+  }, [isOpen, messages.length]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -68,16 +68,18 @@ export default function ChatWidget() {
     setMessages([]);
     setFlowState('idle');
     setFlowData({});
+    setIsLoading(false);
+    setInput('');
     addMessage(
       <div>
-        <p>Olá! Sou a assistente virtual de Fabiana Carvalhal.</p>
+        <p className="font-semibold">Olá! Sou a assistente virtual de Fabiana Carvalhal.</p>
         <p>Como posso te ajudar hoje?</p>
         <div className="flex flex-col gap-2 mt-4">
-          <Button variant="outline" size="sm" onClick={() => startQualificationFlow()}>
+          <Button variant="outline" size="sm" onClick={() => handleQuickReply("Saber mais sobre as abordagens", startQualificationFlow)}>
             <Sparkles className="w-4 h-4 mr-2" />
             Saber mais sobre as abordagens
           </Button>
-          <Button variant="outline" size="sm" onClick={() => startSchedulingFlow()}>
+          <Button variant="outline" size="sm" onClick={() => handleQuickReply("Agendar uma consulta", startSchedulingFlow)}>
              Agendar uma consulta
           </Button>
         </div>
@@ -85,24 +87,27 @@ export default function ChatWidget() {
       false
     );
   };
+  
+  const handleQuickReply = (text: string, action: () => void) => {
+    addMessage(text, true);
+    action();
+  }
 
   const startQualificationFlow = () => {
-    addMessage("Saber mais sobre as abordagens", true);
     addMessage("Com certeza! Sobre qual área você gostaria de saber mais: Neuropsicologia, Psicodrama ou PNL Sistêmica?", false);
     setFlowState('qualifying_interest');
   };
 
   const startSchedulingFlow = () => {
-    addMessage("Agendar uma consulta", true);
-    addMessage("Posso ajudar com isso. Qual é o motivo da consulta?", false);
+    addMessage("Posso ajudar com isso. Qual é o motivo da sua busca por uma consulta?", false);
     setFlowState('scheduling_reason');
   };
 
   const handleUserInput = async () => {
     if (!input.trim()) return;
 
-    addMessage(input, true);
     const userInput = input;
+    addMessage(userInput, true);
     setInput('');
     setIsLoading(true);
 
@@ -135,7 +140,7 @@ export default function ChatWidget() {
       } else if (flowState === 'scheduling_reason') {
          setFlowData({ patientName: 'Cliente', procedure: userInput });
          setFlowState('scheduling_availability');
-         addMessage("Entendido. Qual é a sua disponibilidade geral? (ex: 'tardes durante a semana')", false);
+         addMessage("Entendido. Qual é a sua disponibilidade geral? (ex: 'tardes durante a semana', 'manhãs de segunda e quarta')", false);
       } else if (flowState === 'scheduling_availability') {
         const scheduleData: ScheduleAppointmentInput = {
             patientName: flowData.patientName!,
@@ -150,16 +155,16 @@ export default function ChatWidget() {
                 <ul className="list-disc pl-5 mt-2">
                     {result.suggestedAppointmentTimes.map((time, i) => <li key={i}>{time}</li>)}
                 </ul>
+                <p className="mt-2">Qual destes horários funciona para você?</p>
             </div>,
             false
         );
         setFlowState('idle');
         addMessage(
-            <Button variant="link" size="sm" onClick={startConversation} className="p-0 h-auto">Começar de Novo</Button>,
+            <Button variant="link" size="sm" onClick={startConversation} className="p-0 h-auto mt-2">Começar de Novo</Button>,
             false
         );
       } else {
-        addMessage("Não tenho certeza de como lidar com isso. Por favor, escolha uma opção para começar.", false);
         startConversation();
       }
     } catch (error) {
@@ -178,7 +183,7 @@ export default function ChatWidget() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button className="fixed bottom-4 right-4 rounded-full w-16 h-16 shadow-lg">
+        <Button className="fixed bottom-4 right-4 rounded-full w-16 h-16 shadow-lg" aria-label="Open chat widget">
           <Bot className="w-8 h-8" />
         </Button>
       </SheetTrigger>
@@ -203,7 +208,7 @@ export default function ChatWidget() {
                             <AvatarFallback><Bot size={20} /></AvatarFallback>
                         </Avatar>
                         )}
-                        <div className={cn('max-w-[80%] rounded-lg p-3 text-sm', msg.isUser ? 'bg-primary text-primary-foreground' : 'bg-background')}>
+                        <div className={cn('max-w-[80%] rounded-lg p-3 text-sm', msg.isUser ? 'bg-primary text-primary-foreground' : 'bg-background shadow-sm')}>
                         {typeof msg.text === 'string' ? <p>{msg.text}</p> : msg.text}
                         </div>
                         {msg.isUser && (
@@ -218,7 +223,7 @@ export default function ChatWidget() {
                         <Avatar className="w-8 h-8">
                             <AvatarFallback><Bot size={20} /></AvatarFallback>
                         </Avatar>
-                        <div className="max-w-[80%] rounded-lg p-3 text-sm bg-background">
+                        <div className="max-w-[80%] rounded-lg p-3 text-sm bg-background shadow-sm">
                             <LoaderCircle className="animate-spin w-5 h-5" />
                         </div>
                     </div>
@@ -237,9 +242,9 @@ export default function ChatWidget() {
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     placeholder="Digite sua mensagem..."
-                    disabled={isLoading}
+                    disabled={isLoading || flowState === 'idle'}
                     />
-                    <Button type="submit" size="icon" disabled={isLoading}>
+                    <Button type="submit" size="icon" disabled={isLoading || flowState === 'idle'}>
                     <Send className="w-4 h-4" />
                     </Button>
                 </form>
@@ -249,5 +254,3 @@ export default function ChatWidget() {
     </Sheet>
   );
 }
-
-    

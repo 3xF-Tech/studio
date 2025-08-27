@@ -10,6 +10,7 @@ import {
   Quote,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
+import ChatTriggerButton from '@/components/chat-trigger-button';
 
 export default function Home() {
   const services = [
@@ -35,14 +36,14 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="px-4 lg:px-6 h-14 flex items-center bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b">
-        <Link href="#" className="flex items-center justify-center" prefetch={false}>
+      <header className="px-4 lg:px-6 h-16 flex items-center bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b">
+        <Link href="/" className="flex items-center justify-center" prefetch={false}>
            <BrainCircuit className="h-6 w-6 text-primary" />
           <span className="ml-2 text-xl font-headline font-bold">
             Fabiana Carvalhal
           </span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        <nav className="ml-auto hidden md:flex gap-4 sm:gap-6">
           <Link
             href="#services"
             className="text-sm font-medium hover:underline underline-offset-4"
@@ -65,26 +66,23 @@ export default function Home() {
             Contato
           </Link>
         </nav>
+         <div className="ml-auto md:hidden">
+            <Button asChild variant="outline">
+                <Link href="/login">Área do Cliente</Link>
+            </Button>
+        </div>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-secondary/30">
           <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-               <Image
-                src="https://firebasestudio-hosting.web.app/images/i2.png"
-                width={600}
-                height={600}
-                alt="Dra. Fabiana Carvalhal"
-                data-ai-hint="professional woman psychologist smiling"
-                className="mx-auto aspect-square overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
-              />
+            <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-4">
-                   <p className="max-w-[600px] text-primary md:text-xl font-semibold">
+                   <p className="text-primary md:text-xl font-semibold">
                      Psicóloga Clínica & Neuropsicóloga
                   </p>
                   <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-6xl xl:text-7xl/none">
-                    Cuidado e Desenvolvimento Humano
+                    Cuidado, Desenvolvimento e Saúde Mental
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
                     Com uma abordagem que integra Psicodrama e PNL Sistêmica, ofereço suporte para seu bem-estar e crescimento.
@@ -96,18 +94,33 @@ export default function Home() {
                       Agende uma Conversa
                     </a>
                   </Button>
+                  <Button asChild size="lg" variant="outline">
+                     <Link href="/login">Área do Cliente</Link>
+                  </Button>
                 </div>
               </div>
+                <div className="relative w-full max-w-md mx-auto lg:mx-0">
+                    <div className="aspect-square rounded-full bg-gradient-to-tr from-primary/20 to-secondary/30 blur-3xl absolute -inset-4"></div>
+                    <Image
+                        src="https://firebasestudio-hosting.web.app/images/fabiana-carvalhal.png"
+                        width={600}
+                        height={600}
+                        alt="Dra. Fabiana Carvalhal"
+                        data-ai-hint="professional woman psychologist smiling"
+                        className="relative mx-auto aspect-square overflow-hidden rounded-full object-cover object-top"
+                    />
+                </div>
             </div>
           </div>
         </section>
 
-        <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
+        <section id="services" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
+                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Nossas Especialidades</div>
                 <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">
-                  Cuidado, sob medida para você
+                  Cuidado sob medida para você
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                  Atuação diversificada em contextos clínicos, hospitalares, escolares e organizacionais, com foco na sua necessidade.
@@ -116,12 +129,14 @@ export default function Home() {
             </div>
             <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 mt-12">
               {services.map((service, index) => (
-                <Card key={index} className="bg-background hover:shadow-lg transition-shadow border-0">
-                  <CardHeader className="flex flex-row items-center gap-4">
-                    {service.icon}
+                <Card key={index} className="bg-background hover:shadow-lg transition-shadow border-0 hover:-translate-y-2 duration-300">
+                  <CardHeader className="flex flex-col items-center text-center gap-4">
+                    <div className="p-4 bg-secondary rounded-full">
+                        {service.icon}
+                    </div>
                     <CardTitle className="font-headline">{service.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="text-center">
                     <p className="text-sm text-muted-foreground">
                       {service.description}
                     </p>
@@ -132,7 +147,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
           <div className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 lg:gap-12">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
@@ -140,13 +155,13 @@ export default function Home() {
               </h2>
             </div>
             <div className="relative max-w-3xl mx-auto">
-                <Quote className="absolute -top-4 -left-4 w-10 h-10 text-secondary" />
+                <Quote className="absolute -top-4 -left-4 w-12 h-12 text-secondary" />
                 <p className="text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Psicóloga e neuropsicóloga com sólida formação acadêmica (PUC-SP e USP), e coautora do livro “PNL Humanizada”. Minha paixão é integrar técnica e um profundo entendimento da individualidade de cada paciente.
+                  Psicóloga e neuropsicóloga com sólida formação acadêmica (PUC-SP e USP), e coautora do livro “PNL Humanizada”. Minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
                 </p>
             </div>
             <div className="flex justify-center">
-              <Button asChild variant="link">
+              <Button asChild variant="link" size="lg">
                 <a href="https://www.instagram.com/fabiana_carvalhal/" target="_blank" rel="noopener noreferrer">
                   Siga no Instagram <ChevronRight className="w-4 h-4 ml-1" />
                 </a>
@@ -155,7 +170,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t bg-secondary">
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 border-t">
           <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl">
@@ -166,6 +181,7 @@ export default function Home() {
               </p>
             </div>
              <div className="mx-auto w-full max-w-sm space-y-2">
+                <ChatTriggerButton />
                <p className="text-xs text-muted-foreground">
                  Minha IA está disponível 24/7 para te ajudar.
                </p>

@@ -41,7 +41,6 @@ const menuItems = [
   { href: '/crm', label: 'Pacientes', icon: Users },
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
   { href: '/reports', label: 'Relatórios', icon: FileText },
-  { href: '/settings', label: 'Configurações', icon: Settings },
 ];
 
 export default function DashboardLayout({
@@ -82,6 +81,16 @@ export default function DashboardLayout({
           </SidebarContent>
           <SidebarFooter>
             <SidebarMenu>
+                 <SidebarMenuItem>
+                    <Link href="/settings" legacyBehavior passHref>
+                        <SidebarMenuButton 
+                         isActive={pathname === '/settings'}
+                         tooltip={{ children: 'Configurações', side: 'right' }}>
+                            <Settings />
+                            <span>Configurações</span>
+                        </SidebarMenuButton>
+                    </Link>
+                </SidebarMenuItem>
                 <SidebarMenuItem>
                      <Link href="/" legacyBehavior passHref>
                         <SidebarMenuButton tooltip={{ children: 'Sair', side: 'right' }}>
@@ -95,8 +104,9 @@ export default function DashboardLayout({
         </Sidebar>
         <SidebarInset className="flex flex-col flex-1">
           <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 lg:h-[60px] lg:px-6">
+             <SidebarTrigger className="md:hidden" />
             <div className="flex-1">
-              <PanelLeft className="h-6 w-6 md:hidden" />
+              {/* You can add a title here if needed */}
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -108,7 +118,9 @@ export default function DashboardLayout({
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Configurações</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">Configurações</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>Suporte</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
