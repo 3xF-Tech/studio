@@ -37,31 +37,31 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="px-4 lg:px-6 h-16 flex items-center bg-background/90 backdrop-blur-sm sticky top-0 z-50 border-b">
+      <header className="px-4 lg:px-6 h-20 flex items-center bg-background/90 backdrop-blur-sm sticky top-0 z-50 border-b">
         <Link href="/" className="flex items-center justify-center" prefetch={false}>
            <BrainCircuit className="h-6 w-6 text-primary" />
           <span className="ml-3 text-xl font-headline font-bold">
             Fabiana Carvalhal
           </span>
         </Link>
-        <nav className="ml-auto flex items-center gap-4 sm:gap-6">
+        <nav className="ml-auto flex items-center gap-6 sm:gap-8">
           <Link
             href="#services"
-            className="text-sm font-medium hover:underline underline-offset-4 hidden sm:block"
+            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block"
             prefetch={false}
           >
             Serviços
           </Link>
           <Link
             href="#about"
-            className="text-sm font-medium hover:underline underline-offset-4 hidden sm:block"
+            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block"
             prefetch={false}
           >
             Sobre
           </Link>
            <Link
             href="/blog"
-            className="text-sm font-medium hover:underline underline-offset-4 hidden sm:block"
+            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block"
             prefetch={false}
           >
             Blog
@@ -73,7 +73,7 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section className="w-full py-12 md:py-16 lg:py-20 bg-secondary/30">
+        <section className="w-full py-12 md:py-20 lg:py-28 bg-secondary/30">
           <div className="container px-4 md:px-6">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
               <div className="flex flex-col justify-center space-y-6">
