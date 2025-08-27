@@ -15,7 +15,7 @@ const firebaseConfig = {
   "messagingSenderId": "615800990371"
 };
 
-// Initialize Firebase for SSR
+// Initialize Firebase for SSR and ensure it's a singleton
 const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth: Auth = getAuth(app);
 const db: Firestore = getFirestore(app);

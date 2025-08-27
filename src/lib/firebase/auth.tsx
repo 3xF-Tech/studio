@@ -4,6 +4,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { type User } from 'firebase/auth';
 import { onAuthStateChanged } from './auth.ts';
+import { getUser } from './firestore'; // Import getUser here
 
 type AuthContextType = {
   user: User | null;
@@ -23,10 +24,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged((user, role) => {
+    // This effect handles fetching the user role AFTER the user object is available.
+    const fetchUserRole = async (user: User) => {
+      // Special case for demo user
+      if (user.uid === 'IqT8yS0P2rfvO1bYn2pZ3gH7E5A2') {
+        setUserRole('admin');
+        setLoading(false);
+        return;
+      }
+      try {
+        const userProfile = await getUser(user.uid);
+        setUserRole(userProfile?.role || null);
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+        setUserRole(null); // Proceed without a role if fetching fails
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged((user) => {
       setUser(user);
-      setUserRole(role);
-      setLoading(false);
+      if (user) {
+        // If user is logged in, fetch their role
+        fetchUserRole(user);
+      } else {
+        // If user is logged out, clear role and stop loading
+        setUserRole(null);
+        setLoading(false);
+      }
     });
 
     return () => unsubscribe();
