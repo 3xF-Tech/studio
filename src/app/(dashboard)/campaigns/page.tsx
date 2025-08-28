@@ -57,9 +57,10 @@ export default function CampaignsPage() {
             });
 
             toast({
+                duration: 10000,
                 title: `Mensagem para ${campaignName}`,
                 description: (
-                <div className="text-sm space-y-2">
+                <div className="text-sm space-y-2 mt-2">
                     <p className="font-semibold">Mensagem gerada pela IA para um paciente exemplo:</p>
                     <p className="p-2 border rounded-md bg-muted">{result.message}</p>
                 </div>
