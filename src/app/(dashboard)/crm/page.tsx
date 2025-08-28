@@ -224,11 +224,13 @@ export default function CrmPage() {
         const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})(\d{0,4})$/);
         if (!match) return cleaned;
         
+        const [_, p1, p2, p3, p4] = match;
+        
         let result = '';
-        if(match[1]) result += match[1];
-        if(match[2]) result += ` ${match[2]}`;
-        if(match[3]) result += ` ${match[3]}`;
-        if(match[4]) result += ` ${match[4]}`;
+        if (p1) result += p1;
+        if (p2) result += ` ${p2}`;
+        if (p3) result += ` ${p3}`;
+        if (p4) result += ` ${p4}`;
         
         return result.trim();
     };
@@ -468,7 +470,7 @@ export default function CrmPage() {
               <Input
                 id="new-patient-phone"
                 type="tel"
-                placeholder="ex: 55 11 99999 9999"
+                placeholder="ex: 55 11 9999 9999"
                 value={newPatientPhone}
                 onChange={handlePhoneChange}
                 maxLength={15}
