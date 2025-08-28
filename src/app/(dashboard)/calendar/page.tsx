@@ -189,10 +189,10 @@ export default function CalendarPage() {
             <TabsTrigger value="month">Mês</TabsTrigger>
           </TabsList>
           <Button asChild size="sm" variant="outline" className="h-9 gap-1">
-            <Link href="/broadcast">
+            <Link href="/comunicados">
                 <TowerControl className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Liberar Agenda
+                Comunicados
                 </span>
             </Link>
           </Button>

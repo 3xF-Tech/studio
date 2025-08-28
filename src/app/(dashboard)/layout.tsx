@@ -45,7 +45,7 @@ const menuItems = [
   { href: '/crm', label: 'Pacientes', icon: Users },
   { href: '/financials', label: 'Financeiro', icon: DollarSign },
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
-  { href: '/broadcast', label: 'Transmissão', icon: TowerControl },
+  { href: '/comunicados', label: 'Comunicados', icon: TowerControl },
   { href: '/reports', label: 'Relatórios', icon: FileText },
 ];
 
