@@ -57,6 +57,7 @@ function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], on
                 <TableHead>Nome</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Telefone</TableHead>
+                <TableHead className="hidden lg:table-cell">Duração</TableHead>
                 <TableHead className="hidden lg:table-cell">Pacote de Sessões</TableHead>
                  <TableHead className="hidden lg:table-cell">Valor do Pacote</TableHead>
                 <TableHead>
@@ -84,6 +85,9 @@ function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], on
                   <TableCell className="hidden md:table-cell">
                     {patient.phone}
                   </TableCell>
+                   <TableCell className="hidden lg:table-cell">
+                        {patient.sessionDuration ? `${patient.sessionDuration} min` : <span className="text-muted-foreground">N/A</span>}
+                    </TableCell>
                   <TableCell className="hidden lg:table-cell">
                     {patient.package ? (
                        <Button variant="ghost" size="sm" onClick={() => onSchedulePackage(patient)} className="h-auto p-0 flex flex-col items-start font-normal">
@@ -219,7 +223,14 @@ export default function CrmPage() {
         const cleaned = value.replace(/\D/g, '');
         const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})(\d{0,4})$/);
         if (!match) return cleaned;
-        return [match[1], match[2], match[3], match[4]].filter(Boolean).join(' ').trim();
+        
+        let result = '';
+        if(match[1]) result += match[1];
+        if(match[2]) result += ` ${match[2]}`;
+        if(match[3]) result += ` ${match[3]}`;
+        if(match[4]) result += ` ${match[4]}`;
+        
+        return result.trim();
     };
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -457,7 +468,7 @@ export default function CrmPage() {
               <Input
                 id="new-patient-phone"
                 type="tel"
-                placeholder="ex: 55 11 9999 9999"
+                placeholder="ex: 55 11 99999 9999"
                 value={newPatientPhone}
                 onChange={handlePhoneChange}
                 maxLength={15}
@@ -549,4 +560,3 @@ export default function CrmPage() {
     </>
   );
 }
-
