@@ -29,7 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot, CalendarDays } from 'lucide-react';
+import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot, CalendarDays, Clock } from 'lucide-react';
 import { mockPatients, Patient } from '@/lib/data';
 import {
   Dialog,
@@ -45,6 +45,9 @@ import { useToast } from '@/hooks/use-toast';
 import { leadQualification } from '@/ai/flows/lead-qualification';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
 import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '@/components/ui/checkbox';
+
+const weekdays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
 function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], onSchedulePackage: (patient: Patient) => void }) {
     return (
@@ -136,6 +139,7 @@ export default function CrmPage() {
 
   const [isQualifying, setIsQualifying] = useState(false);
   const [isScheduling, setIsScheduling] = useState(false);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
   // State for AI Lead Qualification
   const [procedure, setProcedure] = useState('');
@@ -149,8 +153,8 @@ export default function CrmPage() {
   
   // State for Package Scheduling
   const [scheduleProcedure, setScheduleProcedure] = useState('');
-  const [scheduleAvailability, setScheduleAvailability] = useState('');
-
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  
   const { toast } = useToast();
 
   const handleQualify = async () => {
@@ -245,41 +249,45 @@ export default function CrmPage() {
   const handleOpenSchedulePackageModal = (patient: Patient) => {
     setSelectedPatient(patient);
     setScheduleProcedure(patient.package ? `${patient.package.sessions} sessões` : '');
-    setScheduleAvailability(patient.package ? `${patient.package.days} às ${patient.package.time}` : '');
+    setSelectedDays([]);
+    setAvailableTimes([]);
     setIsSchedulePackageModalOpen(true);
   };
 
   const handleSchedulePackage = async () => {
-    if (!scheduleProcedure || !scheduleAvailability || !selectedPatient) {
+    if (!scheduleProcedure || !selectedPatient) {
          toast({
             variant: 'destructive',
-            title: 'Campos obrigatórios',
-            description: 'Procedimento e disponibilidade são necessários.',
+            title: 'Erro',
+            description: 'Paciente ou procedimento não selecionado.',
         });
         return;
     }
+    if (selectedDays.length === 0) {
+        toast({
+            variant: 'destructive',
+            title: 'Campos obrigatórios',
+            description: 'Por favor, selecione ao menos um dia da semana.',
+        });
+        return;
+    }
+
     setIsScheduling(true);
+    setAvailableTimes([]);
+
      try {
       const result = await scheduleAppointment({
         patientName: selectedPatient.name,
         procedure: scheduleProcedure,
-        availability: scheduleAvailability,
+        selectedDays: selectedDays,
       });
+
+      setAvailableTimes(result.suggestedAppointmentTimes);
       toast({
-        title: 'Sugestões de Horários da IA',
-        description: (
-          <div className="text-sm">
-            <p className="mb-2">{`Para ${selectedPatient.name}: ${result.confirmationMessage}`}</p>
-            <ul className="list-disc pl-5">
-              {result.suggestedAppointmentTimes.map((time) => (
-                <li key={time}>{time}</li>
-              ))}
-            </ul>
-             <p className="mt-2 text-xs">Entre em contato com o paciente para confirmar.</p>
-          </div>
-        ),
+        title: 'Horários Disponíveis Encontrados',
+        description: `A IA encontrou os seguintes horários para ${selectedPatient.name}.`,
       });
-      setIsSchedulePackageModalOpen(false);
+
     } catch (error) {
        console.error('Scheduling error:', error);
       toast({
@@ -290,6 +298,12 @@ export default function CrmPage() {
     } finally {
         setIsScheduling(false);
     }
+  }
+  
+  const handleDaySelection = (day: string) => {
+    setSelectedDays(prev => 
+        prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
   }
 
   return (
@@ -452,31 +466,54 @@ export default function CrmPage() {
                 Agendar Pacote para {selectedPatient?.name}
             </DialogTitle>
             <DialogDescription>
-              Busque os horários disponíveis na agenda do Google Calendar para este pacote.
+              Selecione os dias da semana desejados e clique em buscar para ver os horários disponíveis.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="schedule-procedure">Procedimento</Label>
+              <Label htmlFor="schedule-procedure">Pacote de Sessões</Label>
               <Input
                 id="schedule-procedure"
                 value={scheduleProcedure}
-                onChange={(e) => setScheduleProcedure(e.target.value)}
+                disabled
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="schedule-availability">Disponibilidade Preferencial</Label>
-              <Textarea
-                id="schedule-availability"
-                placeholder="Descreva a disponibilidade do paciente. Ex: 'Qualquer dia de semana à tarde'"
-                className="min-h-[100px]"
-                value={scheduleAvailability}
-                onChange={(e) => setScheduleAvailability(e.target.value)}
-              />
+             <div className="space-y-2">
+                <Label>Dias da Semana Preferenciais</Label>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-2">
+                    {weekdays.map(day => (
+                        <div key={day} className="flex items-center space-x-2">
+                            <Checkbox 
+                                id={`day-${day}`} 
+                                onCheckedChange={() => handleDaySelection(day)}
+                                checked={selectedDays.includes(day)}
+                            />
+                            <Label htmlFor={`day-${day}`} className="font-normal">{day}</Label>
+                        </div>
+                    ))}
+                </div>
             </div>
+
+            {isScheduling && <div className="flex justify-center items-center gap-2 text-muted-foreground"><LoaderCircle className="w-4 h-4 animate-spin" /> Buscando horários...</div>}
+            
+            {availableTimes.length > 0 && (
+                 <div className="space-y-2 pt-2">
+                    <Label className="font-bold">Horários Disponíveis</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                        {availableTimes.map((time) => (
+                            <Button key={time} variant="outline">
+                                <Clock className="mr-2 h-4 w-4" />
+                                {time}
+                            </Button>
+                        ))}
+                    </div>
+                     <p className="text-xs text-muted-foreground">Clique em um horário para confirmar com o paciente.</p>
+                 </div>
+            )}
+           
           </div>
           <DialogFooter>
-            <Button onClick={handleSchedulePackage} disabled={isScheduling}>
+            <Button onClick={handleSchedulePackage} disabled={isScheduling || selectedDays.length === 0}>
               {isScheduling ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
               Buscar Horários Disponíveis
             </Button>
@@ -486,4 +523,3 @@ export default function CrmPage() {
     </>
   );
 }
-
