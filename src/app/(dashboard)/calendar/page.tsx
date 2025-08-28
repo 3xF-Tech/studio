@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { mockAppointments } from '@/lib/data';
+import { mockAppointments, Appointment } from '@/lib/data';
 import { PlusCircle, Blocks, LoaderCircle } from 'lucide-react';
 import {
   Dialog,
@@ -28,6 +28,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
+import { format, isSameDay, isThisWeek, startOfDay } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export default function CalendarPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,6 +38,7 @@ export default function CalendarPage() {
   const [procedure, setProcedure] = useState('');
   const [availability, setAvailability] = useState('');
   const { toast } = useToast();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
   const handleSchedule = async () => {
     if (!patientName || !procedure || !availability) {
@@ -80,6 +83,58 @@ export default function CalendarPage() {
     }
   };
 
+  const getFilteredAppointments = (filter: 'day' | 'week' | 'month' | 'selected') => {
+    const today = startOfDay(new Date());
+    if (filter === 'day') {
+      return mockAppointments.filter(apt => isSameDay(apt.startTime, today));
+    }
+    if (filter === 'week') {
+       return mockAppointments.filter(apt => isThisWeek(apt.startTime, { weekStartsOn: 1 }));
+    }
+    if (filter === 'selected' && selectedDate) {
+        return mockAppointments.filter(apt => isSameDay(apt.startTime, selectedDate));
+    }
+    return mockAppointments;
+  }
+  
+  const appointmentsForSelectedDate = selectedDate ? getFilteredAppointments('selected') : getFilteredAppointments('day');
+  const appointmentsForDayTab = getFilteredAppointments('day');
+  const appointmentsForWeekTab = getFilteredAppointments('week');
+
+
+  const AppointmentList = ({ appointments, emptyMessage }: { appointments: Appointment[], emptyMessage: string }) => (
+     <div className="space-y-4">
+        {appointments.length > 0 ? (
+            appointments.map(apt => (
+                <div key={apt.id} className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-20 text-right">
+                        <p className="font-bold text-sm">
+                          {format(apt.startTime, 'HH:mm')}
+                        </p>
+                         <p className="text-xs text-muted-foreground">
+                          {Math.abs(apt.endTime.getTime() - apt.startTime.getTime()) / 60000} min
+                         </p>
+                    </div>
+                    <div className="flex-1 border-l-2 border-primary pl-3">
+                        <p className="font-semibold">{apt.patientName}</p>
+                        <p className="text-sm text-muted-foreground">{apt.procedure}</p>
+                        <Badge
+                          variant={
+                              apt.status === 'Confirmed' ? 'default' : 'secondary'
+                          }
+                          className={`mt-1 text-xs ${apt.status === 'Confirmed' ? 'bg-green-500/20 text-green-700' : ''}`}
+                          >
+                          {apt.status === 'Confirmed' ? 'Confirmado' : apt.status === 'Pending' ? 'Pendente' : 'Cancelado'}
+                          </Badge>
+                    </div>
+                </div>
+            ))
+        ) : (
+            <p className="text-sm text-muted-foreground text-center">{emptyMessage}</p>
+        )}
+      </div>
+  );
+
 
   return (
     <>
@@ -93,10 +148,10 @@ export default function CalendarPage() {
             <TabsTrigger value="week">Semana</TabsTrigger>
             <TabsTrigger value="month">Mês</TabsTrigger>
           </TabsList>
-          <Button size="sm" variant="outline" className="h-8 gap-1">
+          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setSelectedDate(undefined)}>
             <Blocks className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Limpar Período
+              Limpar Filtro
             </span>
           </Button>
           <Button size="sm" className="h-8 gap-1" onClick={() => setIsModalOpen(true)}>
@@ -114,7 +169,10 @@ export default function CalendarPage() {
                     <CardContent className="p-0">
                          <Calendar
                             mode="single"
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
                             className="p-3 w-full"
+                            locale={ptBR}
                             classNames={{
                                 head_cell: 'w-full',
                                 cell: 'w-full',
@@ -130,7 +188,7 @@ export default function CalendarPage() {
                         <CardTitle>Agenda de Hoje</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>Visualização diária em breve.</p>
+                       <AppointmentList appointments={appointmentsForDayTab} emptyMessage="Nenhum agendamento para hoje." />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -140,7 +198,7 @@ export default function CalendarPage() {
                         <CardTitle>Agenda da Semana</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>Visualização semanal em breve.</p>
+                       <AppointmentList appointments={appointmentsForWeekTab} emptyMessage="Nenhum agendamento para esta semana." />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -148,34 +206,19 @@ export default function CalendarPage() {
         <div className="md:col-span-4 lg:col-span-3">
           <Card>
             <CardHeader>
-              <CardTitle>Próximos</CardTitle>
-              <CardDescription>Agendamentos para hoje.</CardDescription>
+              <CardTitle>Próximos Agendamentos</CardTitle>
+              <CardDescription>
+                {selectedDate 
+                  ? `Compromissos para ${format(selectedDate, 'dd/MM/yyyy')}`
+                  : 'Compromissos para hoje.'
+                }
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {mockAppointments.map(apt => (
-                  <div key={apt.id} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-12 text-right">
-                          <p className="font-bold text-sm">
-                            {apt.startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                          </p>
-                           <p className="text-xs text-muted-foreground">
-                            {Math.abs(apt.endTime.getTime() - apt.startTime.getTime()) / 60000} min
-                           </p>
-                      </div>
-                      <div className="flex-1 border-l-2 border-primary pl-3">
-                          <p className="font-semibold">{apt.patientName}</p>
-                          <p className="text-sm text-muted-foreground">{apt.procedure}</p>
-                          <Badge
-                            variant={
-                                apt.status === 'Confirmed' ? 'default' : 'secondary'
-                            }
-                            className={`mt-1 text-xs ${apt.status === 'Confirmed' ? 'bg-green-500/20 text-green-700' : ''}`}
-                            >
-                            {apt.status}
-                            </Badge>
-                      </div>
-                  </div>
-              ))}
+            <CardContent>
+                <AppointmentList 
+                    appointments={appointmentsForSelectedDate} 
+                    emptyMessage={selectedDate ? "Nenhum agendamento para esta data." : "Nenhum agendamento para hoje."}
+                />
             </CardContent>
           </Card>
         </div>
