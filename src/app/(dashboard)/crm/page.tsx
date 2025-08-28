@@ -214,6 +214,18 @@ export default function CrmPage() {
       setIsQualifying(false);
     }
   };
+  
+    const formatPhoneNumber = (value: string) => {
+        const cleaned = value.replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})(\d{0,4})$/);
+        if (!match) return cleaned;
+        return [match[1], match[2], match[3], match[4]].filter(Boolean).join(' ').trim();
+    };
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhoneNumber(e.target.value);
+        setNewPatientPhone(formatted);
+    };
 
   const handleAddPatient = () => {
     if (!newPatientName || !newPatientEmail || !newPatientPhone || !newPatientDuration) {
@@ -445,9 +457,10 @@ export default function CrmPage() {
               <Input
                 id="new-patient-phone"
                 type="tel"
-                placeholder="ex: (11) 99999-9999"
+                placeholder="ex: 55 11 9999 9999"
                 value={newPatientPhone}
-                onChange={(e) => setNewPatientPhone(e.target.value)}
+                onChange={handlePhoneChange}
+                maxLength={15}
               />
             </div>
             <div className="space-y-2">
@@ -536,3 +549,4 @@ export default function CrmPage() {
     </>
   );
 }
+
