@@ -151,7 +151,7 @@ export default function CalendarPage() {
           <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setSelectedDate(undefined)}>
             <Blocks className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Limpar Filtro
+              Limpar Seleção
             </span>
           </Button>
           <Button size="sm" className="h-8 gap-1" onClick={() => setIsModalOpen(true)}>
