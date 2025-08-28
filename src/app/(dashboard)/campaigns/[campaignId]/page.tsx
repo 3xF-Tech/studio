@@ -30,7 +30,7 @@ import { Separator } from '@/components/ui/separator';
 
 export default function CampaignDetailsPage({ params }: { params: { campaignId: string } }) {
   const { toast } = useToast();
-  const campaignId = params.campaignId;
+  const { campaignId } = params;
   const campaign = mockCampaigns.find((c) => c.id === campaignId);
   const [deliveryChannel, setDeliveryChannel] = useState('whatsapp');
 
