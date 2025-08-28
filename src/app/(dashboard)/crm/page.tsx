@@ -475,7 +475,7 @@ export default function CrmPage() {
               <Input
                 id="schedule-procedure"
                 value={scheduleProcedure}
-                disabled
+                onChange={(e) => setScheduleProcedure(e.target.value)}
               />
             </div>
              <div className="space-y-2">
