@@ -15,13 +15,14 @@ export type Patient = {
   phone: string;
   status: 'Active' | 'Inactive';
   package: PatientPackage | null;
+  sessionDuration?: number;
 };
 
 export const mockPatients: Patient[] = [
-  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '123-456-7890', status: 'Active', package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" } },
-  { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '234-567-8901', status: 'Inactive', package: null },
-  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phone: '345-678-9012', status: 'Active', package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" } },
-  { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '456-789-0123', status: 'Active', package: null },
+  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '123-456-7890', status: 'Active', package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" }, sessionDuration: 50 },
+  { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '234-567-8901', status: 'Inactive', package: null, sessionDuration: 50 },
+  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phone: '345-678-9012', status: 'Active', package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" }, sessionDuration: 60 },
+  { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '456-789-0123', status: 'Active', package: null, sessionDuration: 50 },
 ];
 
 export type Appointment = {
@@ -37,11 +38,11 @@ export type Appointment = {
 const today = new Date();
 
 export const mockAppointments: Appointment[] = [
-    { id: 'a1', patientName: 'Alice Johnson', procedure: 'Botox', startTime: new Date(new Date().setHours(9, 0, 0, 0)), endTime: new Date(new Date().setHours(10, 0, 0, 0)), status: 'Confirmed', price: 350 },
-    { id: 'a2', patientName: 'Eve Davis', procedure: 'Filler', startTime: new Date(new Date().setHours(10, 30, 0, 0)), endTime: new Date(new Date().setHours(11, 30, 0, 0)), status: 'Confirmed', price: 500 },
-    { id: 'a3', patientName: 'Frank White', procedure: 'Consultation', startTime: new Date(new Date().setHours(12, 0, 0, 0)), endTime: new Date(new Date().setHours(12, 30, 0, 0)), status: 'Pending', price: 200 },
-    { id: 'a4', patientName: 'Grace Lee', procedure: 'Laser', startTime: new Date(addDays(today, 3).setHours(14, 0, 0, 0)), endTime: new Date(addDays(today, 3).setHours(15, 0, 0, 0)), status: 'Confirmed', price: 450 },
-    { id: 'a5', patientName: 'Heidi Black', procedure: 'Check-up', startTime: new Date(addDays(today, 5).setHours(11, 0, 0, 0)), endTime: new Date(addDays(today, 5).setHours(11, 45, 0, 0)), status: 'Confirmed', price: 250 },
+    { id: 'a1', patientName: 'Alice Johnson', procedure: 'Sessão de Terapia', startTime: new Date(new Date().setHours(9, 0, 0, 0)), endTime: new Date(new Date().setHours(9, 50, 0, 0)), status: 'Confirmed', price: 200 },
+    { id: 'a2', patientName: 'Eve Davis', procedure: 'Avaliação Neuropsicológica', startTime: new Date(new Date().setHours(10, 30, 0, 0)), endTime: new Date(new Date().setHours(11, 30, 0, 0)), status: 'Confirmed', price: 500 },
+    { id: 'a3', patientName: 'Frank White', procedure: 'Consulta Inicial', startTime: new Date(new Date().setHours(12, 0, 0, 0)), endTime: new Date(new Date().setHours(12, 50, 0, 0)), status: 'Pending', price: 200 },
+    { id: 'a4', patientName: 'Grace Lee', procedure: 'Sessão de Terapia', startTime: new Date(addDays(today, 3).setHours(14, 0, 0, 0)), endTime: new Date(addDays(today, 3).setHours(14, 50, 0, 0)), status: 'Confirmed', price: 200 },
+    { id: 'a5', patientName: 'Heidi Black', procedure: 'Sessão de Terapia', startTime: new Date(addDays(today, 5).setHours(11, 0, 0, 0)), endTime: new Date(addDays(today, 5).setHours(11, 50, 0, 0)), status: 'Confirmed', price: 200 },
 ];
 
 export type FinancialRecord = {

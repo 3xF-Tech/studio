@@ -150,7 +150,8 @@ export default function CrmPage() {
   const [newPatientName, setNewPatientName] = useState('');
   const [newPatientEmail, setNewPatientEmail] = useState('');
   const [newPatientPhone, setNewPatientPhone] = useState('');
-  
+  const [newPatientDuration, setNewPatientDuration] = useState('50');
+
   // State for Package Scheduling
   const [scheduleProcedure, setScheduleProcedure] = useState('');
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -215,7 +216,7 @@ export default function CrmPage() {
   };
 
   const handleAddPatient = () => {
-    if (!newPatientName || !newPatientEmail || !newPatientPhone) {
+    if (!newPatientName || !newPatientEmail || !newPatientPhone || !newPatientDuration) {
         toast({
             variant: 'destructive',
             title: 'Campos obrigatórios',
@@ -231,6 +232,7 @@ export default function CrmPage() {
         phone: newPatientPhone,
         status: 'Active',
         package: null,
+        sessionDuration: parseInt(newPatientDuration, 10)
     };
     
     setPatients(prevPatients => [...prevPatients, newPatient]);
@@ -244,6 +246,7 @@ export default function CrmPage() {
     setNewPatientName('');
     setNewPatientEmail('');
     setNewPatientPhone('');
+    setNewPatientDuration('50');
   };
 
   const handleOpenSchedulePackageModal = (patient: Patient) => {
@@ -445,6 +448,16 @@ export default function CrmPage() {
                 placeholder="ex: (11) 99999-9999"
                 value={newPatientPhone}
                 onChange={(e) => setNewPatientPhone(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-patient-duration">Duração da Consulta (minutos)</Label>
+              <Input
+                id="new-patient-duration"
+                type="number"
+                placeholder="ex: 50"
+                value={newPatientDuration}
+                onChange={(e) => setNewPatientDuration(e.target.value)}
               />
             </div>
           </div>
