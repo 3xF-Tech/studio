@@ -1,3 +1,6 @@
+
+import { addDays } from 'date-fns';
+
 export type Patient = {
   id: string;
   name: string;
@@ -24,10 +27,13 @@ export type Appointment = {
     status: 'Confirmed' | 'Pending' | 'Cancelled';
 }
 
+const today = new Date();
+
 export const mockAppointments: Appointment[] = [
     { id: 'a1', patientName: 'Alice Johnson', procedure: 'Botox', startTime: new Date(new Date().setHours(9, 0, 0, 0)), endTime: new Date(new Date().setHours(10, 0, 0, 0)), status: 'Confirmed' },
     { id: 'a2', patientName: 'Eve Davis', procedure: 'Filler', startTime: new Date(new Date().setHours(10, 30, 0, 0)), endTime: new Date(new Date().setHours(11, 30, 0, 0)), status: 'Confirmed' },
     { id: 'a3', patientName: 'Frank White', procedure: 'Consultation', startTime: new Date(new Date().setHours(12, 0, 0, 0)), endTime: new Date(new Date().setHours(12, 30, 0, 0)), status: 'Pending' },
+    { id: 'a4', patientName: 'Grace Lee', procedure: 'Laser', startTime: new Date(addDays(today, 3).setHours(14, 0, 0, 0)), endTime: new Date(addDays(today, 3).setHours(15, 0, 0, 0)), status: 'Confirmed' },
 ];
 
 export type FinancialRecord = {
