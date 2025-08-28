@@ -19,10 +19,10 @@ export type Patient = {
 };
 
 export const mockPatients: Patient[] = [
-  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '123-456-7890', status: 'Active', package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" }, sessionDuration: 50 },
-  { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '234-567-8901', status: 'Inactive', package: null, sessionDuration: 50 },
-  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phone: '345-678-9012', status: 'Active', package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" }, sessionDuration: 60 },
-  { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '456-789-0123', status: 'Active', package: null, sessionDuration: 50 },
+  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '11 91234 5678', status: 'Active', package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" }, sessionDuration: 50 },
+  { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '21 92345 6789', status: 'Inactive', package: null, sessionDuration: 50 },
+  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phone: '31 93456 7890', status: 'Active', package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" }, sessionDuration: 60 },
+  { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '41 94567 8901', status: 'Active', package: null, sessionDuration: 50 },
 ];
 
 export type Appointment = {
@@ -48,17 +48,18 @@ export const mockAppointments: Appointment[] = [
 export type FinancialRecord = {
     id: string;
     patientName: string;
-    date: string;
+    issueDate: string;
+    paymentDueDate: string;
     amount: number;
     status: 'Paid' | 'Pending' | 'Overdue';
     paymentMethod: 'Credit Card' | 'PIX' | 'Bank Transfer';
 };
 
 export const mockFinancials: FinancialRecord[] = [
-    { id: 'f1', patientName: 'Alice Johnson', date: today.toISOString(), amount: 350, status: 'Paid', paymentMethod: 'Credit Card' },
-    { id: 'f2', patientName: 'Charlie Brown', date: addDays(today, -20).toISOString(), amount: 500, status: 'Pending', paymentMethod: 'PIX' },
-    { id: 'f3', patientName: 'Bob Williams', date: addDays(today, -40).toISOString(), amount: 200, status: 'Paid', paymentMethod: 'Bank Transfer' },
-    { id: 'f4', patientName: 'Grace Lee', date: addDays(today, -50).toISOString(), amount: 450, status: 'Overdue', paymentMethod: 'PIX' },
+    { id: 'f1', patientName: 'Alice Johnson', issueDate: today.toISOString(), paymentDueDate: addDays(today, 15).toISOString(), amount: 350, status: 'Paid', paymentMethod: 'Credit Card' },
+    { id: 'f2', patientName: 'Charlie Brown', issueDate: addDays(today, -20).toISOString(), paymentDueDate: addDays(today, 10).toISOString(), amount: 500, status: 'Pending', paymentMethod: 'PIX' },
+    { id: 'f3', patientName: 'Bob Williams', issueDate: addDays(today, -40).toISOString(), paymentDueDate: addDays(today, -10).toISOString(), amount: 200, status: 'Paid', paymentMethod: 'Bank Transfer' },
+    { id: 'f4', patientName: 'Grace Lee', issueDate: addDays(today, -50).toISOString(), paymentDueDate: addDays(today, -20).toISOString(), amount: 450, status: 'Overdue', paymentMethod: 'PIX' },
 ];
 
 export type ContractPayment = {

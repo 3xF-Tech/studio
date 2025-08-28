@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DollarSign, TrendingUp, Calendar, Bot, AlertCircle } from 'lucide-react';
+import { DollarSign, TrendingUp, Calendar, Bot, Send } from 'lucide-react';
 import { mockFinancials, mockAppointments, FinancialRecord, mockContracts } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { addMonths, isWithinInterval, startOfYear, endOfYear, startOfMonth, endOfMonth } from 'date-fns';
@@ -31,7 +31,7 @@ export default function FinancialsPage() {
     // Faturamento realizado: soma de todos os registros marcados como 'Paid' no mês corrente
     const actualRevenueMonth = mockFinancials
         .filter(record => {
-            const recordDate = new Date(record.date);
+            const recordDate = new Date(record.issueDate);
             return record.status === 'Paid' && isWithinInterval(recordDate, { start: startOfMonth(today), end: endOfMonth(today) });
         })
         .reduce((acc, curr) => acc + curr.amount, 0);
@@ -58,6 +58,21 @@ export default function FinancialsPage() {
             description: `A IA está enviando lembretes de pagamento para os ${pendingCount} clientes com pendências.`,
         });
     }
+
+    const handleSendPixLink = (record: FinancialRecord) => {
+        // In a real app, this would generate a unique PIX code and send it.
+        const pixCode = '000201263...'; // Example PIX code
+        toast({
+            title: 'Link de Pagamento Enviado',
+            description: (
+                <div>
+                    <p>O link de pagamento PIX para {record.patientName} foi enviado.</p>
+                    <p className="font-mono text-xs mt-2 p-2 bg-muted rounded">Código: {pixCode}</p>
+                </div>
+            ),
+        });
+    }
+
 
   return (
     <div className="py-4 space-y-4">
@@ -134,17 +149,20 @@ export default function FinancialsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Paciente</TableHead>
-                  <TableHead>Data</TableHead>
+                  <TableHead>Data Emissão</TableHead>
+                  <TableHead>Data Vencimento</TableHead>
                   <TableHead>Valor</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Método</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {mockFinancials.map((record: FinancialRecord) => (
                   <TableRow key={record.id}>
                     <TableCell className="font-medium">{record.patientName}</TableCell>
-                    <TableCell>{new Date(record.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
+                    <TableCell>{new Date(record.issueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
+                     <TableCell>{new Date(record.paymentDueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
                     <TableCell>R$ {record.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
                     <TableCell>
                       <Badge 
@@ -159,6 +177,14 @@ export default function FinancialsPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>{record.paymentMethod}</TableCell>
+                    <TableCell>
+                      {(record.status === 'Pending' || record.status === 'Overdue') && (
+                        <Button variant="outline" size="sm" onClick={() => handleSendPixLink(record)}>
+                          <Send className="mr-2 h-3 w-3" />
+                          Enviar Link PIX
+                        </Button>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
