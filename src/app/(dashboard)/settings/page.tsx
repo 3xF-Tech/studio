@@ -16,7 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { AlertCircle, FileKey } from 'lucide-react';
+import { FileKey, MessageSquare, BookUser } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 function SettingsPage() {
@@ -25,6 +25,10 @@ function SettingsPage() {
     const [googleCalendarId, setGoogleCalendarId] = useState('');
     const [googleApiKey, setGoogleApiKey] = useState('');
     const [googleServiceAccount, setGoogleServiceAccount] = useState('');
+    const [whatsappToken, setWhatsappToken] = useState('');
+    const [whatsappNumber, setWhatsappNumber] = useState('');
+    const [notionKey, setNotionKey] = useState('');
+    const [notionDbId, setNotionDbId] = useState('');
 
     const handleSaveChanges = (section: string) => {
         // In a real app, this would save to a database.
@@ -95,7 +99,7 @@ function SettingsPage() {
                 />
                  <p className="text-sm text-muted-foreground">
                     Usada para autenticar os pedidos à API do Google Calendar.
-                </p>
+                 </p>
             </div>
              <div className="space-y-2">
                 <Label htmlFor="google-service-account">JSON da Conta de Serviço</Label>
@@ -124,6 +128,82 @@ function SettingsPage() {
         </CardContent>
       </Card>
       
+       <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+             <div className="bg-green-500/10 p-3 rounded-full">
+                <MessageSquare className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <CardTitle>Integração com WhatsApp</CardTitle>
+              <CardDescription>
+                Conecte-se à API do WhatsApp para enviar notificações e mensagens.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+           <div className="space-y-2">
+                <Label htmlFor="whatsapp-token">Token da API do WhatsApp</Label>
+                <Input 
+                    id="whatsapp-token" 
+                    type="password"
+                    placeholder="Cole seu token de acesso permanente aqui" 
+                    value={whatsappToken}
+                    onChange={(e) => setWhatsappToken(e.target.value)}
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="whatsapp-number">ID do Número de Telefone</Label>
+                <Input 
+                    id="whatsapp-number" 
+                    placeholder="Cole o ID do seu número de telefone aqui" 
+                    value={whatsappNumber}
+                    onChange={(e) => setWhatsappNumber(e.target.value)}
+                />
+            </div>
+            <Button onClick={() => handleSaveChanges('Integração do WhatsApp')}>Salvar Configuração do WhatsApp</Button>
+        </CardContent>
+      </Card>
+
+       <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+             <div className="bg-gray-500/10 p-3 rounded-full">
+                <BookUser className="w-6 h-6 text-gray-600" />
+            </div>
+            <div>
+              <CardTitle>Integração com Notion</CardTitle>
+              <CardDescription>
+                Sincronize pacientes e agendamentos com seu banco de dados do Notion.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+           <div className="space-y-2">
+                <Label htmlFor="notion-key">Chave de API do Notion</Label>
+                <Input 
+                    id="notion-key" 
+                    type="password"
+                    placeholder="Cole sua chave de API 'Internal Integration Token' aqui" 
+                    value={notionKey}
+                    onChange={(e) => setNotionKey(e.target.value)}
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="notion-db-id">ID do Banco de Dados</Label>
+                <Input 
+                    id="notion-db-id" 
+                    placeholder="Cole o ID do seu banco de dados do Notion" 
+                    value={notionDbId}
+                    onChange={(e) => setNotionDbId(e.target.value)}
+                />
+            </div>
+            <Button onClick={() => handleSaveChanges('Integração do Notion')}>Salvar Configuração do Notion</Button>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Políticas e Automações</CardTitle>
