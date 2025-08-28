@@ -176,7 +176,7 @@ export default function CalendarPage() {
   const renderDayContent = (day: Date) => {
     const count = getFilteredAppointments('selected', day).length;
     if (count > 0) {
-      return <Badge variant="secondary" className="w-5 h-5 p-0 flex items-center justify-center text-xs">{count}</Badge>;
+      return count;
     }
     return null;
   };

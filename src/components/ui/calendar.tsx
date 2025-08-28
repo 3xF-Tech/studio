@@ -26,10 +26,19 @@ function Calendar({
     const isOutside = date.getMonth() !== displayMonth.getMonth();
     if (isOutside) return <>{date.getDate()}</>;
 
+    const customContent = renderDay ? renderDay(date) : null;
+
     return (
-        <div className="flex flex-col h-full w-full p-2 relative">
-            <div className="absolute top-2 left-2">{date.getDate()}</div>
-            {renderDay && <div className="absolute bottom-1 right-1">{renderDay(date)}</div>}
+        <div className="flex flex-col h-full w-full p-1 relative">
+            <div className={cn(
+              "absolute top-1 left-2 text-xs",
+              customContent && 'text-muted-foreground'
+            )}>{date.getDate()}</div>
+            {customContent && (
+              <div className="absolute inset-0 flex items-center justify-center text-xl font-bold text-primary">
+                {customContent}
+              </div>
+            )}
         </div>
     )
   }
