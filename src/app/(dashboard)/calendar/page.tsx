@@ -132,7 +132,7 @@ export default function CalendarPage() {
         appointments.map((apt) => (
           <Card key={apt.id} className="w-full shadow-md border-l-4 border-primary overflow-hidden">
             <CardContent className="p-4 flex items-center gap-4">
-               <div className="flex flex-col items-center justify-center bg-muted p-2 rounded-md w-24">
+               <div className="flex flex-col items-center justify-center bg-muted p-2 rounded-md w-20 text-center">
                    <p className="text-lg font-bold">{format(apt.startTime, 'HH:mm')}</p>
                    <p className="text-xs text-muted-foreground">{format(apt.endTime, 'HH:mm')}</p>
                 </div>
@@ -173,6 +173,14 @@ export default function CalendarPage() {
     </div>
   );
 
+  const renderDayContent = (day: Date) => {
+    const count = getFilteredAppointments('selected', day).length;
+    if (count > 0) {
+      return <Badge variant="secondary" className="w-5 h-5 p-0 flex items-center justify-center text-xs">{count}</Badge>;
+    }
+    return null;
+  };
+
 
   return (
     <>
@@ -212,7 +220,7 @@ export default function CalendarPage() {
                             selected={selectedDate}
                             onSelect={setSelectedDate}
                             locale={ptBR}
-                            className="p-0"
+                            renderDay={renderDayContent}
                          />}
                     </CardContent>
                 </Card>
@@ -318,7 +326,3 @@ export default function CalendarPage() {
     </>
   );
 }
-
-    
-
-    
