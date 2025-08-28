@@ -16,7 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { FileKey, MessageSquare, BookUser } from 'lucide-react';
+import { FileKey, MessageSquare, BookUser, Calendar } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 function SettingsPage() {
@@ -26,7 +26,7 @@ function SettingsPage() {
     const [googleApiKey, setGoogleApiKey] = useState('');
     const [googleServiceAccount, setGoogleServiceAccount] = useState('');
     const [whatsappToken, setWhatsappToken] = useState('');
-    const [whatsappNumber, setWhatsappNumber] = useState('');
+    const [whatsappNumberId, setWhatsappNumberId] = useState('');
     const [notionKey, setNotionKey] = useState('');
     const [notionDbId, setNotionDbId] = useState('');
 
@@ -70,10 +70,17 @@ function SettingsPage() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Integração com Google Calendar</CardTitle>
-          <CardDescription>
-            Conecte sua agenda do Google para sincronizar os horários disponíveis e agendamentos.
-          </CardDescription>
+            <div className="flex items-center gap-3">
+             <div className="bg-blue-500/10 p-3 rounded-full">
+                <Calendar className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+                 <CardTitle>Integração com Google Calendar</CardTitle>
+                <CardDescription>
+                    Conecte sua agenda do Google para sincronizar os horários disponíveis e agendamentos.
+                </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
            <div className="space-y-2">
@@ -137,29 +144,29 @@ function SettingsPage() {
             <div>
               <CardTitle>Integração com WhatsApp</CardTitle>
               <CardDescription>
-                Conecte-se à API do WhatsApp para enviar notificações e mensagens.
+                Conecte-se à API da Meta para enviar notificações e mensagens via WhatsApp.
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
            <div className="space-y-2">
-                <Label htmlFor="whatsapp-token">Token da API do WhatsApp</Label>
+                <Label htmlFor="whatsapp-token">Token de Acesso Permanente</Label>
                 <Input 
                     id="whatsapp-token" 
                     type="password"
-                    placeholder="Cole seu token de acesso permanente aqui" 
+                    placeholder="Cole seu token de acesso permanente da Meta aqui" 
                     value={whatsappToken}
                     onChange={(e) => setWhatsappToken(e.target.value)}
                 />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="whatsapp-number">ID do Número de Telefone</Label>
+                <Label htmlFor="whatsapp-number-id">ID do Número de Telefone</Label>
                 <Input 
-                    id="whatsapp-number" 
-                    placeholder="Cole o ID do seu número de telefone aqui" 
-                    value={whatsappNumber}
-                    onChange={(e) => setWhatsappNumber(e.target.value)}
+                    id="whatsapp-number-id" 
+                    placeholder="Cole o ID do seu número de telefone da plataforma Meta" 
+                    value={whatsappNumberId}
+                    onChange={(e) => setWhatsappNumberId(e.target.value)}
                 />
             </div>
             <Button onClick={() => handleSaveChanges('Integração do WhatsApp')}>Salvar Configuração do WhatsApp</Button>
@@ -182,7 +189,7 @@ function SettingsPage() {
         </CardHeader>
         <CardContent className="space-y-6">
            <div className="space-y-2">
-                <Label htmlFor="notion-key">Chave de API do Notion</Label>
+                <Label htmlFor="notion-key">Chave da Integração (Internal Integration Token)</Label>
                 <Input 
                     id="notion-key" 
                     type="password"
