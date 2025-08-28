@@ -11,13 +11,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { FileKey, MessageSquare, BookUser, Calendar } from 'lucide-react';
+import { FileKey, MessageSquare, BookUser, Calendar, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
 
 function SettingsPage() {
     const { toast } = useToast();
@@ -128,10 +134,37 @@ function SettingsPage() {
                     Em uma aplicação real, estas credenciais devem ser armazenadas de forma segura em variáveis de ambiente no servidor e nunca expostas no cliente.
                 </AlertDescription>
             </Alert>
-             <div className="flex gap-2">
+             <div className="flex items-center gap-4 mt-6">
                 <Button onClick={() => handleSaveChanges('Integração do Google Calendar')}>Salvar Configuração da Agenda</Button>
                 <Button variant="outline" disabled>Testar Conexão</Button>
              </div>
+             <Accordion type="single" collapsible className="w-full mt-4">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4" />
+                        Ver Guia de Configuração
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground space-y-4 pt-4">
+                  <p>Siga estes passos para obter as credenciais do Google Calendar:</p>
+                  <ol className="list-decimal list-inside space-y-2">
+                    <li>Acesse o <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Cloud Console</a>.</li>
+                    <li>Crie um novo projeto ou selecione um existente.</li>
+                    <li>No menu de navegação, vá para "APIs e Serviços" > "Credenciais".</li>
+                    <li>Clique em "Criar Credenciais" e selecione "Conta de Serviço".</li>
+                    <li>Preencha o nome da conta de serviço, conceda a ela o papel de "Editor" e conclua.</li>
+                    <li>Na tela de Contas de Serviço, clique na conta recém-criada. Vá para a aba "CHAVES".</li>
+                    <li>Clique em "ADICIONAR CHAVE" > "Criar nova chave". Escolha "JSON" como tipo e clique em "CRIAR". O arquivo será baixado.</li>
+                    <li>Copie o conteúdo do arquivo JSON baixado e cole no campo "JSON da Conta de Serviço".</li>
+                    <li>Volte para a página principal da API e habilite a "API do Google Calendar".</li>
+                    <li>Vá para o <a href="https://calendar.google.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Calendar</a>. Nas configurações da agenda que deseja usar, vá para "Compartilhar com pessoas específicas".</li>
+                    <li>Adicione o endereço de e-mail da conta de serviço que você criou (ex: nome-da-conta@seu-projeto.iam.gserviceaccount.com) e dê a ela permissão de "Fazer alterações nos eventos".</li>
+                    <li>O "ID do Calendário" é encontrado nas configurações da agenda, na seção "Integrar agenda".</li>
+                  </ol>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
         </CardContent>
       </Card>
       
@@ -169,7 +202,29 @@ function SettingsPage() {
                     onChange={(e) => setWhatsappNumberId(e.target.value)}
                 />
             </div>
-            <Button onClick={() => handleSaveChanges('Integração do WhatsApp')}>Salvar Configuração do WhatsApp</Button>
+            <div className="flex items-center gap-4 mt-6">
+                <Button onClick={() => handleSaveChanges('Integração do WhatsApp')}>Salvar Configuração do WhatsApp</Button>
+            </div>
+             <Accordion type="single" collapsible className="w-full mt-4">
+              <AccordionItem value="item-1">
+                 <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4" />
+                        Ver Guia de Configuração
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground space-y-4 pt-4">
+                  <p>Para obter as credenciais do WhatsApp Business API:</p>
+                   <ol className="list-decimal list-inside space-y-2">
+                      <li>Acesse o painel da <a href="https://developers.facebook.com/apps/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Meta for Developers</a>.</li>
+                      <li>Crie um novo aplicativo do tipo "Business".</li>
+                      <li>No painel do seu aplicativo, encontre o produto "WhatsApp" e clique em "Configurar".</li>
+                      <li>Na seção "API Setup", você encontrará o "ID do Número de Telefone".</li>
+                      <li>Para o token, o token temporário é fornecido. Para produção, você precisará gerar um "Token de Acesso Permanente" na seção "Usuários do sistema" das Configurações do seu Gerenciador de Negócios.</li>
+                  </ol>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
         </CardContent>
       </Card>
 
@@ -207,7 +262,31 @@ function SettingsPage() {
                     onChange={(e) => setNotionDbId(e.target.value)}
                 />
             </div>
-            <Button onClick={() => handleSaveChanges('Integração do Notion')}>Salvar Configuração do Notion</Button>
+            <div className="flex items-center gap-4 mt-6">
+                <Button onClick={() => handleSaveChanges('Integração do Notion')}>Salvar Configuração do Notion</Button>
+            </div>
+            <Accordion type="single" collapsible className="w-full mt-4">
+              <AccordionItem value="item-1">
+                 <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4" />
+                        Ver Guia de Configuração
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground space-y-4 pt-4">
+                  <p>Para obter as credenciais do Notion:</p>
+                   <ol className="list-decimal list-inside space-y-2">
+                      <li>Acesse <a href="https://www.notion.so/my-integrations" target="_blank" rel="noopener noreferrer" className="text-primary underline">suas integrações no Notion</a>.</li>
+                      <li>Clique em "New integration". Dê um nome e selecione o Workspace associado.</li>
+                      <li>Clique em "Submit". Na próxima tela, copie o "Internal Integration Token" e cole no campo acima.</li>
+                      <li>Crie a página com o Banco de Dados que você quer usar no Notion.</li>
+                      <li>Clique no ícone de três pontos no canto superior direito do seu banco de dados e clique em "Add connections".</li>
+                      <li>Procure pelo nome da integração que você acabou de criar e a selecione.</li>
+                      <li>Para obter o ID do Banco de Dados, abra a página do banco de dados no Notion. A URL terá o formato: `notion.so/workspace-name/DATABASE_ID?v=...`. O `DATABASE_ID` é o valor que você precisa.</li>
+                  </ol>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
         </CardContent>
       </Card>
 
@@ -237,3 +316,5 @@ function SettingsPage() {
 }
 
 export default SettingsPage;
+
+    
