@@ -89,7 +89,7 @@ function PatientTable({ patients }: { patients: Patient[] }) {
                   </TableCell>
                    <TableCell className="hidden md:table-cell">
                     {patient.nextAppointment || 'N/A'}
-                  </TableCell>
+                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -368,7 +368,7 @@ export default function CrmPage() {
                 type="tel"
                 placeholder="e.g., (123) 456-7890"
                 value={newPatientPhone}
-                onChange={(e) => setNewPatientPhone(e.g.target.value)}
+                onChange={(e) => setNewPatientPhone(e.target.value)}
               />
             </div>
           </div>
