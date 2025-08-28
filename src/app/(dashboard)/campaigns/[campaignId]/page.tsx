@@ -2,8 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useRouter, useParams, notFound } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -28,9 +27,12 @@ import { ArrowLeft, Send, Mail, MessageSquare, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 
-export default function CampaignDetailsPage({ params }: { params: { campaignId: string } }) {
+export default function CampaignDetailsPage() {
   const { toast } = useToast();
-  const { campaignId } = params;
+  const router = useRouter();
+  const params = useParams();
+  const campaignId = params.campaignId as string;
+
   const campaign = mockCampaigns.find((c) => c.id === campaignId);
   const [deliveryChannel, setDeliveryChannel] = useState('whatsapp');
 
@@ -64,11 +66,9 @@ export default function CampaignDetailsPage({ params }: { params: { campaignId: 
   return (
     <div className="py-4 space-y-4">
       <div className="flex items-center gap-4">
-         <Button variant="outline" size="icon" asChild>
-            <Link href="/campaigns">
-                <ArrowLeft className="h-4 w-4" />
-                <span className="sr-only">Voltar</span>
-            </Link>
+         <Button variant="outline" size="icon" onClick={() => router.push('/campaigns')}>
+            <ArrowLeft className="h-4 w-4" />
+            <span className="sr-only">Voltar</span>
         </Button>
         <h1 className="text-2xl font-headline font-bold">{campaign.name}</h1>
       </div>
