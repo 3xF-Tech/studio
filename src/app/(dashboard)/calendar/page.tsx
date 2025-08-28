@@ -14,7 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { mockAppointments, Appointment } from '@/lib/data';
-import { PlusCircle, Blocks, LoaderCircle } from 'lucide-react';
+import { PlusCircle, TowerControl, LoaderCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -30,6 +30,7 @@ import { useToast } from '@/hooks/use-toast';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
 import { format, isSameDay, isWithinInterval, startOfDay, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import Link from 'next/link';
 
 export default function CalendarPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +44,9 @@ export default function CalendarPage() {
 
   // Set the initial date on the client to avoid hydration mismatch
   useEffect(() => {
-    setSelectedDate(new Date());
+    if (!selectedDate) {
+        setSelectedDate(new Date());
+    }
     setIsClient(true);
   }, []);
 
@@ -156,11 +159,13 @@ export default function CalendarPage() {
             <TabsTrigger value="week">Semana</TabsTrigger>
             <TabsTrigger value="month">Mês</TabsTrigger>
           </TabsList>
-          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setSelectedDate(undefined)}>
-            <Blocks className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Limpar Seleção
-            </span>
+          <Button asChild size="sm" variant="outline" className="h-8 gap-1">
+            <Link href="/broadcast">
+                <TowerControl className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Liberar Agenda
+                </span>
+            </Link>
           </Button>
           <Button size="sm" className="h-8 gap-1" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />

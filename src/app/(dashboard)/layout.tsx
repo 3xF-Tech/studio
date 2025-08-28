@@ -12,6 +12,7 @@ import {
   MessageSquare,
   Users,
   Newspaper,
+  TowerControl,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -42,6 +43,7 @@ const menuItems = [
   { href: '/calendar', label: 'Agenda', icon: Calendar },
   { href: '/crm', label: 'Pacientes', icon: Users },
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
+  { href: '/broadcast', label: 'Transmissão', icon: TowerControl },
   { href: '/reports', label: 'Relatórios', icon: FileText },
   { href: '/blog', label: 'Publicações', icon: Newspaper },
 ];
