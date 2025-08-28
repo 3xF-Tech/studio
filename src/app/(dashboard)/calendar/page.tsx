@@ -39,10 +39,12 @@ export default function CalendarPage() {
   const [availability, setAvailability] = useState('');
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [isClient, setIsClient] = useState(false);
 
   // Set the initial date on the client to avoid hydration mismatch
   useEffect(() => {
     setSelectedDate(new Date());
+    setIsClient(true);
   }, []);
 
   const handleSchedule = async () => {
@@ -173,7 +175,7 @@ export default function CalendarPage() {
             <TabsContent value="month">
                 <Card>
                     <CardContent className="p-0">
-                         <Calendar
+                         {isClient && <Calendar
                             mode="single"
                             selected={selectedDate}
                             onSelect={setSelectedDate}
@@ -184,7 +186,7 @@ export default function CalendarPage() {
                                 cell: 'w-full',
                                 day: 'w-full h-24 items-start p-2',
                             }}
-                         />
+                         />}
                     </CardContent>
                 </Card>
             </TabsContent>
