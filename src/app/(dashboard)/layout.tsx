@@ -13,6 +13,7 @@ import {
   Users,
   Newspaper,
   TowerControl,
+  DollarSign,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -42,6 +43,7 @@ const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/calendar', label: 'Agenda', icon: Calendar },
   { href: '/crm', label: 'Pacientes', icon: Users },
+  { href: '/financials', label: 'Financeiro', icon: DollarSign },
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
   { href: '/broadcast', label: 'Transmissão', icon: TowerControl },
   { href: '/reports', label: 'Relatórios', icon: FileText },

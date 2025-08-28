@@ -25,15 +25,17 @@ export type Appointment = {
     startTime: Date;
     endTime: Date;
     status: 'Confirmed' | 'Pending' | 'Cancelled';
+    price?: number;
 }
 
 const today = new Date();
 
 export const mockAppointments: Appointment[] = [
-    { id: 'a1', patientName: 'Alice Johnson', procedure: 'Botox', startTime: new Date(new Date().setHours(9, 0, 0, 0)), endTime: new Date(new Date().setHours(10, 0, 0, 0)), status: 'Confirmed' },
-    { id: 'a2', patientName: 'Eve Davis', procedure: 'Filler', startTime: new Date(new Date().setHours(10, 30, 0, 0)), endTime: new Date(new Date().setHours(11, 30, 0, 0)), status: 'Confirmed' },
-    { id: 'a3', patientName: 'Frank White', procedure: 'Consultation', startTime: new Date(new Date().setHours(12, 0, 0, 0)), endTime: new Date(new Date().setHours(12, 30, 0, 0)), status: 'Pending' },
-    { id: 'a4', patientName: 'Grace Lee', procedure: 'Laser', startTime: new Date(addDays(today, 3).setHours(14, 0, 0, 0)), endTime: new Date(addDays(today, 3).setHours(15, 0, 0, 0)), status: 'Confirmed' },
+    { id: 'a1', patientName: 'Alice Johnson', procedure: 'Botox', startTime: new Date(new Date().setHours(9, 0, 0, 0)), endTime: new Date(new Date().setHours(10, 0, 0, 0)), status: 'Confirmed', price: 350 },
+    { id: 'a2', patientName: 'Eve Davis', procedure: 'Filler', startTime: new Date(new Date().setHours(10, 30, 0, 0)), endTime: new Date(new Date().setHours(11, 30, 0, 0)), status: 'Confirmed', price: 500 },
+    { id: 'a3', patientName: 'Frank White', procedure: 'Consultation', startTime: new Date(new Date().setHours(12, 0, 0, 0)), endTime: new Date(new Date().setHours(12, 30, 0, 0)), status: 'Pending', price: 200 },
+    { id: 'a4', patientName: 'Grace Lee', procedure: 'Laser', startTime: new Date(addDays(today, 3).setHours(14, 0, 0, 0)), endTime: new Date(addDays(today, 3).setHours(15, 0, 0, 0)), status: 'Confirmed', price: 450 },
+    { id: 'a5', patientName: 'Heidi Black', procedure: 'Check-up', startTime: new Date(addDays(today, 5).setHours(11, 0, 0, 0)), endTime: new Date(addDays(today, 5).setHours(11, 45, 0, 0)), status: 'Confirmed', price: 250 },
 ];
 
 export type FinancialRecord = {
