@@ -20,9 +20,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DollarSign, TrendingUp, Calendar, Bot, Send } from 'lucide-react';
-import { mockFinancials, mockAppointments, FinancialRecord, mockContracts } from '@/lib/data';
+import { mockFinancials, FinancialRecord, mockContracts } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { addMonths, isWithinInterval, startOfYear, endOfYear, startOfMonth, endOfMonth } from 'date-fns';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function FinancialsPage() {
     const { toast } = useToast();
@@ -76,12 +77,12 @@ export default function FinancialsPage() {
 
   return (
     <div className="py-4 space-y-4">
-       <div className="flex items-center">
+       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <h1 className="text-2xl font-headline font-bold">Financeiro</h1>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="sm:ml-auto flex items-center gap-2">
                 <Button onClick={handleAutomaticBilling}>
                     <Bot className="mr-2 h-4 w-4" />
-                    Cobrança Automática de Pendentes
+                    Cobrança Automática
                 </Button>
             </div>
        </div>
@@ -145,6 +146,7 @@ export default function FinancialsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+           <ScrollArea className="w-full">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -160,17 +162,17 @@ export default function FinancialsPage() {
               <TableBody>
                 {mockFinancials.map((record: FinancialRecord) => (
                   <TableRow key={record.id}>
-                    <TableCell className="font-medium">{record.patientName}</TableCell>
-                    <TableCell>{new Date(record.issueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
-                     <TableCell>{new Date(record.paymentDueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
-                    <TableCell>R$ {record.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
+                    <TableCell className="font-medium whitespace-nowrap">{record.patientName}</TableCell>
+                    <TableCell className="whitespace-nowrap">{new Date(record.issueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
+                     <TableCell className="whitespace-nowrap">{new Date(record.paymentDueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
+                    <TableCell className="whitespace-nowrap">R$ {record.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
                     <TableCell>
                       <Badge 
                         variant={record.status === 'Paid' ? 'default' : record.status === 'Pending' ? 'secondary' : 'destructive'}
                         className={
-                            record.status === 'Paid' ? 'bg-green-100 text-green-800' :
+                            `whitespace-nowrap ${record.status === 'Paid' ? 'bg-green-100 text-green-800' :
                             record.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
+                            'bg-red-100 text-red-800'}`
                         }
                       >
                         {record.status === 'Paid' ? 'Pago' : record.status === 'Pending' ? 'Pendente' : 'Atrasado'}
@@ -189,8 +191,11 @@ export default function FinancialsPage() {
                 ))}
               </TableBody>
             </Table>
+            </ScrollArea>
         </CardContent>
       </Card>
     </div>
   );
 }
+
+    

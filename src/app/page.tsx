@@ -89,30 +89,30 @@ export default function Home() {
             Fabiana Carvalhal
           </span>
         </Link>
-        <nav className="ml-auto flex items-center gap-6 sm:gap-8">
+        <nav className="ml-auto flex items-center gap-4 sm:gap-6">
           <Link
             href="#services"
-            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
+            className="text-sm font-medium hover:underline underline-offset-4 hidden md:block font-body"
             prefetch={false}
           >
             Serviços
           </Link>
           <Link
             href="#about"
-            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
+            className="text-sm font-medium hover:underline underline-offset-4 hidden md:block font-body"
             prefetch={false}
           >
             Sobre
           </Link>
            <Link
             href="#publications"
-            className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
+            className="text-sm font-medium hover:underline underline-offset-4 hidden md:block font-body"
             prefetch={false}
           >
             Publicações
           </Link>
           <Button asChild>
-            <Link href="/dashboard">Painel Administrativo</Link>
+            <Link href="/dashboard">Painel</Link>
           </Button>
         </nav>
       </header>
@@ -147,7 +147,7 @@ export default function Home() {
                     width={450}
                     height={550}
                     alt="Dra. Fabiana Carvalhal"
-                    className="rounded-lg object-cover w-full h-auto max-w-sm shadow-2xl"
+                    className="rounded-lg object-cover w-full h-auto max-w-xs sm:max-w-sm shadow-2xl"
                 />
               </div>
             </div>
@@ -218,7 +218,7 @@ export default function Home() {
                     <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">O que os Pacientes Dizem</h2>
                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed font-body">Depoimentos de quem já trilhou essa jornada conosco.</p>
                 </div>
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {testimonials.map((testimonial, index) => (
                         <Card key={index} className="flex flex-col bg-background/50">
                             <CardContent className="pt-6 flex flex-col flex-grow font-body">
@@ -239,7 +239,7 @@ export default function Home() {
                     <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">Artigos e Reflexões</h2>
                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed font-body">Artigos da coluna "Casais no Divã" no portal Sinapsys News.</p>
                 </div>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {articles.map((article, index) => (
                     <Card key={index} className="flex flex-col">
                         <CardHeader>

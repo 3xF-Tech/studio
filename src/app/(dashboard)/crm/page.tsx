@@ -47,6 +47,8 @@ import { leadQualification } from '@/ai/flows/lead-qualification';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
 
 const weekdays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
@@ -64,6 +66,7 @@ function PatientTable({
     onDelete: (patient: Patient) => void
 }) {
     return (
+      <ScrollArea className="w-full">
         <Table>
             <TableHeader>
               <TableRow>
@@ -150,6 +153,7 @@ function PatientTable({
               ))}
             </TableBody>
           </Table>
+          </ScrollArea>
     )
 }
 
@@ -175,7 +179,7 @@ export default function CrmPage() {
   // State for AI Lead Qualification
   const [procedure, setProcedure] = useState('');
   const [patientInfo, setPatientInfo] = useState('');
-  const [knowledgeBase, setKnowledgeBase] = useState('Para Botox, pacientes não devem estar grávidas ou ter doenças neurológicas. Candidatos ideais buscam reduzir linhas de expressão. Efeitos colaterais comuns incluem hematomas temporários.');
+  const [knowledgeBase, setKnowledgeBase] = useState("A Dra. Fabiana Carvalhal é especialista em Neuropsicologia, Psicodrama e PNL Sistêmica. A Avaliação Neuropsicológica investiga o funcionamento cognitivo, emocional e comportamental para diagnosticar TDAH, TEA, Dificuldades de Aprendizado, Demências, entre outros, auxiliando na criação de planos de tratamento multidisciplinares.");
   
   // State for New/Edit Patient Form
   const [patientForm, setPatientForm] = useState({
@@ -315,7 +319,7 @@ export default function CrmPage() {
           ...prev,
           address: {
               ...prev.address,
-              [id.replace('new-patient-', '')]: value
+              [id]: value
           }
       }));
   }
@@ -491,31 +495,31 @@ export default function CrmPage() {
   return (
     <>
     <Tabs defaultValue="all" onValueChange={handleTabChange}>
-      <div className="flex items-center py-4">
+      <div className="flex flex-col sm:flex-row sm:items-center py-4 gap-4">
         <TabsList>
           <TabsTrigger value="all">Todos</TabsTrigger>
           <TabsTrigger value="active">Ativos</TabsTrigger>
           <TabsTrigger value="inactive">Inativos</TabsTrigger>
         </TabsList>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Buscar pacientes..."
-              className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              className="pl-8 w-full sm:w-[200px] lg:w-[300px]"
               onChange={handleSearch}
             />
           </div>
-          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setIsQualifyModalOpen(true)}>
+          <Button size="sm" variant="outline" className="h-9 gap-1" onClick={() => setIsQualifyModalOpen(true)}>
             <Sparkles className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Qualificar Lead
             </span>
           </Button>
-          <Button size="sm" className="h-8 gap-1" onClick={handleOpenAddModal}>
+          <Button size="sm" className="h-9 gap-1" onClick={handleOpenAddModal}>
             <PlusCircle className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+            <span className="sr-only sm:not-sr-only sm:whitespace-rap">
               Adicionar Paciente
             </span>
           </Button>
@@ -711,7 +715,7 @@ export default function CrmPage() {
                     <span>{selectedPatient.sessionDuration || 'N/A'} min</span>
                 </div>
                  <Separator className="my-2" />
-                 {selectedPatient.address && (
+                 {selectedPatient.address && (selectedPatient.address.street || selectedPatient.address.zip) && (
                     <div className="space-y-2">
                         <h4 className="font-semibold">Endereço</h4>
                         <p>{selectedPatient.address.street}, {selectedPatient.address.number}{selectedPatient.address.complement ? `, ${selectedPatient.address.complement}` : ''}</p>
@@ -774,7 +778,7 @@ export default function CrmPage() {
             </div>
              <div className="space-y-2">
                 <Label>Dias da Semana Preferenciais</Label>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
                     {weekdays.map(day => (
                         <div key={day} className="flex items-center space-x-2">
                             <Checkbox 
