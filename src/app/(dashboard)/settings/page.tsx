@@ -13,7 +13,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import withAuth from '@/components/auth/withAuth';
 
 function SettingsPage() {
   return (
@@ -64,6 +63,4 @@ function SettingsPage() {
   );
 }
 
-
-// Protect this page, only allow 'admin' role
-export default withAuth(SettingsPage, ['admin']);
+export default SettingsPage;

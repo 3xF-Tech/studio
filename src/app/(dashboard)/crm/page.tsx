@@ -45,6 +45,82 @@ import { useToast } from '@/hooks/use-toast';
 import { leadQualification } from '@/ai/flows/lead-qualification';
 import { Separator } from '@/components/ui/separator';
 
+function PatientTable() {
+    return (
+        <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden md:table-cell">Phone</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Last Visit
+                </TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Next Appointment
+                </TableHead>
+                <TableHead>
+                  <span className="sr-only">Actions</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {mockPatients.map((patient) => (
+                <TableRow key={patient.id}>
+                  <TableCell className="font-medium">
+                    <div className="font-medium">{patient.name}</div>
+                    <div className="text-sm text-muted-foreground md:hidden">
+                        {patient.email}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={patient.status === 'Active' ? 'outline' : 'secondary'}
+                      className={patient.status === 'Active' ? 'text-green-600 border-green-600' : ''}
+                    >
+                      {patient.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {patient.phone}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {patient.lastVisit}
+                  </TableCell>
+                   <TableCell className="hidden md:table-cell">
+                    {patient.nextAppointment || 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          aria-haspopup="true"
+                          size="icon"
+                          variant="ghost"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Toggle menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive">
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+    )
+}
+
+
 export default function CrmPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQualifying, setIsQualifying] = useState(false);
@@ -154,76 +230,7 @@ export default function CrmPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">Phone</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Last Visit
-                </TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Next Appointment
-                </TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockPatients.map((patient) => (
-                <TableRow key={patient.id}>
-                  <TableCell className="font-medium">
-                    <div className="font-medium">{patient.name}</div>
-                    <div className="text-sm text-muted-foreground md:hidden">
-                        {patient.email}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={patient.status === 'Active' ? 'outline' : 'secondary'}
-                      className={patient.status === 'Active' ? 'text-green-600 border-green-600' : ''}
-                    >
-                      {patient.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {patient.phone}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {patient.lastVisit}
-                  </TableCell>
-                   <TableCell className="hidden md:table-cell">
-                    {patient.nextAppointment || 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <PatientTable />
         </CardContent>
       </Card>
     </Tabs>
@@ -286,4 +293,3 @@ export default function CrmPage() {
     </>
   );
 }
-
