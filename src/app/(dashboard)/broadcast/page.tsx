@@ -13,13 +13,14 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { AlertTriangle, Send, CalendarIcon } from 'lucide-react';
+import { AlertTriangle, Send, CalendarIcon, LoaderCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
+import { rescheduleBroadcast } from '@/ai/flows/reschedule-broadcast';
 
 function BroadcastPage() {
     const { toast } = useToast();
@@ -28,8 +29,9 @@ function BroadcastPage() {
     const [endDate, setEndDate] = useState<Date | undefined>();
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSendBroadcast = () => {
+    const handleSendBroadcast = async () => {
         if (!startDate || !endDate || !startTime || !endTime || !message) {
              toast({
                 variant: 'destructive',
@@ -38,21 +40,49 @@ function BroadcastPage() {
             });
             return;
         }
-        // In a real app, this would trigger a backend process to:
-        // 1. Clear all appointments in the Google Calendar for the specified period.
-        // 2. Fetch all affected patients from the CRM.
-        // 3. Send the personalized message via WhatsApp/SMS to each patient.
-        console.log("Broadcast message:", message);
-        console.log("Period to clear:", {
-            startDate,
-            startTime,
-            endDate,
-            endTime
-        });
-        toast({
-            title: 'Transmissão Enviada',
-            description: 'A notificação para liberação da agenda foi enviada a todos os pacientes relevantes.',
-        });
+
+        setIsLoading(true);
+
+        try {
+             const result = await rescheduleBroadcast({
+                startDate: format(startDate, 'yyyy-MM-dd'),
+                startTime,
+                endDate: format(endDate, 'yyyy-MM-dd'),
+                endTime,
+                baseMessage: message,
+            });
+
+            toast({
+                duration: 10000,
+                title: 'Transmissão Simulada e Concluída',
+                description: (
+                    <div className="text-sm space-y-2 mt-2">
+                        <p className="font-semibold">A IA gerou as seguintes mensagens personalizadas para os pacientes afetados:</p>
+                        <ul className="list-disc pl-5 max-h-48 overflow-y-auto">
+                           {result.notifications.map((n, i) => (
+                               <li key={i}>
+                                   <strong>Para {n.patientName}:</strong> "{n.personalizedMessage}"
+                               </li>
+                           ))}
+                        </ul>
+                         {result.notifications.length === 0 && <p className="text-muted-foreground">Nenhum paciente foi afetado no período selecionado.</p>}
+                        <p className="text-xs text-muted-foreground pt-2 border-t mt-2">
+                            Em uma aplicação real, estas mensagens seriam enviadas via WhatsApp.
+                        </p>
+                    </div>
+                ),
+            });
+
+        } catch (error) {
+             console.error('Broadcast error:', error);
+             toast({
+                variant: 'destructive',
+                title: 'Erro na Transmissão',
+                description: 'Não foi possível processar a notificação com a IA.',
+            });
+        } finally {
+            setIsLoading(false);
+        }
     }
 
   return (
@@ -70,7 +100,7 @@ function BroadcastPage() {
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Ação Irreversível</AlertTitle>
             <AlertDescription>
-              Ao clicar no botão de envio, todos os agendamentos no período selecionado serão cancelados no sistema. Esta ação não pode ser desfeita. Use com cuidado.
+              Ao clicar no botão de envio, todos os agendamentos no período selecionado serão cancelados no sistema e os pacientes notificados. Esta ação não pode ser desfeita. Use com cuidado.
             </AlertDescription>
           </Alert>
 
@@ -149,8 +179,8 @@ function BroadcastPage() {
             </p>
           </div>
 
-          <Button onClick={handleSendBroadcast} variant="destructive">
-            <Send className="mr-2 h-4 w-4" />
+          <Button onClick={handleSendBroadcast} variant="destructive" disabled={isLoading}>
+            {isLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
             Liberar Agenda e Enviar Notificações
           </Button>
         </CardContent>
