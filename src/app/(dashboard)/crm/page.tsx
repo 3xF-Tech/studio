@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot } from 'lucide-react';
-import { mockPatients } from '@/lib/data';
+import { mockPatients, Patient } from '@/lib/data';
 import {
   Dialog,
   DialogContent,
@@ -45,7 +45,7 @@ import { useToast } from '@/hooks/use-toast';
 import { leadQualification } from '@/ai/flows/lead-qualification';
 import { Separator } from '@/components/ui/separator';
 
-function PatientTable() {
+function PatientTable({ patients }: { patients: Patient[] }) {
     return (
         <Table>
             <TableHeader>
@@ -65,7 +65,7 @@ function PatientTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockPatients.map((patient) => (
+              {patients.map((patient) => (
                 <TableRow key={patient.id}>
                   <TableCell className="font-medium">
                     <div className="font-medium">{patient.name}</div>
@@ -122,11 +122,21 @@ function PatientTable() {
 
 
 export default function CrmPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [patients, setPatients] = useState<Patient[]>(mockPatients);
+  const [isQualifyModalOpen, setIsQualifyModalOpen] = useState(false);
+  const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
   const [isQualifying, setIsQualifying] = useState(false);
+  
+  // State for AI Lead Qualification
   const [procedure, setProcedure] = useState('');
   const [patientInfo, setPatientInfo] = useState('');
   const [knowledgeBase, setKnowledgeBase] = useState('For Botox, patients should not be pregnant or have neurological diseases. Ideal candidates are seeking to reduce fine lines. Common side effects include temporary bruising.');
+  
+  // State for New Patient Form
+  const [newPatientName, setNewPatientName] = useState('');
+  const [newPatientEmail, setNewPatientEmail] = useState('');
+  const [newPatientPhone, setNewPatientPhone] = useState('');
+  
   const { toast } = useToast();
 
   const handleQualify = async () => {
@@ -147,7 +157,7 @@ export default function CrmPage() {
       });
 
       toast({
-        duration: 10000, // Show for 10 seconds
+        duration: 10000,
         title: 'Análise de Qualificação de Lead pela IA',
         description: (
           <div className="text-sm space-y-2 mt-2">
@@ -159,25 +169,21 @@ export default function CrmPage() {
                   </span>
                 </p>
              </div>
-
             <div>
                 <p className="font-semibold">Motivo:</p>
                 <p className="text-muted-foreground">{result.reason}</p>
             </div>
-            
             <div>
                 <p className="font-semibold">Próximos Passos Sugeridos:</p>
                 <p className="text-muted-foreground">{result.nextSteps}</p>
             </div>
-
             <p className="text-xs text-muted-foreground pt-2 border-t mt-2">
               Nota: Esta é uma pré-análise e não substitui uma consulta profissional.
             </p>
           </div>
         ),
       });
-
-      setIsModalOpen(false);
+      setIsQualifyModalOpen(false);
     } catch (error) {
       console.error('Lead qualification error:', error);
       toast({
@@ -189,6 +195,40 @@ export default function CrmPage() {
       setIsQualifying(false);
     }
   };
+
+  const handleAddPatient = () => {
+    if (!newPatientName || !newPatientEmail || !newPatientPhone) {
+        toast({
+            variant: 'destructive',
+            title: 'Campos obrigatórios',
+            description: 'Por favor, preencha todos os campos do novo paciente.',
+        });
+        return;
+    }
+    
+    const newPatient: Patient = {
+        id: (patients.length + 1).toString(),
+        name: newPatientName,
+        email: newPatientEmail,
+        phone: newPatientPhone,
+        lastVisit: new Date().toISOString().split('T')[0], // Today's date
+        nextAppointment: null,
+        status: 'Active',
+    };
+    
+    setPatients(prevPatients => [...prevPatients, newPatient]);
+    
+    toast({
+        title: 'Paciente Adicionado',
+        description: `${newPatientName} foi adicionado com sucesso.`,
+    });
+
+    setIsAddPatientModalOpen(false);
+    setNewPatientName('');
+    setNewPatientEmail('');
+    setNewPatientPhone('');
+  };
+
 
   return (
     <>
@@ -208,13 +248,13 @@ export default function CrmPage() {
               className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
             />
           </div>
-          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setIsModalOpen(true)}>
+          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setIsQualifyModalOpen(true)}>
             <Sparkles className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Qualify Lead
             </span>
           </Button>
-          <Button size="sm" className="h-8 gap-1">
+          <Button size="sm" className="h-8 gap-1" onClick={() => setIsAddPatientModalOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Add Patient
@@ -230,12 +270,13 @@ export default function CrmPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PatientTable />
+          <PatientTable patients={patients} />
         </CardContent>
       </Card>
     </Tabs>
 
-    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+    {/* AI Lead Qualification Modal */}
+    <Dialog open={isQualifyModalOpen} onOpenChange={setIsQualifyModalOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -290,6 +331,56 @@ export default function CrmPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/* Add Patient Modal */}
+      <Dialog open={isAddPatientModalOpen} onOpenChange={setIsAddPatientModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Add New Patient</DialogTitle>
+            <DialogDescription>
+              Enter the details for the new patient.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-patient-name">Full Name</Label>
+              <Input
+                id="new-patient-name"
+                placeholder="e.g., John Doe"
+                value={newPatientName}
+                onChange={(e) => setNewPatientName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-patient-email">Email</Label>
+              <Input
+                id="new-patient-email"
+                type="email"
+                placeholder="e.g., john.doe@example.com"
+                value={newPatientEmail}
+                onChange={(e) => setNewPatientEmail(e.target.value)}
+              />
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="new-patient-phone">Phone</Label>
+              <Input
+                id="new-patient-phone"
+                type="tel"
+                placeholder="e.g., (123) 456-7890"
+                value={newPatientPhone}
+                onChange={(e) => setNewPatientPhone(e.g.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddPatientModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleAddPatient}>
+              Add Patient
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
+
