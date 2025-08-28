@@ -1,3 +1,7 @@
+
+"use client";
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -12,6 +16,13 @@ import {
 import ChatWidget from '@/components/chat-widget';
 
 export default function Home() {
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
+
   const assessmentObjectives = [
       "Estabelecer se há presença ou não de algum transtorno cognitivo ou alterações comportamentais;",
       "Avaliar o nível de funcionamento cognitivo atual;",
@@ -214,7 +225,7 @@ export default function Home() {
 
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t font-body">
         <p className="text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} Fabiana Carvalhal. Todos os direitos reservados.
+          &copy; {currentYear} Fabiana Carvalhal. Todos os direitos reservados.
         </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link
@@ -236,4 +247,3 @@ export default function Home() {
       <ChatWidget />
     </div>
   );
-}
