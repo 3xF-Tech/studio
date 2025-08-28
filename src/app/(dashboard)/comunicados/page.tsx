@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { AlertTriangle, Send, CalendarIcon, LoaderCircle, Users, Upload, AlertCircle } from 'lucide-react';
+import { AlertTriangle, Send, CalendarIcon, LoaderCircle, Users, Upload, AlertCircle, FileText, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -25,7 +25,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 function ComunicadosPage() {
     const { toast } = useToast();
-    const [message, setMessage] = useState('Olá! Devido a um imprevisto, precisei liberar minha agenda para o período abaixo. Em breve, a assistente virtual entrará em contato para reagendar sua consulta. Agradeço a compreensão.');
     const [startDate, setStartDate] = useState<Date | undefined>();
     const [endDate, setEndDate] = useState<Date | undefined>();
     const [startTime, setStartTime] = useState('');
@@ -35,6 +34,8 @@ function ComunicadosPage() {
     
     const [massMessage, setMassMessage] = useState('');
     const [isSendingMass, setIsSendingMass] = useState(false);
+    const [massContactFile, setMassContactFile] = useState<File | null>(null);
+    const massFileInputRef = useRef<HTMLInputElement>(null);
 
     const handleClearSchedule = async () => {
         if (!startDate || !endDate || !startTime || !endTime) {
@@ -101,10 +102,24 @@ function ComunicadosPage() {
         setTimeout(() => {
              toast({
                 title: 'Simulação de Envio',
-                description: 'Em um app real, sua mensagem seria enviada para a lista de contatos selecionada.',
+                description: `Em um app real, sua mensagem seria enviada para os contatos ${massContactFile ? `do arquivo ${massContactFile.name}` : 'da lista selecionada'}.`,
             });
             setIsSendingMass(false);
         }, 1500)
+    };
+
+    const handleMassFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file && file.type === "text/csv") {
+            setMassContactFile(file);
+        } else {
+            toast({
+                variant: 'destructive',
+                title: 'Arquivo Inválido',
+                description: 'Por favor, selecione um arquivo no formato .csv',
+            })
+            setMassContactFile(null);
+        }
     };
 
 
@@ -230,19 +245,33 @@ function ComunicadosPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                      <div className="space-y-2">
-                        <Label htmlFor="contact-upload">Lista de Contatos</Label>
-                        <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Função de Upload</AlertTitle>
-                            <AlertDescription>
-                                O upload e processamento de listas de contatos será implementado em breve. Por enquanto, a notificação será simulada.
-                            </AlertDescription>
-                        </Alert>
-                        <div className="flex items-center gap-2 p-2 border-2 border-dashed rounded-md mt-2">
-                            <Upload className="w-5 h-5 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">Faça upload de um arquivo .csv</span>
-                            <Button variant="outline" size="sm" className="ml-auto" disabled>Procurar</Button>
-                        </div>
+                        <Label htmlFor="mass-contact-upload">Lista de Contatos (CSV)</Label>
+                        <Input 
+                            type="file" 
+                            id="mass-contact-upload" 
+                            ref={massFileInputRef} 
+                            className="hidden" 
+                            onChange={handleMassFileChange}
+                            accept=".csv"
+                        />
+                        {massContactFile ? (
+                             <div className="flex items-center gap-2 p-2 border-2 border-dashed rounded-md mt-2 bg-muted/50">
+                                <FileText className="w-5 h-5 text-primary" />
+                                <span className="text-sm font-medium truncate">{massContactFile.name}</span>
+                                <Button variant="ghost" size="icon" className="ml-auto h-6 w-6" onClick={() => setMassContactFile(null)}>
+                                    <X className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        ) : (
+                            <div 
+                                className="flex items-center gap-2 p-2 border-2 border-dashed rounded-md mt-2 cursor-pointer hover:border-primary/50"
+                                onClick={() => massFileInputRef.current?.click()}
+                            >
+                                <Upload className="w-5 h-5 text-muted-foreground" />
+                                <span className="text-sm text-muted-foreground">Faça upload de um arquivo</span>
+                                <Button variant="outline" size="sm" className="ml-auto" onClick={(e) => { e.stopPropagation(); massFileInputRef.current?.click(); }}>Procurar</Button>
+                            </div>
+                        )}
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="mass-message">Mensagem de Notificação</Label>

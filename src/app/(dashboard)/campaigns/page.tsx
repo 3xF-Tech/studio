@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -22,7 +22,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, Send, LoaderCircle, AlertCircle } from 'lucide-react';
+import { Upload, Send, LoaderCircle, AlertCircle, FileText, X } from 'lucide-react';
 import { mockCampaigns } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { generateCampaignMessage } from '@/ai/flows/campaign-message-generation';
@@ -33,7 +33,23 @@ export default function CampaignsPage() {
     const [campaignName, setCampaignName] = useState('');
     const [promoContent, setPromoContent] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
+    const [contactFile, setContactFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file && file.type === "text/csv") {
+            setContactFile(file);
+        } else {
+            toast({
+                variant: 'destructive',
+                title: 'Arquivo Inválido',
+                description: 'Por favor, selecione um arquivo no formato .csv',
+            })
+            setContactFile(null);
+        }
+    };
 
     const handleGenerate = async () => {
         if (!campaignName || !promoContent) {
@@ -55,14 +71,21 @@ export default function CampaignsPage() {
                 patientProfile: samplePatientProfile,
                 promotionalContent: promoContent,
             });
+            
+            const descriptionBase = `Mensagem gerada pela IA para um paciente exemplo:`;
+            const fileDescription = contactFile ? `A campanha seria enviada para os contatos em "${contactFile.name}".` : "Em um app real, a campanha seria enviada para a lista de contatos.";
+
 
             toast({
                 duration: 10000,
                 title: `Mensagem para ${campaignName}`,
                 description: (
                 <div className="text-sm space-y-2 mt-2">
-                    <p className="font-semibold">Mensagem gerada pela IA para um paciente exemplo:</p>
+                    <p className="font-semibold">{descriptionBase}</p>
                     <p className="p-2 border rounded-md bg-muted">{result.message}</p>
+                    <p className="text-xs text-muted-foreground pt-2 border-t mt-2">
+                        {fileDescription}
+                    </p>
                 </div>
                 ),
             });
@@ -95,19 +118,33 @@ export default function CampaignsPage() {
               <Input id="campaign-name" placeholder="ex: Rejuvenescimento de Primavera" value={campaignName} onChange={(e) => setCampaignName(e.target.value)} />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="contact-upload">Lista de Contatos</Label>
-                 <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Função de Upload</AlertTitle>
-                    <AlertDescription>
-                        O upload e processamento de listas de contatos será implementado em breve. Por enquanto, a IA gerará uma mensagem de exemplo.
-                    </AlertDescription>
-                </Alert>
-                <div className="flex items-center gap-2 p-2 border-2 border-dashed rounded-md mt-2">
-                    <Upload className="w-5 h-5 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Faça upload de um arquivo .csv</span>
-                    <Button variant="outline" size="sm" className="ml-auto" disabled>Procurar</Button>
-                </div>
+                <Label htmlFor="contact-upload">Lista de Contatos (CSV)</Label>
+                <Input 
+                    type="file" 
+                    id="contact-upload" 
+                    ref={fileInputRef} 
+                    className="hidden" 
+                    onChange={handleFileChange}
+                    accept=".csv"
+                />
+                 {contactFile ? (
+                    <div className="flex items-center gap-2 p-2 border-2 border-dashed rounded-md mt-2 bg-muted/50">
+                        <FileText className="w-5 h-5 text-primary" />
+                        <span className="text-sm font-medium truncate">{contactFile.name}</span>
+                        <Button variant="ghost" size="icon" className="ml-auto h-6 w-6" onClick={() => setContactFile(null)}>
+                            <X className="w-4 h-4" />
+                        </Button>
+                    </div>
+                 ) : (
+                    <div 
+                        className="flex items-center gap-2 p-2 border-2 border-dashed rounded-md mt-2 cursor-pointer hover:border-primary/50"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <Upload className="w-5 h-5 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Faça upload de um arquivo</span>
+                        <Button variant="outline" size="sm" className="ml-auto" onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}>Procurar</Button>
+                    </div>
+                 )}
             </div>
              <div className="space-y-2">
               <Label htmlFor="promo-content">Conteúdo Promocional</Label>
