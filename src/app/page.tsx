@@ -289,13 +289,6 @@ export default function Home() {
                         Conversar no WhatsApp
                     </a>
                  </Button>
-                 <div className="flex items-center justify-center text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    <span>Atendimentos em Campinas e São Paulo</span>
-                 </div>
-               <p className="text-xs text-muted-foreground font-body">
-                 Clique no ícone no canto da tela para falar com a assistente de IA 24/7.
-               </p>
              </div>
           </div>
         </section>
