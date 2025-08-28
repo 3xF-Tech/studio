@@ -14,7 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { mockAppointments, Appointment } from '@/lib/data';
-import { PlusCircle, TowerControl, LoaderCircle } from 'lucide-react';
+import { PlusCircle, TowerControl, LoaderCircle, Clock, User, Stethoscope } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
-import { format, isSameDay, isWithinInterval, startOfDay, addDays } from 'date-fns';
+import { format, isSameDay, isWithinInterval, startOfDay, addDays, endOfWeek, startOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Link from 'next/link';
 
@@ -104,54 +104,66 @@ export default function CalendarPage() {
   const getFilteredAppointments = (filter: 'day' | 'week' | 'selected', date?: Date) => {
     const today = startOfDay(new Date());
     if (filter === 'day') {
-      return mockAppointments.filter(apt => isSameDay(apt.startTime, today));
+      const targetDate = date ? startOfDay(date) : today;
+      return mockAppointments.filter(apt => isSameDay(apt.startTime, targetDate)).sort((a,b) => a.startTime.getTime() - b.startTime.getTime());
     }
     if (filter === 'week') {
-       const nextSevenDays = addDays(today, 7);
-       return mockAppointments.filter(apt => isWithinInterval(apt.startTime, { start: today, end: nextSevenDays }));
+       const start = startOfWeek(today, { locale: ptBR });
+       const end = endOfWeek(today, { locale: ptBR });
+       return mockAppointments.filter(apt => isWithinInterval(apt.startTime, { start, end })).sort((a,b) => a.startTime.getTime() - b.startTime.getTime());
     }
     if (filter === 'selected' && date) {
-        return mockAppointments.filter(apt => isSameDay(apt.startTime, date));
+        return mockAppointments.filter(apt => isSameDay(apt.startTime, date)).sort((a,b) => a.startTime.getTime() - b.startTime.getTime());
     }
-    return mockAppointments;
+    return mockAppointments.sort((a,b) => a.startTime.getTime() - b.startTime.getTime());
   }
   
   const appointmentsForSelectedDate = selectedDate ? getFilteredAppointments('selected', selectedDate) : [];
-  const appointmentsForDayTab = getFilteredAppointments('day');
+  const appointmentsForDayTab = getFilteredAppointments('day', new Date());
   const appointmentsForWeekTab = getFilteredAppointments('week');
 
 
   const AppointmentList = ({ appointments, emptyMessage }: { appointments: Appointment[], emptyMessage: string }) => (
-     <div className="space-y-4">
-        {appointments.length > 0 ? (
-            appointments.map(apt => (
-                <div key={apt.id} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-20 text-right">
-                        <p className="font-bold text-sm">
-                          {format(apt.startTime, 'HH:mm')}
-                        </p>
-                         <p className="text-xs text-muted-foreground">
-                          {Math.abs(apt.endTime.getTime() - apt.startTime.getTime()) / 60000} min
-                         </p>
-                    </div>
-                    <div className="flex-1 border-l-2 border-primary pl-3">
-                        <p className="font-semibold">{apt.patientName}</p>
-                        <p className="text-sm text-muted-foreground">{apt.procedure}</p>
-                        <Badge
-                          variant={
-                              apt.status === 'Confirmed' ? 'default' : 'secondary'
-                          }
-                          className={`mt-1 text-xs ${apt.status === 'Confirmed' ? 'bg-green-500/20 text-green-700' : ''}`}
-                          >
-                          {apt.status === 'Confirmed' ? 'Confirmado' : apt.status === 'Pending' ? 'Pendente' : 'Cancelado'}
-                          </Badge>
+    <div className="space-y-4">
+      {appointments.length > 0 ? (
+        appointments.map((apt) => (
+          <Card key={apt.id} className="w-full shadow-md border-l-4 border-primary">
+            <CardContent className="p-4 grid grid-cols-12 gap-4 items-center">
+              <div className="col-span-3 lg:col-span-2 text-center">
+                <div className="flex flex-col items-center justify-center bg-muted p-2 rounded-md">
+                   <p className="text-lg font-bold">{format(apt.startTime, 'HH:mm')}</p>
+                   <p className="text-xs text-muted-foreground">às {format(apt.endTime, 'HH:mm')}</p>
+                </div>
+              </div>
+              <div className="col-span-9 lg:col-span-10">
+                <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-base">{apt.procedure}</h3>
+                    <Badge
+                        variant={apt.status === 'Confirmed' ? 'default' : 'secondary'}
+                        className={`text-xs ${
+                        apt.status === 'Confirmed' ? 'bg-green-100 text-green-800 border-green-200' 
+                        : apt.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' 
+                        : 'bg-red-100 text-red-800 border-red-200'}`}
+                    >
+                       {apt.status === 'Confirmed' ? 'Confirmado' : apt.status === 'Pending' ? 'Pendente' : 'Cancelado'}
+                    </Badge>
+                </div>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+                    <div className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        <span>{apt.patientName}</span>
                     </div>
                 </div>
-            ))
-        ) : (
-            <p className="text-sm text-muted-foreground text-center">{emptyMessage}</p>
-        )}
-      </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        <div className="text-center py-10">
+            <p className="text-muted-foreground">{emptyMessage}</p>
+        </div>
+      )}
+    </div>
   );
 
 
@@ -204,7 +216,7 @@ export default function CalendarPage() {
             <TabsContent value="day">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Agenda de Hoje</CardTitle>
+                        <CardTitle>Agenda de Hoje - {format(new Date(), 'dd MMMM, yyyy', { locale: ptBR })}</CardTitle>
                     </CardHeader>
                     <CardContent>
                        <AppointmentList appointments={appointmentsForDayTab} emptyMessage="Nenhum agendamento para hoje." />
@@ -214,7 +226,7 @@ export default function CalendarPage() {
              <TabsContent value="week">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Agenda da Semana (Próximos 7 dias)</CardTitle>
+                        <CardTitle>Agenda da Semana: {format(startOfWeek(new Date(), { locale: ptBR }), 'dd/MM')} - {format(endOfWeek(new Date(), { locale: ptBR }), 'dd/MM/yyyy')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                        <AppointmentList appointments={appointmentsForWeekTab} emptyMessage="Nenhum agendamento para os próximos 7 dias." />
@@ -301,3 +313,5 @@ export default function CalendarPage() {
     </>
   );
 }
+
+    
