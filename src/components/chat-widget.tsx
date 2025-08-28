@@ -38,7 +38,7 @@ export default function ChatWidget() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [flowState, setFlowState] = useState<FlowState>('idle');
-  const [flowData, setFlowData] = useState<Partial<LeadQualificationInput & ScheduleAppointmentInput>>({});
+  const [flowData, setFlowData] = useState<Partial<LeadQualificationInput & { selectedDays: string[] } & { patientName: string, procedure: string }>>({});
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -72,7 +72,7 @@ export default function ChatWidget() {
     setInput('');
     addMessage(
       <div>
-        <p className="font-semibold">Olá! Sou a assistente virtual de Fabiana Carvalhal.</p>
+        <p className="font-semibold">Olá! Sou a assistente virtual da Dra. Fabiana Carvalhal.</p>
         <p>Como posso te ajudar hoje?</p>
         <div className="flex flex-col gap-2 mt-4">
           <Button variant="outline" size="sm" onClick={() => handleQuickReply("Saber mais sobre as abordagens", startQualificationFlow)}>
@@ -94,7 +94,7 @@ export default function ChatWidget() {
   }
 
   const startQualificationFlow = () => {
-    addMessage("Com certeza! Sobre qual área você gostaria de saber mais: Neuropsicologia, Psicodrama ou PNL Sistêmica?", false);
+    addMessage("Com certeza! Sobre qual área você gostaria de saber mais: Avaliação Neuropsicológica, Psicodrama ou PNL Sistêmica?", false);
     setFlowState('qualifying_interest');
   };
 
@@ -120,7 +120,7 @@ export default function ChatWidget() {
         const fullData: LeadQualificationInput = {
           procedureOfInterest: flowData.procedureOfInterest!,
           patientInformation: userInput,
-          knowledgeBase: "Fabiana Carvalhal é psicóloga clínica e neuropsicóloga, com pós-graduação em Psicodrama e especialização em Neuropsicologia e Reabilitação Cognitiva. É também trainer em PNL Sistêmica. Atua em contextos clínicos, hospitalares, escolares e organizacionais.",
+          knowledgeBase: "A Dra. Fabiana Carvalhal é especialista em Neuropsicologia, Psicodrama e PNL Sistêmica. A Avaliação Neuropsicológica investiga o funcionamento cognitivo, emocional e comportamental para diagnosticar TDAH, TEA, Dificuldades de Aprendizado, Demências, entre outros, auxiliando na criação de planos de tratamento multidisciplinares.",
         };
         const result = await leadQualification(fullData);
         addMessage(
@@ -140,12 +140,16 @@ export default function ChatWidget() {
       } else if (flowState === 'scheduling_reason') {
          setFlowData({ patientName: 'Cliente', procedure: userInput });
          setFlowState('scheduling_availability');
-         addMessage("Entendido. Qual é a sua disponibilidade geral? (ex: 'tardes durante a semana', 'manhãs de segunda e quarta')", false);
+         addMessage("Entendido. Quais dias da semana você tem preferência? (ex: 'segundas e quartas', 'qualquer dia da semana à tarde')", false);
       } else if (flowState === 'scheduling_availability') {
+        // A simple heuristic to extract days of the week.
+        const days = ['segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado', 'domingo'];
+        const selectedDays = days.filter(day => userInput.toLowerCase().includes(day));
+
         const scheduleData: ScheduleAppointmentInput = {
             patientName: flowData.patientName!,
             procedure: flowData.procedure!,
-            availability: userInput,
+            selectedDays: selectedDays.map(d => d + '-feira'), // a API espera 'segunda-feira', etc.
         };
         const result = await scheduleAppointment(scheduleData);
         addMessage(

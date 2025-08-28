@@ -25,12 +25,15 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
 import { format, isSameDay, isWithinInterval, startOfDay, endOfWeek, startOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Link from 'next/link';
+
+
+const weekdays = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"];
 
 export default function CalendarPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -139,7 +142,7 @@ export default function CalendarPage() {
                  {showDate && (
                     <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground capitalize">
                         <CalendarIconLucide className="w-4 h-4" />
-                        <span>{format(apt.startTime, 'EEEE, dd \'de\' MMMM', { locale: ptBR })}</span>
+                        <span>{format(apt.startTime, "EEEE, dd 'de' MMMM", { locale: ptBR })}</span>
                     </div>
                 )}
                 <div className="flex items-center justify-between">
@@ -291,39 +294,40 @@ export default function CalendarPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="patient-name" className="text-right">
+            <div className="space-y-2">
+              <Label htmlFor="patient-name">
                 Nome do Paciente
               </Label>
               <Input
                 id="patient-name"
                 value={patientName}
                 onChange={(e) => setPatientName(e.target.value)}
-                className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="procedure" className="text-right">
+            <div className="space-y-2">
+              <Label htmlFor="procedure">
                 Procedimento
               </Label>
               <Input
                 id="procedure"
                 value={procedure}
                 onChange={(e) => setProcedure(e.target.value)}
-                className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="availability" className="text-right">
-                Disponibilidade
-              </Label>
-              <Textarea
-                id="availability"
-                placeholder="ex: 'Terças após as 15h', 'Qualquer manhã de dia de semana'"
-                value={selectedDays.join(', ')}
-                onChange={(e) => setSelectedDays(e.target.value.split(', '))}
-                className="col-span-3"
-              />
+            <div className="space-y-2">
+                <Label>Dias da Semana Preferenciais</Label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
+                    {weekdays.map(day => (
+                        <div key={day} className="flex items-center space-x-2">
+                            <Checkbox 
+                                id={`day-${day}`} 
+                                onCheckedChange={() => handleDaySelection(day)}
+                                checked={selectedDays.includes(day)}
+                            />
+                            <Label htmlFor={`day-${day}`} className="font-normal">{day}</Label>
+                        </div>
+                    ))}
+                </div>
             </div>
           </div>
           <DialogFooter>
