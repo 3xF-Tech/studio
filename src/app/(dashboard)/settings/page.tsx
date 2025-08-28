@@ -13,8 +13,23 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 function SettingsPage() {
+    const { toast } = useToast();
+    const [knowledgeBase, setKnowledgeBase] = useState('For Botox, patients should not be pregnant or have neurological diseases. Ideal candidates are seeking to reduce fine lines. Common side effects include temporary bruising.');
+
+    const handleSaveChanges = () => {
+        // In a real app, this would save to a database.
+        // For now, we just show a confirmation toast.
+        console.log("Saved Knowledge Base:", knowledgeBase);
+        toast({
+            title: 'Configurações Salvas',
+            description: 'A base de conhecimento da IA foi atualizada com sucesso.',
+        });
+    }
+
   return (
     <div className="py-4 space-y-4">
       <h1 className="text-2xl font-headline font-bold">Settings</h1>
@@ -32,13 +47,14 @@ function SettingsPage() {
               id="knowledge-base"
               placeholder="Add information about procedures, contraindications, and patient profiles here. The AI will use this to qualify leads."
               className="min-h-[250px]"
-              defaultValue="For Botox, patients should not be pregnant or have neurological diseases. Ideal candidates are seeking to reduce fine lines. Common side effects include temporary bruising."
+              value={knowledgeBase}
+              onChange={(e) => setKnowledgeBase(e.target.value)}
             />
              <p className="text-sm text-muted-foreground">
               This information is used by the lead qualification agent.
             </p>
           </div>
-          <Button>Save Changes</Button>
+          <Button onClick={handleSaveChanges}>Save Changes</Button>
           <Separator />
            <div className="space-y-4">
             <h3 className="text-lg font-medium">Notifications</h3>
@@ -64,3 +80,5 @@ function SettingsPage() {
 }
 
 export default SettingsPage;
+
+    
