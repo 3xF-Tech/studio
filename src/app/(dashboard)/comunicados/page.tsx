@@ -230,7 +230,7 @@ function ComunicadosPage() {
 
                 <Button onClick={handleClearSchedule} variant="destructive" disabled={isLoading}>
                     {isLoading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-                    Liberar Agenda e Ver Pacientes
+                    Liberar agenda
                 </Button>
                 </CardContent>
             </Card>
