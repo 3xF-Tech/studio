@@ -14,6 +14,7 @@ import {
   MessageCircle,
   Newspaper,
   ArrowRight,
+  MapPin,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
 
@@ -123,7 +124,7 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-6">
                  <div className="space-y-4">
                    <p className="text-primary font-semibold tracking-wide uppercase font-body">
-                        Psicóloga Clínica | Neuropsicóloga USP
+                        Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL
                    </p>
                   <h1 className="text-4xl font-bold font-headline tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Cuidado e Expertise para sua Saúde Mental
@@ -162,7 +163,7 @@ export default function Home() {
                   Avaliação Neuropsicológica
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body text-justify">
-                  Um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idosos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
+                  A Avaliação Neuropsicológica é um processo que investiga o funcionamento cognitivo, emocional e comportamental de crianças, adolescentes, adultos e idosos, orientando no diagnóstico e laudo de TDAH, TEA (Autismo), Dificuldades no Aprendizado, TOD, Demência Senil, Depressão, Transtornos de Ansiedade, Transtornos de Humor e Impulsividade (Bipolar e Borderline), entre tantos outros.
                 </p>
               </div>
             </div>
@@ -189,7 +190,7 @@ export default function Home() {
             <div className="space-y-4">
                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary font-body">Sobre Mim</div>
               <h2 className="text-3xl font-bold font-headline tracking-tighter md:text-4xl/tight">
-                Fabiana Carvalhal
+                NEUROPSICÓLOGA FABIANA CARVALHAL
               </h2>
                  <p className="max-w-xl mx-auto text-muted-foreground font-body">Psicóloga Clínica | Neuropsicóloga USP | Psicodramatista PUC | Trainer PNL</p>
             </div>
@@ -197,7 +198,7 @@ export default function Home() {
                 <Quote className="absolute -top-6 -left-6 w-12 h-12 text-secondary/50 hidden md:block" />
                  <Card>
                     <CardContent className="p-8 text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body text-justify">
-                      Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos. Sou coautora do livro “PNL Humanizada” e minha paixão é integrar a excelência técnica com um profundo entendimento da individualidade de cada paciente.
+                      Atuando como psicóloga clínica há 24 anos, sou formada em neuropsicologia pela Universidade de São Paulo (USP). Minha formação é complementada por especializações em Psicodrama e Programação Neurolinguística (PNL SISTÊMICA), que integro em meus atendimentos.
                     </CardContent>
                 </Card>
             </div>
@@ -278,16 +279,20 @@ export default function Home() {
                 Inicie a sua jornada
               </h2>
               <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed font-body">
-                Pronto para explorar as possibilidades? Fale com minha assistente de IA para tirar dúvidas ou agende sua primeira consulta. Você também pode me contatar diretamente pelo WhatsApp.
+                Tem dúvidas? Entre em contato e agende um horário! Fale com minha assistente de IA para tirar dúvidas ou agende sua primeira consulta. Você também pode me contatar diretamente pelo WhatsApp.
               </p>
             </div>
-             <div className="mx-auto w-full max-w-sm space-y-2">
+             <div className="mx-auto w-full max-w-sm space-y-4">
                  <Button variant="outline" size="lg" className="w-full" asChild>
                     <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">
                         <MessageCircle className="w-5 h-5 mr-2" />
                         Conversar no WhatsApp
                     </a>
                  </Button>
+                 <div className="flex items-center justify-center text-sm text-muted-foreground">
+                    <MapPin className="w-4 h-4 mr-2" />
+                    <span>Atendimentos em Campinas e São Paulo</span>
+                 </div>
                <p className="text-xs text-muted-foreground font-body">
                  Clique no ícone no canto da tela para falar com a assistente de IA 24/7.
                </p>
@@ -320,3 +325,5 @@ export default function Home() {
       <ChatWidget />
     </div>
   );
+
+    
