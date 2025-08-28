@@ -82,11 +82,12 @@ export type FinancialRecord = {
     amount: number;
     status: 'Paid' | 'Pending' | 'Overdue';
     paymentMethod: 'Credit Card' | 'PIX' | 'Bank Transfer';
+    pixCode?: string;
 };
 
 export const mockFinancials: FinancialRecord[] = [
     { id: 'f1', patientName: 'Alice Johnson', issueDate: today.toISOString(), paymentDueDate: addDays(today, 15).toISOString(), amount: 350, status: 'Paid', paymentMethod: 'Credit Card' },
-    { id: 'f2', patientName: 'Charlie Brown', issueDate: addDays(today, -20).toISOString(), paymentDueDate: addDays(today, 10).toISOString(), amount: 500, status: 'Pending', paymentMethod: 'PIX' },
+    { id: 'f2', patientName: 'Charlie Brown', issueDate: addDays(today, -20).toISOString(), paymentDueDate: addDays(today, 10).toISOString(), amount: 500, status: 'Pending', paymentMethod: 'PIX', pixCode: '000201263...chave...pix' },
     { id: 'f3', patientName: 'Bob Williams', issueDate: addDays(today, -40).toISOString(), paymentDueDate: addDays(today, -10).toISOString(), amount: 200, status: 'Paid', paymentMethod: 'Bank Transfer' },
     { id: 'f4', patientName: 'Grace Lee', issueDate: addDays(today, -50).toISOString(), paymentDueDate: addDays(today, -20).toISOString(), amount: 450, status: 'Overdue', paymentMethod: 'PIX' },
 ];

@@ -19,18 +19,25 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DollarSign, TrendingUp, Calendar, Bot, Send } from 'lucide-react';
+import { DollarSign, TrendingUp, Calendar, Bot, Send, Copy, Save } from 'lucide-react';
 import { mockFinancials, FinancialRecord, mockContracts } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { addMonths, isWithinInterval, startOfYear, endOfYear, startOfMonth, endOfMonth } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 export default function FinancialsPage() {
     const { toast } = useToast();
+    const [financials, setFinancials] = useState<FinancialRecord[]>(mockFinancials);
+    const [isPixModalOpen, setIsPixModalOpen] = useState(false);
+    const [selectedRecord, setSelectedRecord] = useState<FinancialRecord | null>(null);
+    const [pixCode, setPixCode] = useState('');
 
     const today = new Date();
     // Faturamento realizado: soma de todos os registros marcados como 'Paid' no mês corrente
-    const actualRevenueMonth = mockFinancials
+    const actualRevenueMonth = financials
         .filter(record => {
             const recordDate = new Date(record.issueDate);
             return record.status === 'Paid' && isWithinInterval(recordDate, { start: startOfMonth(today), end: endOfMonth(today) });
@@ -53,29 +60,57 @@ export default function FinancialsPage() {
     const toReceiveNext3Months = totalToReceive('next3months');
 
     const handleAutomaticBilling = () => {
-        const pendingCount = mockFinancials.filter(r => r.status === 'Pending').length;
+        const pendingCount = financials.filter(r => r.status === 'Pending').length;
         toast({
             title: 'Cobrança Automática Iniciada',
             description: `A IA está enviando lembretes de pagamento para os ${pendingCount} clientes com pendências.`,
         });
     }
 
-    const handleSendPixLink = (record: FinancialRecord) => {
-        // In a real app, this would generate a unique PIX code and send it.
-        const pixCode = '000201263...'; // Example PIX code
+    const handleOpenPixModal = (record: FinancialRecord) => {
+        setSelectedRecord(record);
+        setPixCode(record.pixCode || '');
+        setIsPixModalOpen(true);
+    };
+
+    const handleSavePixCode = () => {
+        if (!selectedRecord) return;
+        const updatedFinancials = financials.map(r => 
+            r.id === selectedRecord.id ? { ...r, pixCode: pixCode } : r
+        );
+        setFinancials(updatedFinancials);
+        toast({
+            title: 'Código PIX Salvo',
+            description: `O código PIX para ${selectedRecord.patientName} foi salvo.`,
+        });
+        setIsPixModalOpen(false);
+    }
+
+    const handleCopyPixCode = () => {
+        navigator.clipboard.writeText(pixCode);
+        toast({
+            title: 'Código PIX Copiado!',
+            description: 'O código foi copiado para a área de transferência.',
+        });
+    }
+
+    const handleSendPixLink = () => {
+        if (!selectedRecord || !pixCode) return;
         toast({
             title: 'Link de Pagamento Enviado',
             description: (
                 <div>
-                    <p>O link de pagamento PIX para {record.patientName} foi enviado.</p>
+                    <p>O link de pagamento PIX para {selectedRecord.patientName} foi enviado.</p>
                     <p className="font-mono text-xs mt-2 p-2 bg-muted rounded">Código: {pixCode}</p>
                 </div>
             ),
         });
+        setIsPixModalOpen(false);
     }
 
 
   return (
+    <>
     <div className="py-4 space-y-4">
        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <h1 className="text-2xl font-headline font-bold">Financeiro</h1>
@@ -160,7 +195,7 @@ export default function FinancialsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockFinancials.map((record: FinancialRecord) => (
+                {financials.map((record: FinancialRecord) => (
                   <TableRow key={record.id}>
                     <TableCell className="font-medium whitespace-nowrap">{record.patientName}</TableCell>
                     <TableCell className="whitespace-nowrap">{new Date(record.issueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</TableCell>
@@ -181,9 +216,9 @@ export default function FinancialsPage() {
                     <TableCell>{record.paymentMethod}</TableCell>
                     <TableCell>
                       {(record.status === 'Pending' || record.status === 'Overdue') && (
-                        <Button variant="outline" size="sm" onClick={() => handleSendPixLink(record)}>
+                        <Button variant="outline" size="sm" onClick={() => handleOpenPixModal(record)}>
                           <Send className="mr-2 h-3 w-3" />
-                          Enviar Link PIX
+                          Gerenciar PIX
                         </Button>
                       )}
                     </TableCell>
@@ -195,6 +230,45 @@ export default function FinancialsPage() {
         </CardContent>
       </Card>
     </div>
+
+    <Dialog open={isPixModalOpen} onOpenChange={setIsPixModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Gerenciar Código PIX</DialogTitle>
+            <DialogDescription>
+              Para a cobrança de R$ {selectedRecord?.amount.toLocaleString('pt-BR')} de {selectedRecord?.patientName}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+             <div className="space-y-2">
+                <Label htmlFor="pix-code">Código PIX (Copia e Cola)</Label>
+                <Input 
+                    id="pix-code" 
+                    value={pixCode}
+                    onChange={(e) => setPixCode(e.target.value)}
+                    placeholder="Cole o código PIX aqui"
+                />
+            </div>
+            <div className="flex justify-end gap-2">
+                 <Button variant="secondary" onClick={handleCopyPixCode} disabled={!pixCode}>
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copiar
+                </Button>
+                <Button onClick={handleSavePixCode}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Salvar
+                </Button>
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-start">
+             <Button onClick={handleSendPixLink} disabled={!pixCode} className="w-full">
+                <Send className="mr-2 h-4 w-4" />
+                Simular Envio de Link para Paciente
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
