@@ -18,7 +18,7 @@ const ScheduleAppointmentInputSchema = z.object({
 export type ScheduleAppointmentInput = z.infer<typeof ScheduleAppointmentInputSchema>;
 
 const ScheduleAppointmentOutputSchema = z.object({
-  suggestedAppointmentTimes: z.array(z.string()).describe('Suggested appointment times based on doctor\'s availability.'),
+  suggestedAppointmentTimes: z.array(z.string()).describe('Suggested appointment times based on the doctor\'s availability.'),
   confirmationMessage: z.string().describe('A confirmation message for the appointment.'),
 });
 export type ScheduleAppointmentOutput = z.infer<typeof ScheduleAppointmentOutputSchema>;
@@ -29,37 +29,49 @@ export async function scheduleAppointment(input: ScheduleAppointmentInput): Prom
 
 const getAvailableTimes = ai.defineTool({
   name: 'getAvailableTimes',
-  description: 'Retrieves available appointment times from the doctor\'s Google Calendar.',
+  description: 'Retrieves available appointment times from the doctor\'s Google Calendar for a given procedure and patient availability.',
   inputSchema: z.object({
     procedure: z.string().describe('The procedure for which to find available times.'),
     availability: z.string().describe('The patient\'s general availability.'),
   }),
   outputSchema: z.array(z.string()).describe('A list of available appointment times.'),
 }, async (input) => {
-  // TODO: Implement Google Calendar integration to fetch available times.
-  // Replace with actual Google Calendar API call.
-  // For now, return some dummy data.
-  return ['Monday at 2:00 PM', 'Wednesday at 10:00 AM', 'Friday at 3:00 PM'];
+  // In a real application, this would connect to the Google Calendar API
+  // using the credentials from the settings page to fetch genuinely free slots.
+  
+  // For demonstration purposes, we return static dummy data.
+  // The logic here could be to find the next available slots based on the current time.
+  console.log(`Buscando horários para: ${input.procedure} com disponibilidade: ${input.availability}`);
+  return [
+    'Segunda-feira, 14:00 - 15:00',
+    'Terça-feira, 10:00 - 11:00',
+    'Quarta-feira, 16:00 - 17:00',
+    'Sexta-feira, 09:00 - 10:00',
+  ];
 });
 
 const prompt = ai.definePrompt({
   name: 'scheduleAppointmentPrompt',
-  input: {schema: ScheduleAppointmentInputSchema},
+  input: {schema: z.object({
+      patientName: z.string(),
+      procedure: z.string(),
+      suggestedAppointmentTimes: z.array(z.string()),
+  })},
   output: {schema: ScheduleAppointmentOutputSchema},
   tools: [getAvailableTimes],
-  prompt: `You are an AI assistant scheduling appointments for Dr. Carvalhal.
+  prompt: `Você é um assistente de IA agendando consultas para a Dra. Fabiana Carvalhal.
 
-  The patient name is: {{{patientName}}}.
-  They are interested in: {{{procedure}}}.
-  Their availability is: {{{availability}}}.
+  O nome do paciente é: {{{patientName}}}.
+  Eles estão interessados em: {{{procedure}}}.
 
-  First, use the getAvailableTimes tool to check the doctor\'s Google Calendar and find suitable appointment times for the specified procedure and patient availability.
+  Com base nos horários disponíveis fornecidos, gere uma mensagem de confirmação amigável e inclua a lista de horários.
 
-  Based on the available times, suggest three appointment times to the patient.
+  Horários disponíveis:
+  {{#each suggestedAppointmentTimes}}
+  - {{{this}}}
+  {{/each}}
 
-  Generate a confirmation message for the selected appointment time.
-
-  Output the suggested appointment times and the confirmation message in the specified JSON format.
+  Sempre inclua pelo menos 3 sugestões da lista fornecida.
 `,
 });
 
@@ -70,14 +82,24 @@ const scheduleAppointmentFlow = ai.defineFlow(
     outputSchema: ScheduleAppointmentOutputSchema,
   },
   async input => {
-    const {suggestedAppointmentTimes} = await getAvailableTimes({
+    const availableTimes = await getAvailableTimes({
       procedure: input.procedure,
       availability: input.availability,
     });
+
     const {output} = await prompt({
-      ...input,
-      suggestedAppointmentTimes,
+      patientName: input.patientName,
+      procedure: input.procedure,
+      suggestedAppointmentTimes: availableTimes,
     });
-    return output!;
+    
+    if (!output) {
+      throw new Error("A IA não conseguiu gerar uma sugestão de agendamento.");
+    }
+
+    // A IA já retorna o objeto no formato correto, incluindo os horários.
+    // Apenas garantimos que o retorno da ferramenta seja passado para o prompt
+    // e que a saída do prompt seja usada.
+    return output;
   }
 );

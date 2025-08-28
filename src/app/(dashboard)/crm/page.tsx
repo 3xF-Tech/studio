@@ -29,7 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot } from 'lucide-react';
+import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot, CalendarDays } from 'lucide-react';
 import { mockPatients, Patient } from '@/lib/data';
 import {
   Dialog,
@@ -43,9 +43,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { leadQualification } from '@/ai/flows/lead-qualification';
+import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
 import { Separator } from '@/components/ui/separator';
 
-function PatientTable({ patients }: { patients: Patient[] }) {
+function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], onSchedulePackage: (patient: Patient) => void }) {
     return (
         <Table>
             <TableHeader>
@@ -82,14 +83,18 @@ function PatientTable({ patients }: { patients: Patient[] }) {
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
                     {patient.package ? (
-                        <div>
+                       <Button variant="ghost" size="sm" onClick={() => onSchedulePackage(patient)} className="h-auto p-0 flex flex-col items-start font-normal">
                             <div>{patient.package.sessions} sessões</div>
                             <div className="text-xs text-muted-foreground">{patient.package.days} - {patient.package.time}</div>
-                        </div>
-                    ) : 'N/A'}
+                       </Button>
+                    ) : <span className="text-muted-foreground">N/A</span>}
                    </TableCell>
                    <TableCell className="hidden lg:table-cell">
-                     {patient.package ? `R$ ${patient.package.totalValue.toLocaleString('pt-BR')}` : 'N/A'}
+                     {patient.package ? 
+                        <Button variant="ghost" size="sm" onClick={() => onSchedulePackage(patient)} className="h-auto p-0 font-normal">
+                         {`R$ ${patient.package.totalValue.toLocaleString('pt-BR')}`}
+                        </Button>
+                     : <span className="text-muted-foreground">N/A</span>}
                    </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -126,8 +131,12 @@ export default function CrmPage() {
   const [patients, setPatients] = useState<Patient[]>(mockPatients);
   const [isQualifyModalOpen, setIsQualifyModalOpen] = useState(false);
   const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
+  const [isSchedulePackageModalOpen, setIsSchedulePackageModalOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+
   const [isQualifying, setIsQualifying] = useState(false);
-  
+  const [isScheduling, setIsScheduling] = useState(false);
+
   // State for AI Lead Qualification
   const [procedure, setProcedure] = useState('');
   const [patientInfo, setPatientInfo] = useState('');
@@ -138,6 +147,10 @@ export default function CrmPage() {
   const [newPatientEmail, setNewPatientEmail] = useState('');
   const [newPatientPhone, setNewPatientPhone] = useState('');
   
+  // State for Package Scheduling
+  const [scheduleProcedure, setScheduleProcedure] = useState('');
+  const [scheduleAvailability, setScheduleAvailability] = useState('');
+
   const { toast } = useToast();
 
   const handleQualify = async () => {
@@ -229,6 +242,55 @@ export default function CrmPage() {
     setNewPatientPhone('');
   };
 
+  const handleOpenSchedulePackageModal = (patient: Patient) => {
+    setSelectedPatient(patient);
+    setScheduleProcedure(patient.package ? `${patient.package.sessions} sessões` : '');
+    setScheduleAvailability(patient.package ? `${patient.package.days} às ${patient.package.time}` : '');
+    setIsSchedulePackageModalOpen(true);
+  };
+
+  const handleSchedulePackage = async () => {
+    if (!scheduleProcedure || !scheduleAvailability || !selectedPatient) {
+         toast({
+            variant: 'destructive',
+            title: 'Campos obrigatórios',
+            description: 'Procedimento e disponibilidade são necessários.',
+        });
+        return;
+    }
+    setIsScheduling(true);
+     try {
+      const result = await scheduleAppointment({
+        patientName: selectedPatient.name,
+        procedure: scheduleProcedure,
+        availability: scheduleAvailability,
+      });
+      toast({
+        title: 'Sugestões de Horários da IA',
+        description: (
+          <div className="text-sm">
+            <p className="mb-2">{`Para ${selectedPatient.name}: ${result.confirmationMessage}`}</p>
+            <ul className="list-disc pl-5">
+              {result.suggestedAppointmentTimes.map((time) => (
+                <li key={time}>{time}</li>
+              ))}
+            </ul>
+             <p className="mt-2 text-xs">Entre em contato com o paciente para confirmar.</p>
+          </div>
+        ),
+      });
+      setIsSchedulePackageModalOpen(false);
+    } catch (error) {
+       console.error('Scheduling error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao Buscar Horários',
+        description: 'Não foi possível obter sugestões da IA.',
+      });
+    } finally {
+        setIsScheduling(false);
+    }
+  }
 
   return (
     <>
@@ -270,7 +332,7 @@ export default function CrmPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PatientTable patients={patients} />
+          <PatientTable patients={patients} onSchedulePackage={handleOpenSchedulePackageModal} />
         </CardContent>
       </Card>
     </Tabs>
@@ -380,6 +442,48 @@ export default function CrmPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/* Schedule Package Modal */}
+      <Dialog open={isSchedulePackageModalOpen} onOpenChange={setIsSchedulePackageModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+                <CalendarDays />
+                Agendar Pacote para {selectedPatient?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Busque os horários disponíveis na agenda do Google Calendar para este pacote.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="schedule-procedure">Procedimento</Label>
+              <Input
+                id="schedule-procedure"
+                value={scheduleProcedure}
+                onChange={(e) => setScheduleProcedure(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="schedule-availability">Disponibilidade Preferencial</Label>
+              <Textarea
+                id="schedule-availability"
+                placeholder="Descreva a disponibilidade do paciente. Ex: 'Qualquer dia de semana à tarde'"
+                className="min-h-[100px]"
+                value={scheduleAvailability}
+                onChange={(e) => setScheduleAvailability(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSchedulePackage} disabled={isScheduling}>
+              {isScheduling ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Buscar Horários Disponíveis
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
+
