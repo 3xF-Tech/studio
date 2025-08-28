@@ -57,21 +57,36 @@ const weekdays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Q
 
 function PatientTable({ 
     patients, 
-    onSchedulePackage,
+    selectedPatients,
+    onSelectAll,
+    onSelectPatient,
     onViewDetails,
     onEdit,
     onDelete
 }: { 
     patients: Patient[], 
-    onSchedulePackage: (patient: Patient) => void,
+    selectedPatients: string[],
+    onSelectAll: (checked: boolean) => void,
+    onSelectPatient: (patientId: string, checked: boolean) => void,
     onViewDetails: (patient: Patient) => void,
     onEdit: (patient: Patient) => void,
     onDelete: (patient: Patient) => void
 }) {
+    const allSelected = patients.length > 0 && selectedPatients.length === patients.length;
+    const isIndeterminate = selectedPatients.length > 0 && selectedPatients.length < patients.length;
+
     return (
         <Table>
             <TableHeader>
               <TableRow>
+                 <TableHead padding="checkbox">
+                  <Checkbox
+                    checked={allSelected}
+                    onCheckedChange={(checked) => onSelectAll(!!checked)}
+                    aria-label="Selecionar todos"
+                    ref={(el) => el && (el.indeterminate = isIndeterminate)}
+                  />
+                </TableHead>
                 <TableHead>Nome</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Telefone</TableHead>
@@ -84,7 +99,14 @@ function PatientTable({
             </TableHeader>
             <TableBody>
               {patients.map((patient) => (
-                <TableRow key={patient.id}>
+                <TableRow key={patient.id} data-state={selectedPatients.includes(patient.id) && "selected"}>
+                   <TableCell padding="checkbox">
+                    <Checkbox
+                        checked={selectedPatients.includes(patient.id)}
+                        onCheckedChange={(checked) => onSelectPatient(patient.id, !!checked)}
+                        aria-label={`Selecionar ${patient.name}`}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium">
                     <div className="font-medium">{patient.name}</div>
                     <div className="text-sm text-muted-foreground md:hidden">
@@ -154,6 +176,7 @@ export default function CrmPage() {
   const [patients, setPatients] = useState<Patient[]>(mockPatients);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>(mockPatients);
   const [activeTab, setActiveTab] = useState('all');
+  const [selectedPatients, setSelectedPatients] = useState<string[]>([]);
 
   const [isQualifyModalOpen, setIsQualifyModalOpen] = useState(false);
   const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
@@ -199,6 +222,7 @@ export default function CrmPage() {
 
     const filterPatients = (tab: string, searchTerm: string = '') => {
         let newFilteredPatients = patients;
+        setSelectedPatients([]); // Clear selection on filter change
 
         if (tab !== 'all') {
             newFilteredPatients = newFilteredPatients.filter(
@@ -218,7 +242,8 @@ export default function CrmPage() {
 
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
-        filterPatients(tab);
+        const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
+        filterPatients(tab, searchInput?.value || '');
     };
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -487,6 +512,21 @@ export default function CrmPage() {
     );
   }
 
+  const handleSelectPatient = (patientId: string, checked: boolean) => {
+      setSelectedPatients(prev => 
+          checked ? [...prev, patientId] : prev.filter(id => id !== patientId)
+      )
+  }
+
+  const handleSelectAll = (checked: boolean) => {
+      if (checked) {
+          setSelectedPatients(filteredPatients.map(p => p.id));
+      } else {
+          setSelectedPatients([]);
+      }
+  }
+
+
   return (
     <>
     <Tabs defaultValue="all" onValueChange={handleTabChange}>
@@ -506,6 +546,14 @@ export default function CrmPage() {
               onChange={handleSearch}
             />
           </div>
+           {activeTab === 'inactive' && selectedPatients.length > 0 && (
+             <Button asChild variant="outline" size="sm" className="h-9 gap-1">
+                <Link href="/campaigns">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Criar Campanha ({selectedPatients.length})
+                </Link>
+            </Button>
+          )}
           <Button size="sm" variant="outline" className="h-9 gap-1" onClick={() => setIsQualifyModalOpen(true)}>
             <Sparkles className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -528,19 +576,13 @@ export default function CrmPage() {
                     Veja, busque e gerencie todos os registros de seus pacientes.
                 </CardDescription>
             </div>
-            {activeTab === 'inactive' && (
-                 <Button asChild variant="outline" size="sm">
-                    <Link href="/campaigns">
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        Criar Campanha para Inativos
-                    </Link>
-                </Button>
-            )}
         </CardHeader>
         <CardContent>
           <PatientTable 
-            patients={filteredPatients} 
-            onSchedulePackage={handleOpenSchedulePackageModal}
+            patients={filteredPatients}
+            selectedPatients={selectedPatients}
+            onSelectAll={handleSelectAll}
+            onSelectPatient={handleSelectPatient}
             onViewDetails={handleOpenDetailsModal}
             onEdit={handleOpenEditModal}
             onDelete={handleOpenDeleteAlert}
