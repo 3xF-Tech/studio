@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -22,11 +23,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, Send, LoaderCircle, AlertCircle, FileText, X } from 'lucide-react';
+import { Upload, Send, LoaderCircle, FileText, X } from 'lucide-react';
 import { mockCampaigns } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { generateCampaignMessage } from '@/ai/flows/campaign-message-generation';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 
 export default function CampaignsPage() {
@@ -36,6 +36,7 @@ export default function CampaignsPage() {
     const [contactFile, setContactFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
+    const router = useRouter();
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -158,7 +159,7 @@ export default function CampaignsPage() {
             </div>
             <Button className="w-full" onClick={handleGenerate} disabled={isGenerating}>
               {isGenerating ? <LoaderCircle className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
-              Gerar Mensagens
+              Gerar Mensagens e Criar Campanha
             </Button>
           </CardContent>
         </Card>
@@ -183,7 +184,11 @@ export default function CampaignsPage() {
               </TableHeader>
               <TableBody>
                 {mockCampaigns.map((campaign) => (
-                  <TableRow key={campaign.id}>
+                  <TableRow 
+                    key={campaign.id} 
+                    onClick={() => router.push(`/campaigns/${campaign.id}`)}
+                    className="cursor-pointer"
+                  >
                     <TableCell className="font-medium">
                         <div>{campaign.name}</div>
                         <div className="text-sm text-muted-foreground">{campaign.service}</div>

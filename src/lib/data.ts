@@ -159,6 +159,14 @@ export const mockContracts: Contract[] = [
     }
 ];
 
+export type Recipient = {
+    id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    status: 'Sent' | 'Opened' | 'Clicked' | 'Bounced' | 'Pending';
+};
+
 
 export type Campaign = {
     id: string;
@@ -168,10 +176,47 @@ export type Campaign = {
     status: 'Active' | 'Completed' | 'Draft';
     sent: number;
     conversionRate: number;
+    messageTemplate?: string;
+    recipients?: Recipient[];
 };
 
 export const mockCampaigns: Campaign[] = [
-    { id: 'c1', name: 'Spring Rejuvenation', targetAudience: 'Clients over 40', service: 'Laser Treatment', status: 'Active', sent: 150, conversionRate: 0.12 },
-    { id: 'c2', name: 'Summer Glow Up', targetAudience: 'All Clients', service: 'HydraFacial', status: 'Completed', sent: 300, conversionRate: 0.25 },
-    { id: 'c3', name: 'New Year, New You', targetAudience: 'Potential Leads', service: 'Consultation Discount', status: 'Draft', sent: 0, conversionRate: 0 },
+    { 
+        id: 'c1', 
+        name: 'Rejuvenescimento de Primavera', 
+        targetAudience: 'Clientes acima de 40', 
+        service: 'Tratamento a Laser', 
+        status: 'Active', 
+        sent: 150, 
+        conversionRate: 0.12,
+        messageTemplate: "Olá, {nome}! A primavera chegou e é o momento perfeito para renovar sua pele. Conheça nosso tratamento a laser com 20% de desconto e sinta-se radiante. Agende sua avaliação!",
+        recipients: [
+            { id: 'r1', name: 'Alice Johnson', email: 'alice@example.com', phone: '11912345678', status: 'Sent' },
+            { id: 'r2', name: 'Carlos Pereira', email: 'carlos@example.com', phone: '11987654321', status: 'Opened' },
+        ]
+    },
+    { 
+        id: 'c2', 
+        name: 'Brilho de Verão', 
+        targetAudience: 'Todos os Clientes', 
+        service: 'HydraFacial', 
+        status: 'Completed', 
+        sent: 300, 
+        conversionRate: 0.25,
+        messageTemplate: "Olá, {nome}! Prepare-se para o verão com o nosso tratamento HydraFacial. Pele limpa, hidratada e com um brilho incrível. Oferta especial por tempo limitado!",
+         recipients: [
+            { id: 'r3', name: 'Diana Miller', email: 'diana@example.com', phone: '41945678901', status: 'Clicked' },
+        ]
+    },
+    { 
+        id: 'c3', 
+        name: 'Ano Novo, Pele Nova', 
+        targetAudience: 'Leads em Potencial', 
+        service: 'Desconto em Consulta', 
+        status: 'Draft', 
+        sent: 0, 
+        conversionRate: 0,
+        messageTemplate: "Olá, {nome}! Comece o ano cuidando de você. Oferecemos 50% de desconto na sua primeira consulta para que você possa conhecer nossos tratamentos e montar seu plano de cuidados.",
+        recipients: []
+    },
 ];
