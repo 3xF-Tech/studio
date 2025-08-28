@@ -14,7 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { mockAppointments, Appointment } from '@/lib/data';
-import { PlusCircle, TowerControl, LoaderCircle, Clock, User, Stethoscope } from 'lucide-react';
+import { PlusCircle, TowerControl, LoaderCircle, Clock, User, Stethoscope, Calendar as CalendarIconLucide } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
-import { format, isSameDay, isWithinInterval, startOfDay, addDays, endOfWeek, startOfWeek } from 'date-fns';
+import { format, isSameDay, isWithinInterval, startOfDay, endOfWeek, startOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Link from 'next/link';
 
@@ -123,19 +123,25 @@ export default function CalendarPage() {
   const appointmentsForWeekTab = getFilteredAppointments('week');
 
 
-  const AppointmentList = ({ appointments, emptyMessage }: { appointments: Appointment[], emptyMessage: string }) => (
+  const AppointmentList = ({ appointments, emptyMessage, showDate = false }: { appointments: Appointment[], emptyMessage: string, showDate?: boolean }) => (
     <div className="space-y-4">
       {appointments.length > 0 ? (
         appointments.map((apt) => (
-          <Card key={apt.id} className="w-full shadow-md border-l-4 border-primary">
+          <Card key={apt.id} className="w-full shadow-md border-l-4 border-primary overflow-hidden">
             <CardContent className="p-4 grid grid-cols-12 gap-4 items-center">
               <div className="col-span-3 lg:col-span-2 text-center">
                 <div className="flex flex-col items-center justify-center bg-muted p-2 rounded-md">
                    <p className="text-lg font-bold">{format(apt.startTime, 'HH:mm')}</p>
-                   <p className="text-xs text-muted-foreground">às {format(apt.endTime, 'HH:mm')}</p>
+                   <p className="text-xs text-muted-foreground">{format(apt.endTime, 'HH:mm')}</p>
                 </div>
               </div>
-              <div className="col-span-9 lg:col-span-10">
+              <div className="col-span-9 lg:col-span-10 space-y-2">
+                 {showDate && (
+                    <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground capitalize">
+                        <CalendarIconLucide className="w-4 h-4" />
+                        <span>{format(apt.startTime, 'EEEE, dd \'de\' MMMM', { locale: ptBR })}</span>
+                    </div>
+                )}
                 <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-base">{apt.procedure}</h3>
                     <Badge
@@ -148,7 +154,7 @@ export default function CalendarPage() {
                        {apt.status === 'Confirmed' ? 'Confirmado' : apt.status === 'Pending' ? 'Pendente' : 'Cancelado'}
                     </Badge>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
                         <span>{apt.patientName}</span>
@@ -171,7 +177,7 @@ export default function CalendarPage() {
     <>
     <div className="py-4">
     <Tabs defaultValue="month" className="w-full">
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4 flex-wrap gap-2">
         <h1 className="text-2xl font-headline font-bold">Agenda</h1>
         <div className="ml-auto flex items-center gap-2">
            <TabsList>
@@ -179,7 +185,7 @@ export default function CalendarPage() {
             <TabsTrigger value="week">Semana</TabsTrigger>
             <TabsTrigger value="month">Mês</TabsTrigger>
           </TabsList>
-          <Button asChild size="sm" variant="outline" className="h-8 gap-1">
+          <Button asChild size="sm" variant="outline" className="h-9 gap-1">
             <Link href="/broadcast">
                 <TowerControl className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -187,7 +193,7 @@ export default function CalendarPage() {
                 </span>
             </Link>
           </Button>
-          <Button size="sm" className="h-8 gap-1" onClick={() => setIsModalOpen(true)}>
+          <Button size="sm" className="h-9 gap-1" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Novo Agendamento
@@ -207,7 +213,27 @@ export default function CalendarPage() {
                             className="p-3"
                             locale={ptBR}
                             classNames={{
-                                day: 'h-24 items-start p-2',
+                                months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                                month: "space-y-4",
+                                caption: "flex justify-center pt-1 relative items-center",
+                                caption_label: "text-sm font-medium",
+                                nav: "space-x-1 flex items-center",
+                                nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+                                nav_button_previous: "absolute left-1",
+                                nav_button_next: "absolute right-1",
+                                table: "w-full border-collapse space-y-1",
+                                head_row: "flex",
+                                head_cell: "text-muted-foreground rounded-md w-full font-normal text-[0.8rem]",
+                                row: "flex w-full mt-2",
+                                cell: "text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                                day: "h-24 p-0 font-normal aria-selected:opacity-100 items-start p-2",
+                                day_range_end: "day-range-end",
+                                day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+                                day_today: "bg-accent text-accent-foreground",
+                                day_outside: "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
+                                day_disabled: "text-muted-foreground opacity-50",
+                                day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
+                                day_hidden: "invisible",
                             }}
                          />}
                     </CardContent>
@@ -216,7 +242,7 @@ export default function CalendarPage() {
             <TabsContent value="day">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Agenda de Hoje - {format(new Date(), 'dd MMMM, yyyy', { locale: ptBR })}</CardTitle>
+                        <CardTitle>Agenda de Hoje - {format(new Date(), 'dd \'de\' MMMM, yyyy', { locale: ptBR })}</CardTitle>
                     </CardHeader>
                     <CardContent>
                        <AppointmentList appointments={appointmentsForDayTab} emptyMessage="Nenhum agendamento para hoje." />
@@ -229,7 +255,7 @@ export default function CalendarPage() {
                         <CardTitle>Agenda da Semana: {format(startOfWeek(new Date(), { locale: ptBR }), 'dd/MM')} - {format(endOfWeek(new Date(), { locale: ptBR }), 'dd/MM/yyyy')}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                       <AppointmentList appointments={appointmentsForWeekTab} emptyMessage="Nenhum agendamento para os próximos 7 dias." />
+                       <AppointmentList appointments={appointmentsForWeekTab} emptyMessage="Nenhum agendamento para esta semana." showDate={true} />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -237,7 +263,7 @@ export default function CalendarPage() {
         <div className="md:col-span-4 lg:col-span-3">
           <Card>
             <CardHeader>
-              <CardTitle>Próximos Agendamentos</CardTitle>
+              <CardTitle>Agendamentos</CardTitle>
               <CardDescription>
                 {selectedDate 
                   ? `Compromissos para ${format(selectedDate, 'dd/MM/yyyy', { locale: ptBR })}`
@@ -313,5 +339,3 @@ export default function CalendarPage() {
     </>
   );
 }
-
-    
