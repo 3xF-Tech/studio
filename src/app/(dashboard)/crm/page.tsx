@@ -29,7 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot, CalendarDays, Clock } from 'lucide-react';
+import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot, CalendarDays, Clock, Eye, Trash2, Edit } from 'lucide-react';
 import { mockPatients, Patient } from '@/lib/data';
 import {
   Dialog,
@@ -39,6 +39,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
@@ -49,7 +50,19 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 const weekdays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
-function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], onSchedulePackage: (patient: Patient) => void }) {
+function PatientTable({ 
+    patients, 
+    onSchedulePackage,
+    onViewDetails,
+    onEdit,
+    onDelete
+}: { 
+    patients: Patient[], 
+    onSchedulePackage: (patient: Patient) => void,
+    onViewDetails: (patient: Patient) => void,
+    onEdit: (patient: Patient) => void,
+    onDelete: (patient: Patient) => void
+}) {
     return (
         <Table>
             <TableHeader>
@@ -79,7 +92,7 @@ function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], on
                       variant={patient.status === 'Active' ? 'outline' : 'secondary'}
                       className={patient.status === 'Active' ? 'text-green-600 border-green-600' : ''}
                     >
-                      {patient.status}
+                      {patient.status === 'Active' ? 'Ativo' : 'Inativo'}
                     </Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
@@ -117,11 +130,18 @@ function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], on
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuItem>Ver Detalhes</DropdownMenuItem>
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onViewDetails(patient)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            Ver Detalhes
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onEdit(patient)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Editar
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
-                          Excluir
+                        <DropdownMenuItem className="text-destructive" onClick={() => onDelete(patient)}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -136,8 +156,15 @@ function PatientTable({ patients, onSchedulePackage }: { patients: Patient[], on
 
 export default function CrmPage() {
   const [patients, setPatients] = useState<Patient[]>(mockPatients);
+  const [filteredPatients, setFilteredPatients] = useState<Patient[]>(mockPatients);
+  const [activeTab, setActiveTab] = useState('all');
+
   const [isQualifyModalOpen, setIsQualifyModalOpen] = useState(false);
   const [isAddPatientModalOpen, setIsAddPatientModalOpen] = useState(false);
+  const [isEditPatientModalOpen, setIsEditPatientModalOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
   const [isSchedulePackageModalOpen, setIsSchedulePackageModalOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
@@ -150,17 +177,49 @@ export default function CrmPage() {
   const [patientInfo, setPatientInfo] = useState('');
   const [knowledgeBase, setKnowledgeBase] = useState('Para Botox, pacientes não devem estar grávidas ou ter doenças neurológicas. Candidatos ideais buscam reduzir linhas de expressão. Efeitos colaterais comuns incluem hematomas temporários.');
   
-  // State for New Patient Form
-  const [newPatientName, setNewPatientName] = useState('');
-  const [newPatientEmail, setNewPatientEmail] = useState('');
-  const [newPatientPhone, setNewPatientPhone] = useState('');
-  const [newPatientDuration, setNewPatientDuration] = useState('50');
-
+  // State for New/Edit Patient Form
+  const [patientForm, setPatientForm] = useState({
+      id: '',
+      name: '',
+      email: '',
+      phone: '',
+      duration: '50'
+  });
+  
   // State for Package Scheduling
   const [scheduleProcedure, setScheduleProcedure] = useState('');
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   
   const { toast } = useToast();
+
+    const filterPatients = (tab: string, searchTerm: string = '') => {
+        let newFilteredPatients = patients;
+
+        if (tab !== 'all') {
+            newFilteredPatients = newFilteredPatients.filter(
+                (p) => p.status.toLowerCase() === tab
+            );
+        }
+
+        if (searchTerm) {
+            newFilteredPatients = newFilteredPatients.filter((p) =>
+                p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                p.email.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        setFilteredPatients(newFilteredPatients);
+    };
+
+    const handleTabChange = (tab: string) => {
+        setActiveTab(tab);
+        filterPatients(tab);
+    };
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        filterPatients(activeTab, e.target.value);
+    };
+
 
   const handleQualify = async () => {
     if (!procedure || !patientInfo) {
@@ -219,29 +278,39 @@ export default function CrmPage() {
     }
   };
   
-    const formatPhoneNumber = (value: string) => {
-        const cleaned = value.replace(/\D/g, '');
-        const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})(\d{0,4})$/);
-        if (!match) return cleaned;
-        
-        const [_, p1, p2, p3, p4] = match;
-        
-        let result = '';
-        if (p1) result += p1;
-        if (p2) result += ` ${p2}`;
-        if (p3) result += ` ${p3}`;
-        if (p4) result += ` ${p4}`;
-        
-        return result.trim();
-    };
+  const formatPhoneNumber = (value: string) => {
+    if (!value) return value;
+    const cleaned = value.replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})(\d{0,4})$/);
+    if (!match) return cleaned;
+    
+    const [_, p1, p2, p3, p4] = match;
+    
+    let result = '';
+    if (p1) result += p1;
+    if (p2) result += ` ${p2}`;
+    if (p3) result += ` ${p3}`;
+    if (p4) result += ` ${p4}`;
+    
+    return result.trim();
+  };
 
-    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formatted = formatPhoneNumber(e.target.value);
-        setNewPatientPhone(formatted);
-    };
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const formatted = formatPhoneNumber(e.target.value);
+      setPatientForm(prev => ({...prev, phone: formatted}));
+  };
 
+  const resetForm = () => {
+     setPatientForm({ id: '', name: '', email: '', phone: '', duration: '50' });
+  }
+
+  const handleOpenAddModal = () => {
+      resetForm();
+      setIsAddPatientModalOpen(true);
+  }
+  
   const handleAddPatient = () => {
-    if (!newPatientName || !newPatientEmail || !newPatientPhone || !newPatientDuration) {
+    if (!patientForm.name || !patientForm.email || !patientForm.phone || !patientForm.duration) {
         toast({
             variant: 'destructive',
             title: 'Campos obrigatórios',
@@ -252,27 +321,86 @@ export default function CrmPage() {
     
     const newPatient: Patient = {
         id: (patients.length + 1).toString(),
-        name: newPatientName,
-        email: newPatientEmail,
-        phone: newPatientPhone,
+        name: patientForm.name,
+        email: patientForm.email,
+        phone: patientForm.phone,
         status: 'Active',
         package: null,
-        sessionDuration: parseInt(newPatientDuration, 10)
+        sessionDuration: parseInt(patientForm.duration, 10)
     };
     
-    setPatients(prevPatients => [...prevPatients, newPatient]);
+    const updatedPatients = [...patients, newPatient];
+    setPatients(updatedPatients);
+    setFilteredPatients(updatedPatients);
     
     toast({
         title: 'Paciente Adicionado',
-        description: `${newPatientName} foi adicionado com sucesso.`,
+        description: `${newPatient.name} foi adicionado com sucesso.`,
     });
 
     setIsAddPatientModalOpen(false);
-    setNewPatientName('');
-    setNewPatientEmail('');
-    setNewPatientPhone('');
-    setNewPatientDuration('50');
+    resetForm();
   };
+  
+  const handleOpenEditModal = (patient: Patient) => {
+    setSelectedPatient(patient);
+    setPatientForm({
+        id: patient.id,
+        name: patient.name,
+        email: patient.email,
+        phone: patient.phone,
+        duration: patient.sessionDuration?.toString() || '50'
+    });
+    setIsEditPatientModalOpen(true);
+  }
+
+  const handleEditPatient = () => {
+    if (!patientForm.id) return;
+
+    const updatedPatients = patients.map(p => 
+        p.id === patientForm.id ? {
+            ...p,
+            name: patientForm.name,
+            email: patientForm.email,
+            phone: patientForm.phone,
+            sessionDuration: parseInt(patientForm.duration, 10),
+        } : p
+    );
+    setPatients(updatedPatients);
+    filterPatients(activeTab); // Refilter after edit
+
+    toast({
+        title: "Paciente Atualizado",
+        description: "Os dados foram atualizados com sucesso."
+    });
+    setIsEditPatientModalOpen(false);
+    resetForm();
+  }
+
+  const handleOpenDeleteAlert = (patient: Patient) => {
+      setSelectedPatient(patient);
+      setIsDeleteAlertOpen(true);
+  }
+
+  const handleDeletePatient = () => {
+    if (!selectedPatient) return;
+    const updatedPatients = patients.filter(p => p.id !== selectedPatient.id);
+    setPatients(updatedPatients);
+    filterPatients(activeTab); // Refilter after delete
+
+    toast({
+        variant: 'destructive',
+        title: "Paciente Excluído",
+        description: `${selectedPatient.name} foi removido com sucesso.`
+    });
+    setIsDeleteAlertOpen(false);
+    setSelectedPatient(null);
+  }
+  
+  const handleOpenDetailsModal = (patient: Patient) => {
+    setSelectedPatient(patient);
+    setIsDetailsModalOpen(true);
+  }
 
   const handleOpenSchedulePackageModal = (patient: Patient) => {
     setSelectedPatient(patient);
@@ -336,7 +464,7 @@ export default function CrmPage() {
 
   return (
     <>
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="all" onValueChange={handleTabChange}>
       <div className="flex items-center py-4">
         <TabsList>
           <TabsTrigger value="all">Todos</TabsTrigger>
@@ -350,6 +478,7 @@ export default function CrmPage() {
               type="search"
               placeholder="Buscar pacientes..."
               className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              onChange={handleSearch}
             />
           </div>
           <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setIsQualifyModalOpen(true)}>
@@ -358,7 +487,7 @@ export default function CrmPage() {
               Qualificar Lead
             </span>
           </Button>
-          <Button size="sm" className="h-8 gap-1" onClick={() => setIsAddPatientModalOpen(true)}>
+          <Button size="sm" className="h-8 gap-1" onClick={handleOpenAddModal}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Adicionar Paciente
@@ -374,7 +503,13 @@ export default function CrmPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PatientTable patients={patients} onSchedulePackage={handleOpenSchedulePackageModal} />
+          <PatientTable 
+            patients={filteredPatients} 
+            onSchedulePackage={handleOpenSchedulePackageModal}
+            onViewDetails={handleOpenDetailsModal}
+            onEdit={handleOpenEditModal}
+            onDelete={handleOpenDeleteAlert}
+          />
         </CardContent>
       </Card>
     </Tabs>
@@ -451,8 +586,8 @@ export default function CrmPage() {
               <Input
                 id="new-patient-name"
                 placeholder="ex: João da Silva"
-                value={newPatientName}
-                onChange={(e) => setNewPatientName(e.target.value)}
+                value={patientForm.name}
+                onChange={(e) => setPatientForm(prev => ({...prev, name: e.target.value}))}
               />
             </div>
             <div className="space-y-2">
@@ -461,8 +596,8 @@ export default function CrmPage() {
                 id="new-patient-email"
                 type="email"
                 placeholder="ex: joao.silva@example.com"
-                value={newPatientEmail}
-                onChange={(e) => setNewPatientEmail(e.target.value)}
+                value={patientForm.email}
+                onChange={(e) => setPatientForm(prev => ({...prev, email: e.target.value}))}
               />
             </div>
              <div className="space-y-2">
@@ -470,8 +605,8 @@ export default function CrmPage() {
               <Input
                 id="new-patient-phone"
                 type="tel"
-                placeholder="ex: 55 11 9999 9999"
-                value={newPatientPhone}
+                placeholder="ex: 55 11 99999 9999"
+                value={patientForm.phone}
                 onChange={handlePhoneChange}
                 maxLength={15}
               />
@@ -482,8 +617,8 @@ export default function CrmPage() {
                 id="new-patient-duration"
                 type="number"
                 placeholder="ex: 50"
-                value={newPatientDuration}
-                onChange={(e) => setNewPatientDuration(e.target.value)}
+                value={patientForm.duration}
+                onChange={(e) => setPatientForm(prev => ({...prev, duration: e.target.value}))}
               />
             </div>
           </div>
@@ -493,6 +628,132 @@ export default function CrmPage() {
               Adicionar Paciente
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Patient Modal */}
+      <Dialog open={isEditPatientModalOpen} onOpenChange={setIsEditPatientModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Editar Paciente</DialogTitle>
+            <DialogDescription>
+              Atualize os detalhes do paciente.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-patient-name">Nome Completo</Label>
+              <Input
+                id="edit-patient-name"
+                value={patientForm.name}
+                onChange={(e) => setPatientForm(prev => ({...prev, name: e.target.value}))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-patient-email">Email</Label>
+              <Input
+                id="edit-patient-email"
+                type="email"
+                value={patientForm.email}
+                onChange={(e) => setPatientForm(prev => ({...prev, email: e.target.value}))}
+              />
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="edit-patient-phone">Telefone</Label>
+              <Input
+                id="edit-patient-phone"
+                type="tel"
+                value={patientForm.phone}
+                onChange={handlePhoneChange}
+                maxLength={15}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-patient-duration">Duração da Consulta (minutos)</Label>
+              <Input
+                id="edit-patient-duration"
+                type="number"
+                value={patientForm.duration}
+                onChange={(e) => setPatientForm(prev => ({...prev, duration: e.target.value}))}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditPatientModalOpen(false)}>Cancelar</Button>
+            <Button onClick={handleEditPatient}>Salvar Alterações</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Patient Alert */}
+      <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente o registro de <span className="font-semibold">{selectedPatient?.name}</span>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeletePatient} className="bg-destructive hover:bg-destructive/90">Excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Patient Details Modal */}
+       <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Detalhes de {selectedPatient?.name}</DialogTitle>
+          </DialogHeader>
+          {selectedPatient && (
+            <div className="grid gap-4 py-4 text-sm">
+                <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Status</span>
+                    <Badge variant={selectedPatient.status === 'Active' ? 'default' : 'secondary'}>{selectedPatient.status}</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Email</span>
+                    <span>{selectedPatient.email}</span>
+                </div>
+                 <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Telefone</span>
+                    <span>{selectedPatient.phone}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Duração da Consulta</span>
+                    <span>{selectedPatient.sessionDuration || 'N/A'} min</span>
+                </div>
+                <Separator />
+                {selectedPatient.package ? (
+                    <div className="space-y-2">
+                        <h4 className="font-semibold">Pacote Ativo</h4>
+                         <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Sessões</span>
+                            <span>{selectedPatient.package.sessions}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Dias</span>
+                            <span>{selectedPatient.package.days}</span>
+                        </div>
+                         <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Horário</span>
+                            <span>{selectedPatient.package.time}</span>
+                        </div>
+                         <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Valor Total</span>
+                            <span>R$ {selectedPatient.package.totalValue.toLocaleString('pt-BR')}</span>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-muted-foreground text-center">Nenhum pacote ativo.</p>
+                )}
+            </div>
+            )}
+            <DialogFooter>
+                <Button variant="outline" onClick={() => setIsDetailsModalOpen(false)}>Fechar</Button>
+            </DialogFooter>
         </DialogContent>
       </Dialog>
       
