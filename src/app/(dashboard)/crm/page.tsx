@@ -50,7 +50,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 
-const weekdays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+const weekdays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
 function PatientTable({ 
     patients, 
@@ -465,7 +465,10 @@ export default function CrmPage() {
       const result = await scheduleAppointment({
         patientName: selectedPatient.name,
         procedure: scheduleProcedure,
-        selectedDays: selectedDays,
+        selectedDays: selectedDays.map(day => {
+            if (day.endsWith('-feira')) return day;
+            return day.toLowerCase() + '-feira';
+        }),
       });
 
       setAvailableTimes(result.suggestedAppointmentTimes);
@@ -561,7 +564,7 @@ export default function CrmPage() {
               <Label htmlFor="procedure">Procedimento de Interesse</Label>
               <Input
                 id="procedure"
-                placeholder="ex: Botox, Preenchimento Labial"
+                placeholder="ex: Avaliação Neuropsicológica, Psicodrama"
                 value={procedure}
                 onChange={(e) => setProcedure(e.target.value)}
               />
@@ -821,5 +824,7 @@ export default function CrmPage() {
     </>
   );
 }
+
+    
 
     
