@@ -27,6 +27,8 @@ export type Patient = {
   package: PatientPackage | null;
   sessionDuration?: number;
   address?: Address;
+  nextPaymentDue?: Date;
+  preferredPaymentMethod?: 'Credit Card' | 'PIX' | 'Bank Transfer';
 };
 
 export const mockPatients: Patient[] = [
@@ -38,9 +40,21 @@ export const mockPatients: Patient[] = [
     status: 'Active', 
     package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" }, 
     sessionDuration: 50,
-    address: { street: 'Rua das Flores', number: '123', neighborhood: 'Jardim das Rosas', city: 'São Paulo', state: 'SP', zip: '01234-567' }
+    address: { street: 'Rua das Flores', number: '123', neighborhood: 'Jardim das Rosas', city: 'São Paulo', state: 'SP', zip: '01234-567' },
+    nextPaymentDue: addDays(new Date(), 15),
+    preferredPaymentMethod: 'Credit Card',
   },
-  { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '21 92345 6789', status: 'Inactive', package: null, sessionDuration: 50 },
+  { 
+    id: '2', 
+    name: 'Bob Williams', 
+    email: 'bob@example.com', 
+    phone: '21 92345 6789', 
+    status: 'Inactive', 
+    package: null, 
+    sessionDuration: 50,
+    nextPaymentDue: addDays(new Date(), -10),
+    preferredPaymentMethod: 'Bank Transfer'
+  },
   { 
       id: '3', 
       name: 'Charlie Brown', 
@@ -49,9 +63,19 @@ export const mockPatients: Patient[] = [
       status: 'Active', 
       package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" }, 
       sessionDuration: 60,
-      address: { street: 'Avenida Principal', number: '456', complement: 'Bloco A', neighborhood: 'Centro', city: 'Campinas', state: 'SP', zip: '13010-001' }
+      address: { street: 'Avenida Principal', number: '456', complement: 'Bloco A', neighborhood: 'Centro', city: 'Campinas', state: 'SP', zip: '13010-001' },
+      nextPaymentDue: addDays(new Date(), 5),
+      preferredPaymentMethod: 'PIX',
   },
-  { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '41 94567 8901', status: 'Active', package: null, sessionDuration: 50 },
+  { 
+    id: '4', 
+    name: 'Diana Miller', 
+    email: 'diana@example.com', 
+    phone: '41 94567 8901', 
+    status: 'Active', 
+    package: null, 
+    sessionDuration: 50 
+  },
 ];
 
 export type Appointment = {
@@ -151,7 +175,3 @@ export const mockCampaigns: Campaign[] = [
     { id: 'c2', name: 'Summer Glow Up', targetAudience: 'All Clients', service: 'HydraFacial', status: 'Completed', sent: 300, conversionRate: 0.25 },
     { id: 'c3', name: 'New Year, New You', targetAudience: 'Potential Leads', service: 'Consultation Discount', status: 'Draft', sent: 0, conversionRate: 0 },
 ];
-
-    
-
-    

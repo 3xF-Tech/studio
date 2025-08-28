@@ -48,7 +48,8 @@ import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
+import { format, isPast } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 const weekdays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
@@ -72,9 +73,8 @@ function PatientTable({
                 <TableHead>Nome</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Telefone</TableHead>
-                <TableHead className="hidden lg:table-cell">Duração</TableHead>
-                <TableHead className="hidden lg:table-cell">Pacote de Sessões</TableHead>
-                 <TableHead className="hidden lg:table-cell">Valor do Pacote</TableHead>
+                <TableHead className="hidden lg:table-cell">Próximo Vencimento</TableHead>
+                <TableHead className="hidden lg:table-cell">Método Pag.</TableHead>
                 <TableHead>
                   <span className="sr-only">Ações</span>
                 </TableHead>
@@ -100,24 +100,16 @@ function PatientTable({
                   <TableCell className="hidden md:table-cell">
                     {patient.phone}
                   </TableCell>
-                   <TableCell className="hidden lg:table-cell">
-                        {patient.sessionDuration ? `${patient.sessionDuration} min` : <span className="text-muted-foreground">N/A</span>}
-                    </TableCell>
                   <TableCell className="hidden lg:table-cell">
-                    {patient.package ? (
-                       <Button variant="ghost" size="sm" onClick={() => onSchedulePackage(patient)} className="h-auto p-0 flex flex-col items-start font-normal">
-                            <div>{patient.package.sessions} sessões</div>
-                            <div className="text-xs text-muted-foreground">{patient.package.days} - {patient.package.time}</div>
-                       </Button>
-                    ) : <span className="text-muted-foreground">N/A</span>}
-                   </TableCell>
-                   <TableCell className="hidden lg:table-cell">
-                     {patient.package ? 
-                        <Button variant="ghost" size="sm" onClick={() => onSchedulePackage(patient)} className="h-auto p-0 font-normal">
-                         {`R$ ${patient.package.totalValue.toLocaleString('pt-BR')}`}
-                        </Button>
-                     : <span className="text-muted-foreground">N/A</span>}
-                   </TableCell>
+                        {patient.nextPaymentDue ? 
+                            <div className={cn("flex items-center gap-2", isPast(patient.nextPaymentDue) && "text-destructive")}>
+                                {format(patient.nextPaymentDue, 'dd/MM/yyyy')}
+                            </div>
+                         : <span className="text-muted-foreground">N/A</span>}
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                         {patient.preferredPaymentMethod || <span className="text-muted-foreground">N/A</span>}
+                    </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -826,3 +818,4 @@ export default function CrmPage() {
     
 
     
+
