@@ -78,7 +78,7 @@ export default function CampaignDetailsPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Pré-visualização da Mensagem</CardTitle>
-                    <CardDescription>Esta é a mensagem que seus contatos receberão. A tag `{`{nome}`}` será substituída pelo nome do contato.</CardDescription>
+                    <CardDescription>Esta é a mensagem que seus contatos receberão. A tag `{'{nome}'}` será substituída pelo nome do contato.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="p-4 border rounded-md bg-muted/50 text-sm text-muted-foreground">
