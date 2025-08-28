@@ -33,16 +33,16 @@ import {
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 const chartData = [
-  { month: 'January', revenue: 1860 },
-  { month: 'February', revenue: 3050 },
-  { month: 'March', revenue: 2370 },
-  { month: 'April', revenue: 7300 },
-  { month: 'May', revenue: 5090 },
+  { month: 'Janeiro', revenue: 1860 },
+  { month: 'Fevereiro', revenue: 3050 },
+  { month: 'Março', revenue: 2370 },
+  { month: 'Abril', revenue: 7300 },
+  { month: 'Maio', revenue: 5090 },
 ];
 
 const chartConfig = {
   revenue: {
-    label: 'Revenue',
+    label: 'Receita',
     color: 'hsl(var(--primary))',
   },
 } satisfies ChartConfig;
@@ -58,51 +58,51 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Receita Total</CardTitle>
             <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${totalRevenue.toLocaleString()}
+              R$ {totalRevenue.toLocaleString('pt-BR')}
             </div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+            <p className="text-xs text-muted-foreground">+20.1% do último mês</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Patients</CardTitle>
+            <CardTitle className="text-sm font-medium">Pacientes Ativos</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {mockPatients.filter((p) => p.status === 'Active').length}
             </div>
-            <p className="text-xs text-muted-foreground">+3 from last month</p>
+            <p className="text-xs text-muted-foreground">+3 do último mês</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Today's Appointments
+              Consultas Hoje
             </CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{todaysAppointments.length}</div>
             <p className="text-xs text-muted-foreground">
-              {mockAppointments.length} total scheduled
+              {mockAppointments.length} agendadas no total
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">Taxa de Conversão</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+12%</div>
             <p className="text-xs text-muted-foreground">
-              From lead to patient
+              De lead para paciente
             </p>
           </CardContent>
         </Card>
@@ -110,9 +110,9 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>Revenue Overview</CardTitle>
+            <CardTitle>Visão Geral da Receita</CardTitle>
             <CardDescription>
-              Your revenue over the last 5 months.
+              Sua receita nos últimos 5 meses.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
                 <YAxis
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(value) => `$${value/1000}k`}
+                    tickFormatter={(value) => `R$${Number(value)/1000}k`}
                 />
                 <ChartTooltip
                   cursor={false}
@@ -141,17 +141,17 @@ export default function DashboardPage() {
         </Card>
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle>Today's Schedule</CardTitle>
+            <CardTitle>Agenda de Hoje</CardTitle>
             <CardDescription>
-              A quick look at your appointments for today.
+              Uma rápida olhada nas suas consultas de hoje.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Patient</TableHead>
-                  <TableHead>Time</TableHead>
+                  <TableHead>Paciente</TableHead>
+                  <TableHead>Hora</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -185,7 +185,7 @@ export default function DashboardPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={3} className="text-center">
-                      No appointments scheduled for today.
+                      Nenhuma consulta agendada para hoje.
                     </TableCell>
                   </TableRow>
                 )}

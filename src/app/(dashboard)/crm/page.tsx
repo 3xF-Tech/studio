@@ -50,17 +50,17 @@ function PatientTable({ patients }: { patients: Patient[] }) {
         <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
+                <TableHead>Nome</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">Phone</TableHead>
+                <TableHead className="hidden md:table-cell">Telefone</TableHead>
                 <TableHead className="hidden md:table-cell">
-                  Last Visit
+                  Última Visita
                 </TableHead>
                 <TableHead className="hidden md:table-cell">
-                  Next Appointment
+                  Próxima Consulta
                 </TableHead>
                 <TableHead>
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">Ações</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -99,16 +99,16 @@ function PatientTable({ patients }: { patients: Patient[] }) {
                           variant="ghost"
                         >
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
+                          <span className="sr-only">Menu</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                        <DropdownMenuItem>Ver Detalhes</DropdownMenuItem>
+                        <DropdownMenuItem>Editar</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="text-destructive">
-                          Delete
+                          Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -130,7 +130,7 @@ export default function CrmPage() {
   // State for AI Lead Qualification
   const [procedure, setProcedure] = useState('');
   const [patientInfo, setPatientInfo] = useState('');
-  const [knowledgeBase, setKnowledgeBase] = useState('For Botox, patients should not be pregnant or have neurological diseases. Ideal candidates are seeking to reduce fine lines. Common side effects include temporary bruising.');
+  const [knowledgeBase, setKnowledgeBase] = useState('Para Botox, pacientes não devem estar grávidas ou ter doenças neurológicas. Candidatos ideais buscam reduzir linhas de expressão. Efeitos colaterais comuns incluem hematomas temporários.');
   
   // State for New Patient Form
   const [newPatientName, setNewPatientName] = useState('');
@@ -235,38 +235,38 @@ export default function CrmPage() {
     <Tabs defaultValue="all">
       <div className="flex items-center py-4">
         <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="inactive">Inactive</TabsTrigger>
+          <TabsTrigger value="all">Todos</TabsTrigger>
+          <TabsTrigger value="active">Ativos</TabsTrigger>
+          <TabsTrigger value="inactive">Inativos</TabsTrigger>
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search patients..."
+              placeholder="Buscar pacientes..."
               className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
             />
           </div>
           <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setIsQualifyModalOpen(true)}>
             <Sparkles className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Qualify Lead
+              Qualificar Lead
             </span>
           </Button>
           <Button size="sm" className="h-8 gap-1" onClick={() => setIsAddPatientModalOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Add Patient
+              Adicionar Paciente
             </span>
           </Button>
         </div>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Patient Management</CardTitle>
+          <CardTitle>Gerenciamento de Pacientes</CardTitle>
           <CardDescription>
-            View, search, and manage all your patient records.
+            Veja, busque e gerencie todos os registros de seus pacientes.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -281,27 +281,27 @@ export default function CrmPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
                 <Bot />
-                AI Lead Qualification
+                Qualificação de Lead com IA
             </DialogTitle>
             <DialogDescription>
-             Use the AI agent to pre-qualify leads for aesthetic procedures based on your knowledge base.
+             Use o agente de IA para pré-qualificar leads para procedimentos com base em sua base de conhecimento.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="procedure">Procedure of Interest</Label>
+              <Label htmlFor="procedure">Procedimento de Interesse</Label>
               <Input
                 id="procedure"
-                placeholder="e.g., Botox, Preenchimento Labial"
+                placeholder="ex: Botox, Preenchimento Labial"
                 value={procedure}
                 onChange={(e) => setProcedure(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="patient-info">Patient Information</Label>
+              <Label htmlFor="patient-info">Informações do Paciente</Label>
               <Textarea
                 id="patient-info"
-                placeholder="Describe patient's concerns, medical history, and desired outcomes."
+                placeholder="Descreva as preocupações do paciente, histórico médico e resultados desejados."
                 className="min-h-[100px]"
                 value={patientInfo}
                 onChange={(e) => setPatientInfo(e.target.value)}
@@ -309,7 +309,7 @@ export default function CrmPage() {
             </div>
              <Separator className="my-2" />
              <div className="space-y-2">
-                <Label htmlFor="knowledge-base">Knowledge Base</Label>
+                <Label htmlFor="knowledge-base">Base de Conhecimento</Label>
                  <Textarea
                     id="knowledge-base"
                     className="min-h-[120px] text-xs"
@@ -317,7 +317,7 @@ export default function CrmPage() {
                     onChange={(e) => setKnowledgeBase(e.target.value)}
                  />
                  <p className="text-xs text-muted-foreground">
-                    The AI uses this information (from your settings) to make its decision. You can edit it here for a one-time analysis.
+                    A IA usa esta informação (de suas configurações) para tomar sua decisão. Você pode editá-la aqui para uma análise única.
                  </p>
             </div>
           </div>
@@ -326,7 +326,7 @@ export default function CrmPage() {
               {isQualifying ? (
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
-              Qualify Lead with AI
+              Qualificar Lead com IA
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -336,17 +336,17 @@ export default function CrmPage() {
       <Dialog open={isAddPatientModalOpen} onOpenChange={setIsAddPatientModalOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Add New Patient</DialogTitle>
+            <DialogTitle>Adicionar Novo Paciente</DialogTitle>
             <DialogDescription>
-              Enter the details for the new patient.
+              Insira os detalhes para o novo paciente.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="new-patient-name">Full Name</Label>
+              <Label htmlFor="new-patient-name">Nome Completo</Label>
               <Input
                 id="new-patient-name"
-                placeholder="e.g., John Doe"
+                placeholder="ex: João da Silva"
                 value={newPatientName}
                 onChange={(e) => setNewPatientName(e.target.value)}
               />
@@ -356,26 +356,26 @@ export default function CrmPage() {
               <Input
                 id="new-patient-email"
                 type="email"
-                placeholder="e.g., john.doe@example.com"
+                placeholder="ex: joao.silva@example.com"
                 value={newPatientEmail}
                 onChange={(e) => setNewPatientEmail(e.target.value)}
               />
             </div>
              <div className="space-y-2">
-              <Label htmlFor="new-patient-phone">Phone</Label>
+              <Label htmlFor="new-patient-phone">Telefone</Label>
               <Input
                 id="new-patient-phone"
                 type="tel"
-                placeholder="e.g., (123) 456-7890"
+                placeholder="ex: (11) 99999-9999"
                 value={newPatientPhone}
                 onChange={(e) => setNewPatientPhone(e.target.value)}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddPatientModalOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setIsAddPatientModalOpen(false)}>Cancelar</Button>
             <Button onClick={handleAddPatient}>
-              Add Patient
+              Adicionar Paciente
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -383,5 +383,3 @@ export default function CrmPage() {
     </>
   );
 }
-
-    

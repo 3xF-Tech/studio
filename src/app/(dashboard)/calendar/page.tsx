@@ -89,20 +89,20 @@ export default function CalendarPage() {
         <h1 className="text-2xl font-headline font-bold">Agenda</h1>
         <div className="ml-auto flex items-center gap-2">
            <TabsList>
-            <TabsTrigger value="day">Day</TabsTrigger>
-            <TabsTrigger value="week">Week</TabsTrigger>
-            <TabsTrigger value="month">Month</TabsTrigger>
+            <TabsTrigger value="day">Dia</TabsTrigger>
+            <TabsTrigger value="week">Semana</TabsTrigger>
+            <TabsTrigger value="month">Mês</TabsTrigger>
           </TabsList>
           <Button size="sm" variant="outline" className="h-8 gap-1">
             <Blocks className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Clear Period
+              Limpar Período
             </span>
           </Button>
           <Button size="sm" className="h-8 gap-1" onClick={() => setIsModalOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              New Appointment
+              Novo Agendamento
             </span>
           </Button>
         </div>
@@ -127,20 +127,20 @@ export default function CalendarPage() {
             <TabsContent value="day">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Today's Schedule</CardTitle>
+                        <CardTitle>Agenda de Hoje</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>Day view coming soon.</p>
+                        <p>Visualização diária em breve.</p>
                     </CardContent>
                 </Card>
             </TabsContent>
              <TabsContent value="week">
                 <Card>
                     <CardHeader>
-                        <CardTitle>This Week's Schedule</CardTitle>
+                        <CardTitle>Agenda da Semana</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>Week view coming soon.</p>
+                        <p>Visualização semanal em breve.</p>
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -148,8 +148,8 @@ export default function CalendarPage() {
         <div className="md:col-span-4 lg:col-span-3">
           <Card>
             <CardHeader>
-              <CardTitle>Upcoming</CardTitle>
-              <CardDescription>Appointments for today.</CardDescription>
+              <CardTitle>Próximos</CardTitle>
+              <CardDescription>Agendamentos para hoje.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {mockAppointments.map(apt => (
@@ -185,15 +185,15 @@ export default function CalendarPage() {
      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>New AI-Assisted Appointment</DialogTitle>
+            <DialogTitle>Novo Agendamento com IA</DialogTitle>
             <DialogDescription>
-              Provide patient details and let the AI suggest the best times.
+              Forneça os detalhes do paciente e deixe a IA sugerir os melhores horários.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="patient-name" className="text-right">
-                Patient Name
+                Nome do Paciente
               </Label>
               <Input
                 id="patient-name"
@@ -204,7 +204,7 @@ export default function CalendarPage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="procedure" className="text-right">
-                Procedure
+                Procedimento
               </Label>
               <Input
                 id="procedure"
@@ -215,11 +215,11 @@ export default function CalendarPage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="availability" className="text-right">
-                Availability
+                Disponibilidade
               </Label>
               <Textarea
                 id="availability"
-                placeholder="e.g., 'Tuesdays after 3 PM', 'Any weekday morning'"
+                placeholder="ex: 'Terças após as 15h', 'Qualquer manhã de dia de semana'"
                 value={availability}
                 onChange={(e) => setAvailability(e.target.value)}
                 className="col-span-3"
@@ -231,7 +231,7 @@ export default function CalendarPage() {
               {isScheduling ? (
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
-              Get AI Suggestions
+              Obter Sugestões da IA
             </Button>
           </DialogFooter>
         </DialogContent>

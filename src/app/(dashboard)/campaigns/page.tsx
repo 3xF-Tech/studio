@@ -84,18 +84,18 @@ export default function CampaignsPage() {
       <div className="md:col-span-5 lg:col-span-4">
         <Card>
           <CardHeader>
-            <CardTitle>New AI-Powered Campaign</CardTitle>
+            <CardTitle>Nova Campanha com IA</CardTitle>
             <CardDescription>
-              Create a new targeted outreach campaign.
+              Crie uma nova campanha de divulgação direcionada.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
              <div className="space-y-2">
-              <Label htmlFor="campaign-name">Campaign Name</Label>
-              <Input id="campaign-name" placeholder="e.g., Spring Rejuvenation" value={campaignName} onChange={(e) => setCampaignName(e.target.value)} />
+              <Label htmlFor="campaign-name">Nome da Campanha</Label>
+              <Input id="campaign-name" placeholder="ex: Rejuvenescimento de Primavera" value={campaignName} onChange={(e) => setCampaignName(e.target.value)} />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="contact-upload">Contact List</Label>
+                <Label htmlFor="contact-upload">Lista de Contatos</Label>
                  <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>Função de Upload</AlertTitle>
@@ -105,15 +105,15 @@ export default function CampaignsPage() {
                 </Alert>
                 <div className="flex items-center gap-2 p-2 border-2 border-dashed rounded-md mt-2">
                     <Upload className="w-5 h-5 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Upload a .csv file</span>
-                    <Button variant="outline" size="sm" className="ml-auto" disabled>Browse</Button>
+                    <span className="text-sm text-muted-foreground">Faça upload de um arquivo .csv</span>
+                    <Button variant="outline" size="sm" className="ml-auto" disabled>Procurar</Button>
                 </div>
             </div>
              <div className="space-y-2">
-              <Label htmlFor="promo-content">Promotional Content</Label>
+              <Label htmlFor="promo-content">Conteúdo Promocional</Label>
               <Textarea
                 id="promo-content"
-                placeholder="Describe the service or promotion. Our AI will use this to create personalized messages."
+                placeholder="Descreva o serviço ou promoção. Nossa IA usará isso para criar mensagens personalizadas."
                 className="min-h-[120px]"
                 value={promoContent}
                 onChange={(e) => setPromoContent(e.target.value)}
@@ -121,7 +121,7 @@ export default function CampaignsPage() {
             </div>
             <Button className="w-full" onClick={handleGenerate} disabled={isGenerating}>
               {isGenerating ? <LoaderCircle className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
-              Generate Messages
+              Gerar Mensagens
             </Button>
           </CardContent>
         </Card>
@@ -129,19 +129,19 @@ export default function CampaignsPage() {
       <div className="md:col-span-7 lg:col-span-8">
         <Card>
           <CardHeader>
-            <CardTitle>Active Campaigns</CardTitle>
+            <CardTitle>Campanhas Ativas</CardTitle>
             <CardDescription>
-              Monitor and manage your ongoing campaigns.
+              Monitore e gerencie suas campanhas em andamento.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Campaign</TableHead>
+                  <TableHead>Campanha</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Sent</TableHead>
-                  <TableHead>Conversion</TableHead>
+                  <TableHead>Enviados</TableHead>
+                  <TableHead>Conversão</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -166,4 +166,3 @@ export default function CampaignsPage() {
     </div>
   );
 }
-
