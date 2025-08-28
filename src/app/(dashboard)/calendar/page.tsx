@@ -28,7 +28,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
-import { format, isSameDay, isThisWeek, startOfDay } from 'date-fns';
+import { format, isSameDay, isWithinInterval, startOfDay, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 export default function CalendarPage() {
@@ -94,7 +94,8 @@ export default function CalendarPage() {
       return mockAppointments.filter(apt => isSameDay(apt.startTime, today));
     }
     if (filter === 'week') {
-       return mockAppointments.filter(apt => isThisWeek(apt.startTime, { weekStartsOn: 1 }));
+       const nextSevenDays = addDays(today, 7);
+       return mockAppointments.filter(apt => isWithinInterval(apt.startTime, { start: today, end: nextSevenDays }));
     }
     if (filter === 'selected' && date) {
         return mockAppointments.filter(apt => isSameDay(apt.startTime, date));
@@ -203,7 +204,7 @@ export default function CalendarPage() {
                         <CardTitle>Agenda da Semana</CardTitle>
                     </CardHeader>
                     <CardContent>
-                       <AppointmentList appointments={appointmentsForWeekTab} emptyMessage="Nenhum agendamento para esta semana." />
+                       <AppointmentList appointments={appointmentsForWeekTab} emptyMessage="Nenhum agendamento para os próximos 7 dias." />
                     </CardContent>
                 </Card>
             </TabsContent>
