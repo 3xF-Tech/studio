@@ -201,7 +201,7 @@ export default function CalendarPage() {
              <TabsContent value="week">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Agenda da Semana</CardTitle>
+                        <CardTitle>Agenda da Semana (Próximos 7 dias)</CardTitle>
                     </CardHeader>
                     <CardContent>
                        <AppointmentList appointments={appointmentsForWeekTab} emptyMessage="Nenhum agendamento para os próximos 7 dias." />
@@ -215,7 +215,7 @@ export default function CalendarPage() {
               <CardTitle>Próximos Agendamentos</CardTitle>
               <CardDescription>
                 {selectedDate 
-                  ? `Compromissos para ${format(selectedDate, 'dd/MM/yyyy')}`
+                  ? `Compromissos para ${format(selectedDate, 'dd/MM/yyyy', { locale: ptBR })}`
                   : 'Nenhum dia selecionado.'
                 }
               </CardDescription>
