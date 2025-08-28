@@ -271,7 +271,3 @@ export default function FinancialsPage() {
     </>
   );
 }
-
-    
-
-    
