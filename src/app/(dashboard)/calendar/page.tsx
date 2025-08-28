@@ -37,10 +37,11 @@ export default function CalendarPage() {
   const [isScheduling, setIsScheduling] = useState(false);
   const [patientName, setPatientName] = useState('');
   const [procedure, setProcedure] = useState('');
-  const [availability, setAvailability] = useState('');
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [isClient, setIsClient] = useState(false);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
   // Set the initial date on the client to avoid hydration mismatch
   useEffect(() => {
@@ -49,24 +50,32 @@ export default function CalendarPage() {
     }
     setIsClient(true);
   }, []);
+  
+  const handleDaySelection = (day: string) => {
+    setSelectedDays(prev => 
+        prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
+  }
 
   const handleSchedule = async () => {
-    if (!patientName || !procedure || !availability) {
+    if (!patientName || !procedure || selectedDays.length === 0) {
       toast({
         variant: 'destructive',
         title: 'Campos obrigatórios',
-        description: 'Por favor, preencha todos os campos.',
+        description: 'Por favor, preencha o nome, procedimento e selecione ao menos um dia.',
       });
       return;
     }
 
     setIsScheduling(true);
+    setAvailableTimes([]);
     try {
       const result = await scheduleAppointment({
         patientName,
         procedure,
-        availability,
+        selectedDays,
       });
+      setAvailableTimes(result.suggestedAppointmentTimes);
       toast({
         title: 'Agendamento Sugerido pela IA',
         description: (
@@ -80,7 +89,6 @@ export default function CalendarPage() {
           </div>
         ),
       });
-      setIsModalOpen(false);
     } catch (error) {
       console.error('Scheduling error:', error);
       toast({
@@ -184,12 +192,10 @@ export default function CalendarPage() {
                             mode="single"
                             selected={selectedDate}
                             onSelect={setSelectedDate}
-                            className="p-3 w-full"
+                            className="p-3"
                             locale={ptBR}
                             classNames={{
-                                head_cell: 'w-full',
-                                cell: 'w-full',
-                                day: 'w-full h-24 items-start p-2',
+                                day: 'h-24 items-start p-2',
                             }}
                          />}
                     </CardContent>
@@ -276,8 +282,8 @@ export default function CalendarPage() {
               <Textarea
                 id="availability"
                 placeholder="ex: 'Terças após as 15h', 'Qualquer manhã de dia de semana'"
-                value={availability}
-                onChange={(e) => setAvailability(e.target.value)}
+                value={selectedDays.join(', ')}
+                onChange={(e) => setSelectedDays(e.target.value.split(', '))}
                 className="col-span-3"
               />
             </div>
