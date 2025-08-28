@@ -66,7 +66,6 @@ function PatientTable({
     onDelete: (patient: Patient) => void
 }) {
     return (
-      <ScrollArea className="w-full">
         <Table>
             <TableHeader>
               <TableRow>
@@ -153,7 +152,6 @@ function PatientTable({
               ))}
             </TableBody>
           </Table>
-          </ScrollArea>
     )
 }
 
