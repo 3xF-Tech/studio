@@ -1,18 +1,17 @@
+
 "use client";
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Calendar,
   Settings,
-  LogOut,
   UserCircle,
   FileText,
   MessageSquare,
   Users,
   Newspaper,
-  LoaderCircle,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -36,10 +35,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Icons } from '@/components/icons';
-import { useAuth } from '@/context/AuthContext';
 
 
-// TODO: Mapear roles para menus visíveis
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/calendar', label: 'Agenda', icon: Calendar },
@@ -51,26 +48,6 @@ const menuItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, loading, authReady, logout } = useAuth();
-  
-  if (loading || !authReady) {
-    return (
-        <div className="flex items-center justify-center min-h-screen">
-            <LoaderCircle className="w-8 h-8 animate-spin" />
-        </div>
-    )
-  }
-
-  if (!user) {
-    router.replace('/login');
-    return null;
-  }
-
-  const handleLogout = async () => {
-    await logout();
-    router.push('/login');
-  };
 
   return (
     <SidebarProvider>
@@ -114,10 +91,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </Link>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton tooltip={{ children: 'Sair', side: 'right' }} onClick={handleLogout}>
-                        <LogOut />
-                        <span>Sair</span>
-                    </SidebarMenuButton>
+                     <Link href="/" legacyBehavior passHref>
+                        <SidebarMenuButton tooltip={{ children: 'Sair', side: 'right' }}>
+                            <UserCircle />
+                            <span>Voltar ao Site</span>
+                        </SidebarMenuButton>
+                    </Link>
                 </SidebarMenuItem>
             </SidebarMenu>
           </SidebarFooter>
@@ -136,15 +115,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/settings">Configurações</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Suporte</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                  Sair
+                <DropdownMenuItem asChild>
+                    <Link href="/">Voltar ao Site</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

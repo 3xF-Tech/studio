@@ -67,7 +67,7 @@ export default function Home() {
             Publicações
           </Link>
           <Button asChild>
-            <Link href="/login">Área do Cliente</Link>
+            <Link href="/dashboard">Painel Administrativo</Link>
           </Button>
         </nav>
       </header>
