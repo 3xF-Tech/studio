@@ -8,6 +8,16 @@ export type PatientPackage = {
     time: string;
 }
 
+export type Address = {
+    street: string;
+    number: string;
+    complement?: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    zip: string;
+}
+
 export type Patient = {
   id: string;
   name: string;
@@ -16,12 +26,31 @@ export type Patient = {
   status: 'Active' | 'Inactive';
   package: PatientPackage | null;
   sessionDuration?: number;
+  address?: Address;
 };
 
 export const mockPatients: Patient[] = [
-  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '11 91234 5678', status: 'Active', package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" }, sessionDuration: 50 },
+  { 
+    id: '1', 
+    name: 'Alice Johnson', 
+    email: 'alice@example.com', 
+    phone: '11 91234 5678', 
+    status: 'Active', 
+    package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" }, 
+    sessionDuration: 50,
+    address: { street: 'Rua das Flores', number: '123', neighborhood: 'Jardim das Rosas', city: 'São Paulo', state: 'SP', zip: '01234-567' }
+  },
   { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '21 92345 6789', status: 'Inactive', package: null, sessionDuration: 50 },
-  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phone: '31 93456 7890', status: 'Active', package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" }, sessionDuration: 60 },
+  { 
+      id: '3', 
+      name: 'Charlie Brown', 
+      email: 'charlie@example.com', 
+      phone: '31 93456 7890', 
+      status: 'Active', 
+      package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" }, 
+      sessionDuration: 60,
+      address: { street: 'Avenida Principal', number: '456', complement: 'Bloco A', neighborhood: 'Centro', city: 'Campinas', state: 'SP', zip: '13010-001' }
+  },
   { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '41 94567 8901', status: 'Active', package: null, sessionDuration: 50 },
 ];
 
@@ -121,3 +150,5 @@ export const mockCampaigns: Campaign[] = [
     { id: 'c2', name: 'Summer Glow Up', targetAudience: 'All Clients', service: 'HydraFacial', status: 'Completed', sent: 300, conversionRate: 0.25 },
     { id: 'c3', name: 'New Year, New You', targetAudience: 'Potential Leads', service: 'Consultation Discount', status: 'Draft', sent: 0, conversionRate: 0 },
 ];
+
+    

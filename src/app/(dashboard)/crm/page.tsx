@@ -183,7 +183,16 @@ export default function CrmPage() {
       name: '',
       email: '',
       phone: '',
-      duration: '50'
+      duration: '50',
+      address: {
+        street: '',
+        number: '',
+        complement: '',
+        neighborhood: '',
+        city: '',
+        state: '',
+        zip: '',
+      }
   });
   
   // State for Package Scheduling
@@ -280,8 +289,8 @@ export default function CrmPage() {
   
   const formatPhoneNumber = (value: string) => {
     if (!value) return value;
-    const cleaned = value.replace(/\D/g, '');
-    const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})(\d{0,4})$/);
+    const cleaned = value.replace(/\D/g, '').slice(0, 12);
+    let match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})(\d{0,4})$/);
     if (!match) return cleaned;
     
     const [_, p1, p2, p3, p4] = match;
@@ -300,8 +309,22 @@ export default function CrmPage() {
       setPatientForm(prev => ({...prev, phone: formatted}));
   };
 
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { id, value } = e.target;
+      setPatientForm(prev => ({
+          ...prev,
+          address: {
+              ...prev.address,
+              [id.replace('new-patient-', '')]: value
+          }
+      }));
+  }
+
   const resetForm = () => {
-     setPatientForm({ id: '', name: '', email: '', phone: '', duration: '50' });
+     setPatientForm({ 
+         id: '', name: '', email: '', phone: '', duration: '50',
+         address: { street: '', number: '', complement: '', neighborhood: '', city: '', state: '', zip: '' }
+    });
   }
 
   const handleOpenAddModal = () => {
@@ -326,7 +349,8 @@ export default function CrmPage() {
         phone: patientForm.phone,
         status: 'Active',
         package: null,
-        sessionDuration: parseInt(patientForm.duration, 10)
+        sessionDuration: parseInt(patientForm.duration, 10),
+        address: patientForm.address,
     };
     
     const updatedPatients = [...patients, newPatient];
@@ -349,7 +373,8 @@ export default function CrmPage() {
         name: patient.name,
         email: patient.email,
         phone: patient.phone,
-        duration: patient.sessionDuration?.toString() || '50'
+        duration: patient.sessionDuration?.toString() || '50',
+        address: patient.address || { street: '', number: '', complement: '', neighborhood: '', city: '', state: '', zip: '' }
     });
     setIsEditPatientModalOpen(true);
   }
@@ -364,6 +389,7 @@ export default function CrmPage() {
             email: patientForm.email,
             phone: patientForm.phone,
             sessionDuration: parseInt(patientForm.duration, 10),
+            address: patientForm.address,
         } : p
     );
     setPatients(updatedPatients);
@@ -571,116 +597,75 @@ export default function CrmPage() {
         </DialogContent>
       </Dialog>
       
-      {/* Add Patient Modal */}
-      <Dialog open={isAddPatientModalOpen} onOpenChange={setIsAddPatientModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+      {/* Add/Edit Patient Modal */}
+      <Dialog open={isAddPatientModalOpen || isEditPatientModalOpen} onOpenChange={isAddPatientModalOpen ? setIsAddPatientModalOpen : setIsEditPatientModalOpen}>
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Adicionar Novo Paciente</DialogTitle>
+            <DialogTitle>{isEditPatientModalOpen ? 'Editar Paciente' : 'Adicionar Novo Paciente'}</DialogTitle>
             <DialogDescription>
-              Insira os detalhes para o novo paciente.
+              {isEditPatientModalOpen ? 'Atualize os detalhes do paciente.' : 'Insira os detalhes para o novo paciente.'}
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="new-patient-name">Nome Completo</Label>
-              <Input
-                id="new-patient-name"
-                placeholder="ex: João da Silva"
-                value={patientForm.name}
-                onChange={(e) => setPatientForm(prev => ({...prev, name: e.target.value}))}
-              />
+          <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-6">
+            <h4 className="font-semibold text-sm">Informações Pessoais</h4>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="name">Nome Completo</Label>
+                    <Input id="name" placeholder="ex: João da Silva" value={patientForm.name} onChange={(e) => setPatientForm(prev => ({...prev, name: e.target.value}))} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="ex: joao.silva@example.com" value={patientForm.email} onChange={(e) => setPatientForm(prev => ({...prev, email: e.target.value}))} />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="phone">Telefone</Label>
+                    <Input id="phone" type="tel" placeholder="ex: 55 11 99999 9999" value={patientForm.phone} onChange={handlePhoneChange} maxLength={15} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="duration">Duração da Consulta (minutos)</Label>
+                    <Input id="duration" type="number" placeholder="ex: 50" value={patientForm.duration} onChange={(e) => setPatientForm(prev => ({...prev, duration: e.target.value}))} />
+                </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="new-patient-email">Email</Label>
-              <Input
-                id="new-patient-email"
-                type="email"
-                placeholder="ex: joao.silva@example.com"
-                value={patientForm.email}
-                onChange={(e) => setPatientForm(prev => ({...prev, email: e.target.value}))}
-              />
+            
+            <Separator className="my-4" />
+            <h4 className="font-semibold text-sm">Endereço</h4>
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                 <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="zip">CEP</Label>
+                    <Input id="zip" placeholder="12345-678" value={patientForm.address.zip} onChange={handleAddressChange} />
+                </div>
+                <div className="space-y-2 md:col-span-4">
+                    <Label htmlFor="street">Logradouro</Label>
+                    <Input id="street" placeholder="Rua das Flores" value={patientForm.address.street} onChange={handleAddressChange} />
+                </div>
+                 <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="number">Número</Label>
+                    <Input id="number" value={patientForm.address.number} onChange={handleAddressChange} />
+                </div>
+                 <div className="space-y-2 md:col-span-4">
+                    <Label htmlFor="complement">Complemento</Label>
+                    <Input id="complement" placeholder="Apto 101" value={patientForm.address.complement} onChange={handleAddressChange} />
+                </div>
+                <div className="space-y-2 md:col-span-3">
+                    <Label htmlFor="neighborhood">Bairro</Label>
+                    <Input id="neighborhood" value={patientForm.address.neighborhood} onChange={handleAddressChange} />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="city">Cidade</Label>
+                    <Input id="city" value={patientForm.address.city} onChange={handleAddressChange} />
+                </div>
+                 <div className="space-y-2 md:col-span-1">
+                    <Label htmlFor="state">Estado</Label>
+                    <Input id="state" value={patientForm.address.state} onChange={handleAddressChange} />
+                </div>
             </div>
-             <div className="space-y-2">
-              <Label htmlFor="new-patient-phone">Telefone</Label>
-              <Input
-                id="new-patient-phone"
-                type="tel"
-                placeholder="ex: 55 11 99999 9999"
-                value={patientForm.phone}
-                onChange={handlePhoneChange}
-                maxLength={15}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="new-patient-duration">Duração da Consulta (minutos)</Label>
-              <Input
-                id="new-patient-duration"
-                type="number"
-                placeholder="ex: 50"
-                value={patientForm.duration}
-                onChange={(e) => setPatientForm(prev => ({...prev, duration: e.target.value}))}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddPatientModalOpen(false)}>Cancelar</Button>
-            <Button onClick={handleAddPatient}>
-              Adicionar Paciente
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Edit Patient Modal */}
-      <Dialog open={isEditPatientModalOpen} onOpenChange={setIsEditPatientModalOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Editar Paciente</DialogTitle>
-            <DialogDescription>
-              Atualize os detalhes do paciente.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-patient-name">Nome Completo</Label>
-              <Input
-                id="edit-patient-name"
-                value={patientForm.name}
-                onChange={(e) => setPatientForm(prev => ({...prev, name: e.target.value}))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-patient-email">Email</Label>
-              <Input
-                id="edit-patient-email"
-                type="email"
-                value={patientForm.email}
-                onChange={(e) => setPatientForm(prev => ({...prev, email: e.target.value}))}
-              />
-            </div>
-             <div className="space-y-2">
-              <Label htmlFor="edit-patient-phone">Telefone</Label>
-              <Input
-                id="edit-patient-phone"
-                type="tel"
-                value={patientForm.phone}
-                onChange={handlePhoneChange}
-                maxLength={15}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-patient-duration">Duração da Consulta (minutos)</Label>
-              <Input
-                id="edit-patient-duration"
-                type="number"
-                value={patientForm.duration}
-                onChange={(e) => setPatientForm(prev => ({...prev, duration: e.target.value}))}
-              />
-            </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditPatientModalOpen(false)}>Cancelar</Button>
-            <Button onClick={handleEditPatient}>Salvar Alterações</Button>
+            <Button variant="outline" onClick={() => { isEditPatientModalOpen ? setIsEditPatientModalOpen(false) : setIsAddPatientModalOpen(false) }}>Cancelar</Button>
+            <Button onClick={isEditPatientModalOpen ? handleEditPatient : handleAddPatient}>
+              {isEditPatientModalOpen ? 'Salvar Alterações' : 'Adicionar Paciente'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -703,12 +688,12 @@ export default function CrmPage() {
 
       {/* Patient Details Modal */}
        <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Detalhes de {selectedPatient?.name}</DialogTitle>
           </DialogHeader>
           {selectedPatient && (
-            <div className="grid gap-4 py-4 text-sm">
+            <div className="grid gap-4 py-4 text-sm max-h-[70vh] overflow-y-auto pr-6">
                 <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Status</span>
                     <Badge variant={selectedPatient.status === 'Active' ? 'default' : 'secondary'}>{selectedPatient.status}</Badge>
@@ -725,7 +710,16 @@ export default function CrmPage() {
                     <span className="text-muted-foreground">Duração da Consulta</span>
                     <span>{selectedPatient.sessionDuration || 'N/A'} min</span>
                 </div>
-                <Separator />
+                 <Separator className="my-2" />
+                 {selectedPatient.address && (
+                    <div className="space-y-2">
+                        <h4 className="font-semibold">Endereço</h4>
+                        <p>{selectedPatient.address.street}, {selectedPatient.address.number}{selectedPatient.address.complement ? `, ${selectedPatient.address.complement}` : ''}</p>
+                        <p>{selectedPatient.address.neighborhood} - {selectedPatient.address.city}/{selectedPatient.address.state}</p>
+                        <p>CEP: {selectedPatient.address.zip}</p>
+                    </div>
+                 )}
+                <Separator className="my-2" />
                 {selectedPatient.package ? (
                     <div className="space-y-2">
                         <h4 className="font-semibold">Pacote Ativo</h4>
@@ -823,3 +817,5 @@ export default function CrmPage() {
     </>
   );
 }
+
+    
