@@ -65,7 +65,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <Link href={item.href} legacyBehavior passHref>
+                  <Link href={item.href}>
                     <SidebarMenuButton
                       isActive={pathname === item.href}
                       tooltip={{ children: item.label, side: 'right' }}
@@ -81,7 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <SidebarFooter>
             <SidebarMenu>
                  <SidebarMenuItem>
-                    <Link href="/settings" legacyBehavior passHref>
+                    <Link href="/settings">
                         <SidebarMenuButton 
                          isActive={pathname === '/settings'}
                          tooltip={{ children: 'Configurações', side: 'right' }}>
@@ -91,7 +91,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </Link>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                     <Link href="/" legacyBehavior passHref>
+                     <Link href="/">
                         <SidebarMenuButton tooltip={{ children: 'Sair', side: 'right' }}>
                             <UserCircle />
                             <span>Voltar ao Site</span>
