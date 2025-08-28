@@ -83,10 +83,10 @@ export default function CalendarPage() {
     }
   };
 
-  const getFilteredAppointments = (filter: 'day' | 'week' | 'month' | 'selected') => {
-    const today = startOfDay(new Date());
+  const getFilteredAppointments = (filter: 'day' | 'week' | 'selected', date?: Date) => {
+    const targetDate = date || new Date();
     if (filter === 'day') {
-      return mockAppointments.filter(apt => isSameDay(apt.startTime, today));
+      return mockAppointments.filter(apt => isSameDay(apt.startTime, startOfDay(targetDate)));
     }
     if (filter === 'week') {
        return mockAppointments.filter(apt => isThisWeek(apt.startTime, { weekStartsOn: 1 }));
@@ -97,7 +97,7 @@ export default function CalendarPage() {
     return mockAppointments;
   }
   
-  const appointmentsForSelectedDate = selectedDate ? getFilteredAppointments('selected') : getFilteredAppointments('day');
+  const appointmentsForSelectedDate = selectedDate ? getFilteredAppointments('selected', selectedDate) : getFilteredAppointments('day');
   const appointmentsForDayTab = getFilteredAppointments('day');
   const appointmentsForWeekTab = getFilteredAppointments('week');
 
