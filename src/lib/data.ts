@@ -1,21 +1,27 @@
 
-import { addDays } from 'date-fns';
+import { addDays, addMonths, subMonths } from 'date-fns';
+
+export type PatientPackage = {
+    sessions: number;
+    totalValue: number;
+    days: string;
+    time: string;
+}
 
 export type Patient = {
   id: string;
   name: string;
   email: string;
   phone: string;
-  lastVisit: string;
-  nextAppointment: string | null;
   status: 'Active' | 'Inactive';
+  package: PatientPackage | null;
 };
 
 export const mockPatients: Patient[] = [
-  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '123-456-7890', lastVisit: '2024-04-10', nextAppointment: '2024-05-15', status: 'Active' },
-  { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '234-567-8901', lastVisit: '2024-03-22', nextAppointment: null, status: 'Inactive' },
-  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phone: '345-678-9012', lastVisit: '2024-04-18', nextAppointment: '2024-05-20', status: 'Active' },
-  { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '456-789-0123', lastVisit: '2024-02-01', nextAppointment: '2024-05-12', status: 'Active' },
+  { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '123-456-7890', status: 'Active', package: { sessions: 10, totalValue: 2000, days: "Segundas", time: "14:00" } },
+  { id: '2', name: 'Bob Williams', email: 'bob@example.com', phone: '234-567-8901', status: 'Inactive', package: null },
+  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phone: '345-678-9012', status: 'Active', package: { sessions: 5, totalValue: 1100, days: "Quartas", time: "10:00" } },
+  { id: '4', name: 'Diana Miller', email: 'diana@example.com', phone: '456-789-0123', status: 'Active', package: null },
 ];
 
 export type Appointment = {
@@ -48,11 +54,55 @@ export type FinancialRecord = {
 };
 
 export const mockFinancials: FinancialRecord[] = [
-    { id: 'f1', patientName: 'Alice Johnson', date: '2024-04-10', amount: 350, status: 'Paid', paymentMethod: 'Credit Card' },
-    { id: 'f2', patientName: 'Charlie Brown', date: '2024-04-18', amount: 500, status: 'Pending', paymentMethod: 'PIX' },
-    { id: 'f3', patientName: 'Bob Williams', date: '2024-03-22', amount: 200, status: 'Paid', paymentMethod: 'Bank Transfer' },
-    { id: 'f4', patientName: 'Grace Lee', date: '2024-03-15', amount: 450, status: 'Overdue', paymentMethod: 'PIX' },
-]
+    { id: 'f1', patientName: 'Alice Johnson', date: today.toISOString(), amount: 350, status: 'Paid', paymentMethod: 'Credit Card' },
+    { id: 'f2', patientName: 'Charlie Brown', date: addDays(today, -20).toISOString(), amount: 500, status: 'Pending', paymentMethod: 'PIX' },
+    { id: 'f3', patientName: 'Bob Williams', date: addDays(today, -40).toISOString(), amount: 200, status: 'Paid', paymentMethod: 'Bank Transfer' },
+    { id: 'f4', patientName: 'Grace Lee', date: addDays(today, -50).toISOString(), amount: 450, status: 'Overdue', paymentMethod: 'PIX' },
+];
+
+export type ContractPayment = {
+    date: Date;
+    amount: number;
+    status: 'Paid' | 'Pending';
+}
+
+export type Contract = {
+    id: string;
+    patientName: string;
+    totalValue: number;
+    paymentDates: ContractPayment[];
+}
+
+export const mockContracts: Contract[] = [
+    {
+        id: 'pkg1',
+        patientName: 'Alice Johnson',
+        totalValue: 2000,
+        paymentDates: [
+            { date: subMonths(today, 1), amount: 1000, status: 'Paid' },
+            { date: addMonths(today, 1), amount: 1000, status: 'Pending' },
+        ],
+    },
+    {
+        id: 'pkg2',
+        patientName: 'Charlie Brown',
+        totalValue: 1100,
+        paymentDates: [
+            { date: today, amount: 550, status: 'Pending' },
+            { date: addMonths(today, 2), amount: 550, status: 'Pending' },
+        ],
+    },
+     {
+        id: 'pkg3',
+        patientName: 'Outro Paciente',
+        totalValue: 3000,
+        paymentDates: [
+            { date: addMonths(today, 4), amount: 1500, status: 'Pending' },
+            { date: addMonths(today, 5), amount: 1500, status: 'Pending' },
+        ],
+    }
+];
+
 
 export type Campaign = {
     id: string;

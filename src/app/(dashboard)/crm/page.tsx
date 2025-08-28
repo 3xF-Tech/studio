@@ -53,12 +53,8 @@ function PatientTable({ patients }: { patients: Patient[] }) {
                 <TableHead>Nome</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Telefone</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Última Visita
-                </TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Próxima Consulta
-                </TableHead>
+                <TableHead className="hidden lg:table-cell">Pacote de Sessões</TableHead>
+                 <TableHead className="hidden lg:table-cell">Valor do Pacote</TableHead>
                 <TableHead>
                   <span className="sr-only">Ações</span>
                 </TableHead>
@@ -84,11 +80,16 @@ function PatientTable({ patients }: { patients: Patient[] }) {
                   <TableCell className="hidden md:table-cell">
                     {patient.phone}
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {patient.lastVisit}
-                  </TableCell>
-                   <TableCell className="hidden md:table-cell">
-                    {patient.nextAppointment || 'N/A'}
+                  <TableCell className="hidden lg:table-cell">
+                    {patient.package ? (
+                        <div>
+                            <div>{patient.package.sessions} sessões</div>
+                            <div className="text-xs text-muted-foreground">{patient.package.days} - {patient.package.time}</div>
+                        </div>
+                    ) : 'N/A'}
+                   </TableCell>
+                   <TableCell className="hidden lg:table-cell">
+                     {patient.package ? `R$ ${patient.package.totalValue.toLocaleString('pt-BR')}` : 'N/A'}
                    </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -211,9 +212,8 @@ export default function CrmPage() {
         name: newPatientName,
         email: newPatientEmail,
         phone: newPatientPhone,
-        lastVisit: new Date().toISOString().split('T')[0], // Today's date
-        nextAppointment: null,
         status: 'Active',
+        package: null,
     };
     
     setPatients(prevPatients => [...prevPatients, newPatient]);

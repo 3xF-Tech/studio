@@ -19,29 +19,40 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DollarSign, TrendingUp, CreditCard, Bot, AlertCircle } from 'lucide-react';
-import { mockFinancials, mockAppointments, FinancialRecord } from '@/lib/data';
+import { DollarSign, TrendingUp, Calendar, Bot, AlertCircle } from 'lucide-react';
+import { mockFinancials, mockAppointments, FinancialRecord, mockContracts } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { addMonths, isWithinInterval, startOfYear, endOfYear, startOfMonth, endOfMonth } from 'date-fns';
 
 export default function FinancialsPage() {
     const { toast } = useToast();
 
-    // Faturamento executado: soma de todos os registros marcados como 'Paid'
-    const actualRevenue = mockFinancials
-        .filter(record => record.status === 'Paid')
+    const today = new Date();
+    // Faturamento realizado: soma de todos os registros marcados como 'Paid' no mês corrente
+    const actualRevenueMonth = mockFinancials
+        .filter(record => {
+            const recordDate = new Date(record.date);
+            return record.status === 'Paid' && isWithinInterval(recordDate, { start: startOfMonth(today), end: endOfMonth(today) });
+        })
         .reduce((acc, curr) => acc + curr.amount, 0);
-
-    // Faturamento previsto: soma dos preços de todos os agendamentos futuros confirmados
-    const projectedRevenue = mockAppointments
-        .filter(apt => apt.startTime > new Date() && apt.status === 'Confirmed')
-        .reduce((acc, curr) => acc + (curr.price || 0), 0);
+        
+    // Faturamento a receber (total)
+    const totalToReceive = (range: 'year' | 'month' | 'next3months') => {
+        const start = range === 'year' ? startOfYear(today) : startOfMonth(today);
+        const end = range === 'year' ? endOfYear(today) : range === 'month' ? endOfMonth(today) : addMonths(today, 3);
+        
+        return mockContracts
+            .flatMap(contract => contract.paymentDates.map(pd => ({ ...pd, patientName: contract.patientName })))
+            .filter(payment => isWithinInterval(payment.date, { start, end }) && payment.status === 'Pending')
+            .reduce((acc, curr) => acc + curr.amount, 0);
+    }
+    
+    const toReceiveThisYear = totalToReceive('year');
+    const toReceiveThisMonth = totalToReceive('month');
+    const toReceiveNext3Months = totalToReceive('next3months');
 
     const handleAutomaticBilling = () => {
-        // Em uma aplicação real, isso iteraria sobre os pagamentos pendentes e enviaria lembretes
-        // via WhatsApp/SMS/Email.
         const pendingCount = mockFinancials.filter(r => r.status === 'Pending').length;
-
         toast({
             title: 'Cobrança Automática Iniciada',
             description: `A IA está enviando lembretes de pagamento para os ${pendingCount} clientes com pendências.`,
@@ -63,50 +74,50 @@ export default function FinancialsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Faturamento Realizado (Mês)</CardTitle>
+            <CardTitle className="text-sm font-medium">Realizado (Mês)</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              R$ {actualRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {actualRevenueMonth.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </div>
-            <p className="text-xs text-muted-foreground">Total já recebido dos pacientes.</p>
+            <p className="text-xs text-muted-foreground">Total recebido este mês.</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Faturamento Previsto (Próximos 30d)</CardTitle>
+            <CardTitle className="text-sm font-medium">A Receber (Mês)</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-                R$ {projectedRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {toReceiveThisMonth.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </div>
-             <p className="text-xs text-muted-foreground">Valor de agendamentos futuros confirmados.</p>
+             <p className="text-xs text-muted-foreground">Pendente no mês corrente.</p>
           </CardContent>
         </Card>
          <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pagamentos Pendentes</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">A Receber (Próx. 3 meses)</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-                {mockFinancials.filter(r => r.status === 'Pending').length}
+                R$ {toReceiveNext3Months.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </div>
-             <p className="text-xs text-muted-foreground">Registros aguardando pagamento.</p>
+             <p className="text-xs text-muted-foreground">Total pendente no trimestre.</p>
           </CardContent>
         </Card>
          <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ticket Médio</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">A Receber (Ano)</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-                R$ {(actualRevenue / mockFinancials.filter(r => r.status === 'Paid').length || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {toReceiveThisYear.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </div>
-             <p className="text-xs text-muted-foreground">Valor médio por transação paga.</p>
+             <p className="text-xs text-muted-foreground">Total pendente em {today.getFullYear()}.</p>
           </CardContent>
         </Card>
       </div>
