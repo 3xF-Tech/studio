@@ -5,13 +5,15 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import {
   BrainCircuit,
   ChevronRight,
   Quote,
   CheckCircle,
   MessageCircle,
+  Newspaper,
+  ArrowRight,
 } from 'lucide-react';
 import ChatWidget from '@/components/chat-widget';
 
@@ -44,7 +46,38 @@ export default function Home() {
         quote: "O profissionalismo e a empatia da Fabiana são admiráveis. Me senti acolhida e compreendida desde a primeira consulta.",
         author: "A.L., Paciente de Psicodrama"
     }
-  ]
+  ];
+
+  const articles = [
+    {
+      title: 'Do ‘SIM’ ao Divórcio: Onde o Amor se Perdeu?',
+      description: 'Uma reflexão sobre as complexidades dos relacionamentos modernos e os caminhos que levam ao fim de uma união.',
+      link: 'https://sinapsys.news/event-pro/do-sim-ao-divorcio-onde-o-amor-se-perdeu/',
+      imageUrl: 'https://picsum.photos/400/250',
+      aiHint: 'couple conflict',
+    },
+    {
+      title: 'Amor e Perigo: A Escalada da Violência nos Relacionamentos',
+      description: 'Analisando os sinais de alerta e a dinâmica da violência em relações afetivas, um tema urgente e necessário.',
+      link: 'https://sinapsys.news/event-pro/amor-e-perigo-a-escalada-da-violencia-nos-relacionamentos/',
+      imageUrl: 'https://picsum.photos/400/251',
+      aiHint: 'sad woman',
+    },
+    {
+      title: 'O Prazer Feminino e a Sociedade: Mitos, Verdades e Desafios',
+      description: 'Explorando os mitos e verdades que cercam a sexualidade feminina e os desafios enfrentados na sociedade.',
+      link: 'https://sinapsys.news/sem-categoria/o-prazer-feminino-e-a-sociedade-mitos-verdades-e-desafios/',
+      imageUrl: 'https://picsum.photos/400/252',
+      aiHint: 'woman portrait',
+    },
+     {
+      title: 'Quando o Ciúme se Torna Patológico: Entenda a Síndrome de Otelo',
+      description: 'Uma análise profunda sobre o ciúme patológico, suas causas, sintomas e os impactos devastadores nos relacionamentos.',
+      link: 'https://sinapsys.news/event-pro/quando-o-ciume-se-torna-patologico-entenda-a-sindrome-de-otelo/',
+      imageUrl: 'https://picsum.photos/400/253',
+      aiHint: 'jealousy couple',
+    },
+  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -71,7 +104,7 @@ export default function Home() {
             Sobre
           </Link>
            <Link
-            href="/blog"
+            href="#publications"
             className="text-base font-medium hover:underline underline-offset-4 hidden sm:block font-body"
             prefetch={false}
           >
@@ -193,6 +226,46 @@ export default function Home() {
                                 <p className="font-semibold mt-auto">{testimonial.author}</p>
                             </CardContent>
                         </Card>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        <section id="publications" className="w-full py-12 md:py-24 lg:py-32">
+           <div className="container px-4 md:px-6">
+                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+                    <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-primary font-body">Publicações</div>
+                    <h2 className="text-3xl font-bold font-headline tracking-tighter sm:text-5xl">Artigos e Reflexões</h2>
+                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed font-body">Artigos da coluna "Casais no Divã" no portal Sinapsys News.</p>
+                </div>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {articles.map((article, index) => (
+                    <Card key={index} className="flex flex-col">
+                        <CardHeader>
+                           <div className="relative h-48 w-full mb-4">
+                             <Image
+                                src={article.imageUrl}
+                                alt={article.title}
+                                fill
+                                className="rounded-lg object-cover"
+                                data-ai-hint={article.aiHint}
+                             />
+                          </div>
+                          <CardTitle>{article.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow">
+                          <p className="text-muted-foreground text-sm">
+                            {article.description}
+                          </p>
+                        </CardContent>
+                        <CardFooter>
+                            <Button asChild variant="outline" className="w-full">
+                                <a href={article.link} target="_blank" rel="noopener noreferrer">
+                                    Leia mais no Sinapsys News <ArrowRight className="w-4 h-4 ml-2" />
+                                </a>
+                            </Button>
+                        </CardFooter>
+                    </Card>
                     ))}
                 </div>
             </div>

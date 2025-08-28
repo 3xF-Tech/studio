@@ -45,7 +45,6 @@ const menuItems = [
   { href: '/campaigns', label: 'Campanhas', icon: MessageSquare },
   { href: '/broadcast', label: 'Transmissão', icon: TowerControl },
   { href: '/reports', label: 'Relatórios', icon: FileText },
-  { href: '/blog', label: 'Publicações', icon: Newspaper },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
