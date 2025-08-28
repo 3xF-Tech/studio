@@ -29,7 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot, CalendarDays, Clock, Eye, Trash2, Edit } from 'lucide-react';
+import { PlusCircle, Search, MoreHorizontal, Sparkles, LoaderCircle, Bot, CalendarDays, Clock, Eye, Trash2, Edit, MessageSquare } from 'lucide-react';
 import { mockPatients, Patient } from '@/lib/data';
 import {
   Dialog,
@@ -51,6 +51,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { format, isPast } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 const weekdays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
@@ -520,11 +521,21 @@ export default function CrmPage() {
         </div>
       </div>
       <Card>
-        <CardHeader>
-          <CardTitle>Gerenciamento de Pacientes</CardTitle>
-          <CardDescription>
-            Veja, busque e gerencie todos os registros de seus pacientes.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+                <CardTitle>Gerenciamento de Pacientes</CardTitle>
+                <CardDescription>
+                    Veja, busque e gerencie todos os registros de seus pacientes.
+                </CardDescription>
+            </div>
+            {activeTab === 'inactive' && (
+                 <Button asChild variant="outline" size="sm">
+                    <Link href="/campaigns">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Criar Campanha para Inativos
+                    </Link>
+                </Button>
+            )}
         </CardHeader>
         <CardContent>
           <PatientTable 
@@ -815,4 +826,3 @@ export default function CrmPage() {
     </>
   );
 }
-
