@@ -546,7 +546,7 @@ export default function CrmPage() {
               onChange={handleSearch}
             />
           </div>
-           {activeTab === 'inactive' && selectedPatients.length > 0 && (
+           {selectedPatients.length > 0 && (
              <Button asChild variant="outline" size="sm" className="h-9 gap-1">
                 <Link href="/campaigns">
                     <MessageSquare className="mr-2 h-4 w-4" />
