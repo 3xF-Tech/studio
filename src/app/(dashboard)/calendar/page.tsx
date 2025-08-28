@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -38,7 +38,12 @@ export default function CalendarPage() {
   const [procedure, setProcedure] = useState('');
   const [availability, setAvailability] = useState('');
   const { toast } = useToast();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
+  // Set the initial date on the client to avoid hydration mismatch
+  useEffect(() => {
+    setSelectedDate(new Date());
+  }, []);
 
   const handleSchedule = async () => {
     if (!patientName || !procedure || !availability) {
@@ -84,20 +89,20 @@ export default function CalendarPage() {
   };
 
   const getFilteredAppointments = (filter: 'day' | 'week' | 'selected', date?: Date) => {
-    const targetDate = date || new Date();
+    const today = startOfDay(new Date());
     if (filter === 'day') {
-      return mockAppointments.filter(apt => isSameDay(apt.startTime, startOfDay(targetDate)));
+      return mockAppointments.filter(apt => isSameDay(apt.startTime, today));
     }
     if (filter === 'week') {
        return mockAppointments.filter(apt => isThisWeek(apt.startTime, { weekStartsOn: 1 }));
     }
-    if (filter === 'selected' && selectedDate) {
-        return mockAppointments.filter(apt => isSameDay(apt.startTime, selectedDate));
+    if (filter === 'selected' && date) {
+        return mockAppointments.filter(apt => isSameDay(apt.startTime, date));
     }
     return mockAppointments;
   }
   
-  const appointmentsForSelectedDate = selectedDate ? getFilteredAppointments('selected', selectedDate) : getFilteredAppointments('day');
+  const appointmentsForSelectedDate = selectedDate ? getFilteredAppointments('selected', selectedDate) : [];
   const appointmentsForDayTab = getFilteredAppointments('day');
   const appointmentsForWeekTab = getFilteredAppointments('week');
 
@@ -210,14 +215,14 @@ export default function CalendarPage() {
               <CardDescription>
                 {selectedDate 
                   ? `Compromissos para ${format(selectedDate, 'dd/MM/yyyy')}`
-                  : 'Compromissos para hoje.'
+                  : 'Nenhum dia selecionado.'
                 }
               </CardDescription>
             </CardHeader>
             <CardContent>
                 <AppointmentList 
                     appointments={appointmentsForSelectedDate} 
-                    emptyMessage={selectedDate ? "Nenhum agendamento para esta data." : "Nenhum agendamento para hoje."}
+                    emptyMessage={selectedDate ? "Nenhum agendamento para esta data." : "Selecione um dia no calendário."}
                 />
             </CardContent>
           </Card>
