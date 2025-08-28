@@ -28,7 +28,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { scheduleAppointment } from '@/ai/flows/appointment-scheduling';
-import { format, isSameDay, isWithinInterval, endOfWeek, startOfWeek } from 'date-fns';
+import { format, isSameDay, isWithinInterval, endOfWeek, startOfWeek, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Link from 'next/link';
 
@@ -214,10 +214,14 @@ export default function CalendarPage() {
                             selected={selectedDate}
                             onSelect={setSelectedDate}
                             locale={ptBR}
-                            className="w-full"
+                            className="p-0"
                             classNames={{
-                                day_cell: "h-24 w-full",
-                                day: "h-24 w-full"
+                                months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                                month: "space-y-4 w-full",
+                                table: "w-full border-collapse",
+                                head_cell: "w-full text-muted-foreground rounded-md font-normal text-[0.8rem]",
+                                cell: "w-full text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                                day: "h-24 w-full p-0 font-normal aria-selected:opacity-100 flex items-start p-2",
                             }}
                          />}
                     </CardContent>
@@ -324,3 +328,5 @@ export default function CalendarPage() {
     </>
   );
 }
+
+    
